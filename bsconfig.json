@@ -1,0 +1,16 @@
+{
+  "name": "@swp/wallet-sdk",
+  "version": "0.0.1",
+  "sources": {
+    "dir" : "src",
+    "subdirs" : true
+  },
+  "package-specs": ["es6", "commonjs"],
+  "suffix": ".js",
+  "bs-dependencies": ["bs-fetch"],
+  "warnings": {
+    "error" : "+101"
+  },
+  "namespace": true,
+  "refmt": 3
+}
