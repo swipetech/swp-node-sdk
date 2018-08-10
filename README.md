@@ -1,18 +1,25 @@
-# Basic Reason Template
+# SwpWalletSDK
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+SwpWalletSDK é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.
 
-# Build
+O SDK possibilita realizar criação de contas e gerenciamento/transferência de saldos de forma simples, abstraindo questões como a comunicação HTTP com a API, a assinatura criptográfica das requisições e a utilização de ambiente sandbox.
+
+## Instalação
+
+SwpWalletSDK pode ser instalado via npm ou Yarn.
+
+npm:
+
 ```
-npm run build
+npm i @swp/wallet-sdk
 ```
 
-# Build + Watch
+**Yarn:**
 
 ```
-npm run start
+yarn add @swp/wallet-sdk
 ```
 
+## Documentação
 
-# Editor
-If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+https://swipecoin.github.io/swp-wallet-sdk/
