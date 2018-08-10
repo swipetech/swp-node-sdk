@@ -1,11 +1,7 @@
-let setHeaders = (~apiKey, ~secret, ~path, ~body, headers) => {
+let setHeaders = (~apiKey, ~secret, ~path, ~body=?, headers) => {
   let timestamp = string_of_int @@ Js.Math.floor(Js.Date.now() /. 1000.0);
 
-  let strBody =
-    switch (body) {
-    | None => ""
-    | Some(body) => body
-    };
+  let strBody = JsonUtil.stringifyOption(body);
 
   let hmac = Crypto.hmacSHA384(timestamp ++ path ++ strBody, secret);
   let signature = Crypto.base64Stringify(hmac);

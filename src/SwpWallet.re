@@ -1,11 +1,11 @@
 let get = (~headers, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
-  setAuthHeaders(~path, ~body=None, headers);
+  setAuthHeaders(~path, ~body=?None, headers);
 
   Service.get(~headers, ~debug?, ~sandbox?, path);
 };
 
 let post = (~headers, ~body=?, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
-  setAuthHeaders(~path, ~body=Js.Json.stringifyAny(body), headers);
+  setAuthHeaders(~path, ~body?, headers);
 
   Service.post(~headers, ~body?, ~debug?, ~sandbox?, path);
 };
