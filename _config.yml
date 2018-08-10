@@ -1,0 +1,46 @@
+# name of the software
+name: SwpWalletSDK
+
+project:
+    version: 0.0.1
+    download_url: https://github.com/Swipecoin/swp-wallet-sdk
+
+links:
+    header:
+      - title: GitHub
+        url: https://github.com/Swipecoin/swp-wallet-sdk
+    footer:
+      - title: GitHub
+        url: https://github.com/Swipecoin/swp-wallet-sdk
+      - title: Issues
+        url: https://github.com/Swipecoin/swp-wallet-sdk/issues?state=open
+
+ui:
+    header:
+        color1: "#f7f7f9"
+        color2: "#f7f7f9"
+        trianglify: false
+
+social:
+    github:
+        user: Swipecoin
+        repo: swp-wallet-sdk
+    twitter:
+        enabled: false
+        via:
+        hash:
+        account:
+    facebook:
+        enabled: false
+        profileUrl:
+
+# Build settings
+markdown: kramdown
+exclude:
+    - Gemfile
+    - Gemfile.lock
+    - lib
+    - .merlin
+    - node_modules
+    - .bsb.lock
+    - .vscode

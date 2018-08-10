@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Documentação - SwpWalletSDK</title>
+<meta name="description"
+      content="">
+
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/docs.css">
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<link rel="canonical" href="http://localhost:4000/">
+<link rel="alternate" type="application/rss+xml" title="" href="/feed.xml">
+
+<style>
+    #jumbotron-header {
+        background: #f7f7f9;
+        background: linear-gradient(135deg, #f7f7f9, #f7f7f9);
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/1.1.4/stickyfill.min.js"></script>
+<script src="/assets/js/docs.min.js"></script>
+
+</head>
+
+<body>
+    <header class="navbar navbar-static-top bs-docs-nav" id="top">
+    <div class="container">
+        <div class="navbar-header" role="banner">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index.html">SwpWalletSDK</a>
+        </div>
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                    
+                <li class="active" >
+                    <a href="/">Documentação</a>
+                </li>
+                  
+                <li >
+                    <a href="/api.html">API</a>
+                </li>
+                 
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="https://github.com/Swipecoin/swp-wallet-sdk">GitHub</a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</header> 
+<div class="bs-docs-masthead" id="jumbotron-header">
+    <div class="container">
+        <h1 class="home-title">SwpWalletSDK</h1>
+        <p class="lead"></p>
+        
+        <p class="version">v0.0.1</p>
+        
+    </div>
+</div>
+ <div class="container">
+    <div class="bs-docs-container row">
+        <div class="col-md-12" role="main">
+            <div class="bs-docs-section"><h1 id="sobre">Sobre</h1>
+
+<p>SwpWalletSDK é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.</p>
+
+<p>O SDK possibilita realizar criação de contas e gerenciamento/transferência de saldos de forma simples, abstraindo questões como a comunicação HTTP com a API, a assinatura criptográfica das requisições e a utilização de ambiente sandbox.</p>
+
+<h1 id="instalação">Instalação</h1>
+
+<p>SwpWalletSDK pode ser instalado via npm ou Yarn.</p>
+
+<p><strong>npm:</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm i @swp/wallet-sdk
+</code></pre></div></div>
+
+<p><strong>Yarn:</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yarn add @swp/wallet-sdk
+</code></pre></div></div>
+
+<p>Para importar o SDK em seu código, utilize:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">WalletSDK</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"@swp/wallet-sdk"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Ou em ES2015/TypeScript:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">WalletSDK</span> <span class="k">from</span> <span class="s2">"@swp/wallet-sdk"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h1 id="inicialização">Inicialização</h1>
+
+<p>Antes de realizar operações, é necessário inicilizar o SDK com uma <strong>api key</strong> e um <strong>secret</strong> válidos:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="nx">WalletSDK</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
+  <span class="na">apiKey</span><span class="p">:</span> <span class="nx">CLIENT_API_KEY</span><span class="p">,</span>
+  <span class="na">secret</span><span class="p">:</span> <span class="nx">CLIENT_SECRET</span>
+<span class="p">})</span>
+</code></pre></div></div>
+
+<p>A função <code class="highlighter-rouge">init</code> retorna um objeto através do qual todas as operações serão realizadas.</p>
+
+<div class="alert alert-warning">
+  <p><strong>Atenção:</strong> a integração deve ser realizada sempre a partir de um servidor Node.js, nunca a partir de um navegador. Não é seguro armazenar seu <em>api key</em> e <em>secret</em> em um código JavaScript executado no navegador, mesmo que sejam utilizadas práticas de <em>code obfuscation</em>.</p>
+</div>
+
+<h2 id="utilizando-ambiente-sandbox">Utilizando Ambiente Sandbox</h2>
+
+<p>Para realizar testes utilizando a API em ambiente <em>sandbox</em>, utilize a configuração <code class="highlighter-rouge">sandbox: true</code> na inicialização do SDK:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">swpService</span> <span class="o">=</span> <span class="nx">SwpPaySDK</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
+  <span class="na">apiKey</span><span class="p">:</span> <span class="nx">CLIENT_API_KEY</span><span class="p">,</span>
+  <span class="na">secret</span><span class="p">:</span> <span class="nx">CLIENT_SECRET</span><span class="p">,</span>
+  <span class="na">sandbox</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">})</span>
+</code></pre></div></div>
+
+<h1 id="utilização">Utilização</h1>
+
+<h2 id="criação-de-contas">Criação de Contas</h2>
+
+<p>Para criar uma nova conta, utilize a função <code class="highlighter-rouge">createAccount</code>.</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">account</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">account</span><span class="p">)</span>
+  <span class="p">})</span>
+</code></pre></div></div>
+
+<p><strong>Output:</strong></p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="s2">"id"</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="depósito-em-conta">Depósito em Conta</h2>
+
+<p>Para depositar em uma conta um determinado asset emitido pela sua organização, serão necessárias as seguintes informações:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">id</code> da organização;</li>
+  <li><code class="highlighter-rouge">id</code> da conta destino;</li>
+  <li><code class="highlighter-rouge">id</code> do asset a ser depositado.</li>
+</ul>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">getOrganization</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">org</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// buscando nos saldos (balances) da</span>
+    <span class="c1">// organização um asset de nome A</span>
+    <span class="nx">balanceOfA</span> <span class="o">=</span> <span class="nx">org</span>
+      <span class="p">.</span><span class="nx">balances</span>
+      <span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">balance</span> <span class="o">=&gt;</span> <span class="nx">balance</span><span class="p">[</span><span class="s2">"asset_code"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"A"</span><span class="p">)</span>
+
+    <span class="c1">// se existe saldo do asset A, realizar depósito</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">balanceOfA</span><span class="p">.</span><span class="nx">balance</span> <span class="o">&gt;</span> <span class="nx">AMOUNT</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
+        <span class="s2">"source_id"</span><span class="p">:</span> <span class="nx">org</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+        <span class="s2">"asset_id"</span><span class="p">:</span> <span class="nx">balanceOfA</span><span class="p">[</span><span class="s2">"asset_id"</span><span class="p">],</span>
+        <span class="c1">// informe corretamente o id da conta e </span>
+        <span class="c1">// o valor a ser depositado:</span>
+        <span class="s2">"destination_id"</span><span class="p">:</span> <span class="nx">ACCOUNT_ID</span><span class="p">,</span>
+        <span class="s2">"amount"</span><span class="p">:</span> <span class="nx">AMOUNT</span>
+      <span class="p">})</span>
+    <span class="p">}</span>
+  <span class="p">})</span>
+</code></pre></div></div>
+
+</div>
+        </div>
+
+        <div class="col-md-3 bs-docs-sidebar hidden-print" role="complementary">
+            <ul class="nav bs-docs-sidenav"></ul>
+
+            <a class="back-to-top" href="#top">
+                <i class="glyphicon glyphicon-chevron-up"></i>
+                Voltar ao topo
+            </a>
+        </div>
+    </div>
+
+    
+</div>
+
+    <!-- <footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+        <div class="bs-docs-social">
+            <ul class="bs-docs-social-buttons">
+                
+                <li>
+                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipecoin&amp;repo=swp-wallet-sdk&amp;type=watch&amp;count=true"
+                        width="90" height="20" title="Star on GitHub"></iframe>
+                </li>
+                <li>
+                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipecoin&amp;repo=swp-wallet-sdk&amp;type=fork&amp;count=true"
+                        width="90" height="20" title="Fork on GitHub"></iframe>
+                </li>
+                    
+            </ul>
+        </div>
+
+        <ul class="bs-docs-footer-links muted">
+            
+            <li>v0.0.1</li>
+             
+            <li>&middot;</li>
+            <li>
+                <a href="https://github.com/Swipecoin/swp-wallet-sdk">GitHub</a>
+            </li>
+            
+            <li>&middot;</li>
+            <li>
+                <a href="https://github.com/Swipecoin/swp-wallet-sdk/issues?state=open">Issues</a>
+            </li>
+            
+        </ul>
+    </div>
+</footer>
+
+  -->
+</body>
+
+</html>

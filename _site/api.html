@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>API - SwpWalletSDK</title>
+<meta name="description"
+      content="">
+
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/docs.css">
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<link rel="canonical" href="http://localhost:4000/api.html">
+<link rel="alternate" type="application/rss+xml" title="" href="/feed.xml">
+
+<style>
+    #jumbotron-header {
+        background: #f7f7f9;
+        background: linear-gradient(135deg, #f7f7f9, #f7f7f9);
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/1.1.4/stickyfill.min.js"></script>
+<script src="/assets/js/docs.min.js"></script>
+
+</head>
+
+<body>
+    <header class="navbar navbar-static-top bs-docs-nav" id="top">
+    <div class="container">
+        <div class="navbar-header" role="banner">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index.html">SwpWalletSDK</a>
+        </div>
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                    
+                <li >
+                    <a href="/">Documentação</a>
+                </li>
+                  
+                <li class="active" >
+                    <a href="/api.html">API</a>
+                </li>
+                 
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="https://github.com/Swipecoin/swp-wallet-sdk">GitHub</a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</header> 
+<div class="bs-docs-header" id="jumbotron-header">
+    <div class="container">
+        <h1>API</h1>
+        <p></p>
+    </div>
+</div>
+ <div class="container">
+    <div class="bs-docs-container row">
+        <div class="col-md-12" role="main">
+            <div class="bs-docs-section"><h1 id="swppaysdk">SwpPaySDK</h1>
+
+<h2 id="init">init</h2>
+
+<p><code class="highlighter-rouge">init(config)</code></p>
+
+<p>Inicializa o SDK com as configurações para acesso à API.</p>
+
+<p><strong>Argumentos:</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">config: Config</code>: objeto de configuração do tipo <a href="#config"><code class="highlighter-rouge">Config</code></a>, contendo as seguintes propriedades:
+    <ul>
+      <li><code class="highlighter-rouge">apiKey: string</code>: chave da API válida (fornecida na criação da conta);</li>
+      <li><code class="highlighter-rouge">secret: string</code>: chave criptográfica (fornecida na criação da conta);</li>
+      <li><code class="highlighter-rouge">language?: string</code>: <em>(opcional)</em> idioma para internacionalização de mensagens de erro. Padrão: <code class="highlighter-rouge">"pt-br"</code>;</li>
+      <li><code class="highlighter-rouge">debug?: boolean</code>: <em>(opcional)</em> quando <code class="highlighter-rouge">true</code>, erros http completos serão logados no console. Padrão: <code class="highlighter-rouge">false</code>.</li>
+      <li><code class="highlighter-rouge">sandbox?: boolean</code>: <em>(opcional)</em> quando <code class="highlighter-rouge">true</code>, o SDK se conectará a uma API sandbox para fins de teste. Padrão: <code class="highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Retorno:</strong></p>
+
+<ul>
+  <li>Objeto do tipo <a href="#checkoutservice"><code class="highlighter-rouge">CheckoutService</code></a>, através do qual são realizadas todas as ações referentes ao checkout. Veja <a href="#checkoutservice">CheckoutService</a> para mais detalhes.</li>
+</ul>
+
+<hr />
+
+<h2 id="assettypes">assetTypes</h2>
+
+<p>Enum do tipo <a href="#assettypes-1"><code class="highlighter-rouge">AssetTypes</code></a>.</p>
+
+<hr />
+
+<h2 id="checkoutevents">checkoutEvents</h2>
+
+<p>Enum do tipo <a href="#checkoutevents-1"><code class="highlighter-rouge">CheckoutEvents</code></a>, contendo os possíveis nomes dos eventos de atualização de checkout, disparados pelo <code class="highlighter-rouge">EventEmitter</code> retornado por <a href="#getcheckoutupdates"><code class="highlighter-rouge">CheckoutService.getCheckoutUpdates</code></a>.</p>
+
+<hr />
+
+<h2 id="checkoutstatus">checkoutStatus</h2>
+
+<p>Enum do tipo <a href="#checkoutstatus-1"><code class="highlighter-rouge">CheckoutStatus</code></a>, contendo os possíveis status do checkout.</p>
+
+<hr />
+
+<h2 id="credentialchannel">credentialChannel</h2>
+
+<p>Enum do tipo <a href="#credentialchannel-1"><code class="highlighter-rouge">CredentialChannel</code></a>.</p>
+
+<hr />
+
+<h2 id="paymentstatus">paymentStatus</h2>
+
+<p>Enum do tipo <a href="#paymentstatus-1"><code class="highlighter-rouge">PaymentStatus</code></a>, contendo os possíveis status de pagamento.</p>
+
+<hr />
+
+<h1 id="checkoutservice">CheckoutService</h1>
+
+<h2 id="getaccountassets">getAccountAssets</h2>
+
+<p><code class="highlighter-rouge">getAccountAssets()</code></p>
+
+<p>Consulta na API informações sobre a conta e os assets disponíveis para a mesma.</p>
+
+<p><strong>Retorno:</strong></p>
+
+<ul>
+  <li>Promise de <a href="#accountassets"><code class="highlighter-rouge">AccountAsset[]</code></a>. Em caso de erro, a promise rejeita um objeto do tipo <a href="#error"><code class="highlighter-rouge">Error</code></a>.</li>
+</ul>
+
+<hr />
+
+<h2 id="newcheckout">newCheckout</h2>
+
+<p><code class="highlighter-rouge">newCheckout(checkout)</code></p>
+
+<p>Cria um novo checkout.</p>
+
+<p><strong>Argumentos:</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">checkout: BasicCheckoutInfo</code>: objeto do tipo <a href="#basiccheckoutinfo"><code class="highlighter-rouge">BasicCheckoutInfo</code></a> contendo informações para criação do checkout.</li>
+</ul>
+
+<p><strong>Retorno:</strong></p>
+
+<ul>
+  <li>Promise de <a href="#checkout"><code class="highlighter-rouge">Checkout</code></a>. Em caso de erro, a promise rejeita um objeto do tipo <a href="#error"><code class="highlighter-rouge">Error</code></a>.</li>
+</ul>
+
+<hr />
+
+<h2 id="refreshcheckoutforpayment">refreshCheckoutForPayment</h2>
+
+<p><code class="highlighter-rouge">refreshCheckoutForPayment(checkoutId)</code></p>
+
+<p>Atualiza o checkout com uma nova ordem de pagamento. Essa função pode ser usada tanto para gerar uma primeira ordem de pagamento quanto para gerar uma nova em caso de expiração.</p>
+
+<p><strong>Argumentos:</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">checkoutId: string</code>: ID do checkout a ser atualizado.</li>
+</ul>
+
+<p><strong>Retorno:</strong></p>
+
+<ul>
+  <li>Promise de <a href="#checkoutwithpayment"><code class="highlighter-rouge">CheckoutWithPayment</code></a>. Em caso de erro, a promise rejeita um objeto do tipo <a href="#error"><code class="highlighter-rouge">Error</code></a>.</li>
+</ul>
+
+<hr />
+
+<h2 id="getcheckoutupdates">getCheckoutUpdates</h2>
+
+<p><code class="highlighter-rouge">getCheckoutUpdates(checkoutId)</code></p>
+
+<p>Retorna um objeto de tipo <a href="#checkoutupdates"><code class="highlighter-rouge">CheckoutUpdates</code></a>, contendo as propriedades:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">events: EventEmitter</code>: um EventEmitter nativo através do qual é possível ouvir os eventos de atualização do checkout;</li>
+  <li><code class="highlighter-rouge">unsubscribe: Function</code>: função que possibilita interromper manualmente a verificação por atualizações.</li>
+</ul>
+
+<p>Os nomes dos eventos emitidos por <code class="highlighter-rouge">CheckoutUpdates.events</code> podem ser acessados através do enum <a href="#checkoutevents"><code class="highlighter-rouge">SwpPaySDK.checkoutEvents</code></a>.</p>
+
+<p><strong>Argumentos:</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">checkoutId: string</code>: ID do checkout a verificar updates.</li>
+</ul>
+
+<p><strong>Retorno:</strong></p>
+
+<ul>
+  <li>Um <code class="highlighter-rouge">EventEmitter</code> nativo, através do qual é possível ouvir os eventos de atualização do checkout.</li>
+</ul>
+
+<hr />
+
+<h1 id="interfaces">Interfaces</h1>
+
+<h2 id="account">Account</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Account</span> <span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">is_active</span><span class="p">:</span> <span class="kr">boolean</span>
+  <span class="nx">is_legal_entity</span><span class="p">:</span> <span class="kr">boolean</span>
+  <span class="nx">id</span><span class="p">:</span> <span class="nx">string</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="accountasset">AccountAsset</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">AccountAsset</span> <span class="p">{</span>
+  <span class="nl">asset</span><span class="p">:</span> <span class="nx">Asset</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="asset">Asset</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Asset</span> <span class="p">{</span>
+  <span class="nl">id</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">type</span><span class="p">:</span> <span class="nx">AssetType</span>
+  <span class="nx">name</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">symbol</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">acronym</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">decimal_places</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">is_enabled</span><span class="p">:</span> <span class="kr">boolean</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="basiccheckoutinfo">BasicCheckoutInfo</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">BasicCheckoutInfo</span> <span class="p">{</span>
+    <span class="nl">origin_asset_id</span><span class="p">:</span> <span class="nx">number</span>
+    <span class="nx">origin_amount</span><span class="p">:</span> <span class="nx">number</span>
+    <span class="nx">payment_asset_id</span><span class="p">:</span> <span class="nx">number</span>
+    <span class="nx">source</span><span class="p">:</span> <span class="nx">CheckoutSource</span>
+    <span class="nx">memo</span><span class="p">?:</span> <span class="nx">string</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="checkout">Checkout</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Checkout</span> <span class="kd">extends</span> <span class="nx">BasicCheckoutInfo</span> <span class="p">{</span>
+  <span class="nl">credential</span><span class="p">:</span> <span class="nx">Credential</span>
+  <span class="nx">expires_at</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">is_expired</span><span class="p">:</span> <span class="kr">boolean</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="checkoutsource">CheckoutSource</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">CheckoutSource</span> <span class="p">{</span>
+  <span class="nx">first_name</span><span class="p">?:</span> <span class="nx">string</span>
+  <span class="nx">last_name</span><span class="p">?:</span> <span class="nx">string</span>
+  <span class="nx">email</span><span class="p">?:</span> <span class="nx">string</span>
+  <span class="nx">document_number</span><span class="p">?:</span> <span class="nx">string</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="checkoutwithpayment">CheckoutWithPayment</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">CheckoutWithPayment</span> <span class="kd">extends</span> <span class="nx">Checkout</span> <span class="p">{</span>
+  <span class="nl">current_payments</span><span class="p">:</span> <span class="nx">Payment</span><span class="p">[]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="checkoutupdates">CheckoutUpdates</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">CheckoutUpdates</span> <span class="p">{</span>
+  <span class="nl">events</span><span class="p">:</span> <span class="nx">EventEmitter</span>
+  <span class="nx">unsubscribe</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">void</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="config">Config</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Config</span> <span class="p">{</span>
+  <span class="nl">apiKey</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">secret</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">language</span><span class="p">?:</span> <span class="nx">string</span>
+  <span class="nx">debug</span><span class="p">?:</span> <span class="kr">boolean</span>
+  <span class="nx">sandbox</span><span class="p">?:</span> <span class="kr">boolean</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="credential">Credential</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Credential</span> <span class="p">{</span>
+  <span class="nl">is_active</span><span class="p">:</span> <span class="kr">boolean</span>
+  <span class="nx">channel</span><span class="p">:</span> <span class="nx">CredentialChannel</span>
+  <span class="nx">account_id</span><span class="p">:</span> <span class="nx">number</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="deposit">Deposit</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Deposit</span> <span class="p">{</span>
+  <span class="nl">id</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">internal_tx_hash</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">external_tx_hash</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">amount</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">confirmations</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">confirmed_at</span><span class="p">:</span> <span class="nx">string</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="error">Error</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nb">Error</span> <span class="p">{</span>
+  <span class="nl">message</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">code</span><span class="p">?:</span> <span class="nx">string</span>
+  <span class="nx">statusCode</span><span class="p">?:</span> <span class="nx">number</span>
+  <span class="nx">fieldErrors</span><span class="p">:</span> <span class="nx">FieldError</span><span class="p">[]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="fielderror">FieldError</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">FieldError</span> <span class="p">{</span>
+  <span class="nl">code</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">field</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">message</span><span class="p">:</span> <span class="nx">string</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="payment">Payment</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Payment</span> <span class="p">{</span>
+  <span class="nl">price_at</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">rate</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">asset</span><span class="p">:</span> <span class="nx">Asset</span>
+  <span class="nx">amount</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">amount_without_fee</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">fee_amount</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">fee</span><span class="p">:</span> <span class="nx">number</span>
+  <span class="nx">status_created_at</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">status</span><span class="p">:</span> <span class="nx">paymentStatus</span>
+  <span class="nx">wallet_address</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">wallet_address_uri</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">is_confirmed</span><span class="p">:</span> <span class="kr">boolean</span>
+  <span class="nx">expires_at</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">is_expired</span><span class="p">:</span> <span class="kr">boolean</span>
+  <span class="nx">confirmation_hook_id</span><span class="p">:</span> <span class="nx">string</span>
+  <span class="nx">is_hook_unregistered</span><span class="p">:</span> <span class="kr">boolean</span>
+  <span class="nx">deposits</span><span class="p">:</span> <span class="nx">Deposit</span><span class="p">[]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h1 id="enums">Enums</h1>
+
+<h2 id="assettypes-1">AssetTypes</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">enum</span> <span class="nx">assetType</span> <span class="p">{</span>
+  <span class="nx">Fiat</span> <span class="o">=</span> <span class="s2">"FIAT"</span><span class="p">,</span>
+  <span class="nx">Crypto</span> <span class="o">=</span> <span class="s2">"CRYPTO"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="checkoutevents-1">CheckoutEvents</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">enum</span> <span class="nx">CheckoutEvents</span> <span class="p">{</span>
+  <span class="nx">Expired</span> <span class="o">=</span> <span class="s2">"expired"</span><span class="p">,</span>
+  <span class="nx">StatusChange</span> <span class="o">=</span> <span class="s2">"status-change"</span><span class="p">,</span>
+  <span class="nx">PaymentExpired</span> <span class="o">=</span> <span class="s2">"payment-expired"</span><span class="p">,</span>
+  <span class="nx">PaymentStatusChange</span> <span class="o">=</span> <span class="s2">"payment-status-change"</span><span class="p">,</span>
+  <span class="nx">GetUpdatesError</span> <span class="o">=</span> <span class="s2">"get-updates-error"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="checkoutstatus-1">CheckoutStatus</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">enum</span> <span class="nx">PaymentStatus</span> <span class="p">{</span>
+  <span class="nx">Created</span> <span class="o">=</span> <span class="s2">"Created"</span><span class="p">,</span>
+  <span class="nx">Paid</span> <span class="o">=</span> <span class="s2">"Paid"</span><span class="p">,</span>
+  <span class="nx">Underpayment</span> <span class="o">=</span> <span class="s2">"Underpayment"</span><span class="p">,</span>
+  <span class="nx">Overpayment</span> <span class="o">=</span> <span class="s2">"Overpayment"</span><span class="p">,</span>
+  <span class="nx">WaitingPayment</span> <span class="o">=</span> <span class="s2">"WaitingPayment"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="credentialchannel-1">CredentialChannel</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">enum</span> <span class="nx">CredentialChannel</span> <span class="p">{</span>
+    <span class="nx">PoS</span> <span class="o">=</span> <span class="s2">"PoS"</span><span class="p">,</span>
+    <span class="nx">WebStore</span> <span class="o">=</span> <span class="s2">"WebStore"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="paymentstatus-1">PaymentStatus</h2>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">enum</span> <span class="nx">PaymentStatus</span> <span class="p">{</span>
+  <span class="nx">Paid</span> <span class="o">=</span> <span class="s2">"Paid"</span><span class="p">,</span>
+  <span class="nx">Underpayment</span> <span class="o">=</span> <span class="s2">"Underpayment"</span><span class="p">,</span>
+  <span class="nx">Overpayment</span> <span class="o">=</span> <span class="s2">"Overpayment"</span><span class="p">,</span>
+  <span class="nx">WaitingPayment</span> <span class="o">=</span> <span class="s2">"WaitingPayment"</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+</div>
+        </div>
+
+        <div class="col-md-3 bs-docs-sidebar hidden-print" role="complementary">
+            <ul class="nav bs-docs-sidenav"></ul>
+
+            <a class="back-to-top" href="#top">
+                <i class="glyphicon glyphicon-chevron-up"></i>
+                Voltar ao topo
+            </a>
+        </div>
+    </div>
+
+    
+</div>
+
+    <!-- <footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+        <div class="bs-docs-social">
+            <ul class="bs-docs-social-buttons">
+                
+                <li>
+                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipecoin&amp;repo=swp-wallet-sdk&amp;type=watch&amp;count=true"
+                        width="90" height="20" title="Star on GitHub"></iframe>
+                </li>
+                <li>
+                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipecoin&amp;repo=swp-wallet-sdk&amp;type=fork&amp;count=true"
+                        width="90" height="20" title="Fork on GitHub"></iframe>
+                </li>
+                    
+            </ul>
+        </div>
+
+        <ul class="bs-docs-footer-links muted">
+            
+            <li>v0.0.1</li>
+             
+            <li>&middot;</li>
+            <li>
+                <a href="https://github.com/Swipecoin/swp-wallet-sdk">GitHub</a>
+            </li>
+            
+            <li>&middot;</li>
+            <li>
+                <a href="https://github.com/Swipecoin/swp-wallet-sdk/issues?state=open">Issues</a>
+            </li>
+            
+        </ul>
+    </div>
+</footer>
+
+  -->
+</body>
+
+</html>
