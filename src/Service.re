@@ -112,15 +112,7 @@ let get = (~headers, ~debug=false, ~sandbox=false, path) =>
   |> handleRequest(~debug);
 
 let post = (~headers, ~body=?, ~debug=false, ~sandbox=false, path) => {
-  let strBody =
-    switch (body) {
-    | Some(b) =>
-      switch (Js.Json.stringifyAny(b)) {
-      | Some(str) => str
-      | None => ""
-      }
-    | None => ""
-    };
+  let strBody = JsonUtil.stringifyOption(body);
 
   Fetch.fetchWithInit(
     (sandbox ? sandboxHost : host) ++ path,
