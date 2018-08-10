@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/assets/css/docs.css">
 <link rel="stylesheet" href="/assets/css/styles.css">
 
-<link rel="canonical" href="http://localhost:4000/">
+<link rel="canonical" href="/">
 <link rel="alternate" type="application/rss+xml" title="" href="/feed.xml">
 
 <style>
@@ -154,36 +154,47 @@
 
 <h2 id="depósito-em-conta">Depósito em Conta</h2>
 
-<p>Para depositar em uma conta um determinado asset emitido pela sua organização, serão necessárias as seguintes informações:</p>
+<p>Para depositar em uma conta um determinado asset emitido pela sua organização, utilize a função <code class="highlighter-rouge">makePayment</code> passando o <code class="highlighter-rouge">id</code> da sua organização como <code class="highlighter-rouge">source_id</code> e o <code class="highlighter-rouge">id</code> da conta como <code class="highlighter-rouge">destination_id</code>.</p>
 
-<ul>
-  <li><code class="highlighter-rouge">id</code> da organização;</li>
-  <li><code class="highlighter-rouge">id</code> da conta destino;</li>
-  <li><code class="highlighter-rouge">id</code> do asset a ser depositado.</li>
-</ul>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">AMOUNT</span> <span class="o">=</span> <span class="mi">10</span>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">getOrganization</span><span class="p">()</span>
+<span class="nx">wallet</span><span class="p">.</span><span class="nx">getOrganization</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">org</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="c1">// buscando nos saldos (balances) da</span>
     <span class="c1">// organização um asset de nome A</span>
-    <span class="nx">balanceOfA</span> <span class="o">=</span> <span class="nx">org</span>
+    <span class="nx">assetA</span> <span class="o">=</span> <span class="nx">org</span>
       <span class="p">.</span><span class="nx">balances</span>
       <span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">balance</span> <span class="o">=&gt;</span> <span class="nx">balance</span><span class="p">[</span><span class="s2">"asset_code"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"A"</span><span class="p">)</span>
 
-    <span class="c1">// se existe saldo do asset A, realizar depósito</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">balanceOfA</span><span class="p">.</span><span class="nx">balance</span> <span class="o">&gt;</span> <span class="nx">AMOUNT</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
-        <span class="s2">"source_id"</span><span class="p">:</span> <span class="nx">org</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-        <span class="s2">"asset_id"</span><span class="p">:</span> <span class="nx">balanceOfA</span><span class="p">[</span><span class="s2">"asset_id"</span><span class="p">],</span>
-        <span class="c1">// informe corretamente o id da conta e </span>
-        <span class="c1">// o valor a ser depositado:</span>
-        <span class="s2">"destination_id"</span><span class="p">:</span> <span class="nx">ACCOUNT_ID</span><span class="p">,</span>
-        <span class="s2">"amount"</span><span class="p">:</span> <span class="nx">AMOUNT</span>
+    <span class="c1">// criando nova conta</span>
+    <span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">acc</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="c1">// realizando depósito</span>
+        <span class="k">return</span> <span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
+          <span class="s2">"source_id"</span><span class="p">:</span> <span class="nx">org</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+          <span class="s2">"asset_id"</span><span class="p">:</span> <span class="nx">assetA</span><span class="p">[</span><span class="s2">"asset_id"</span><span class="p">],</span>
+          <span class="s2">"destination_id"</span><span class="p">:</span> <span class="nx">acc</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+          <span class="s2">"amount"</span><span class="p">:</span> <span class="nx">AMOUNT</span>
+        <span class="p">})</span>
       <span class="p">})</span>
-    <span class="p">}</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Depósito realizado!"</span><span class="p">))</span>
+      <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Ocorreu um erro:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">))</span>
   <span class="p">})</span>
 </code></pre></div></div>
 
+<h2 id="pagamento-entre-contas">Pagamento Entre Contas</h2>
+
+<p>Para efetuar um pagamento entre contas, utilize a função <code class="highlighter-rouge">makePayment</code> passando o <code class="highlighter-rouge">id</code> da conta pagadora como <code class="highlighter-rouge">source_id</code> e o da conta de destino como <code class="highlighter-rouge">destination_id</code>.</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
+  <span class="s2">"source_id"</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span><span class="p">,</span>
+  <span class="s2">"asset_id"</span><span class="p">:</span> <span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span>
+  <span class="s2">"destination_id"</span><span class="p">:</span> <span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span>
+  <span class="s2">"amount"</span><span class="p">:</span> <span class="mi">10</span>
+<span class="p">})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Depósito realizado!"</span><span class="p">))</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Ocorreu um erro:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">))</span>
+</code></pre></div></div>
 </div>
         </div>
 

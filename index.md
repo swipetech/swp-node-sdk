@@ -90,32 +90,46 @@ wallet.createAccount()
 
 ## Depósito em Conta
 
-Para depositar em uma conta um determinado asset emitido pela sua organização, serão necessárias as seguintes informações:
-
-* `id` da organização;
-* `id` da conta destino;
-* `id` do asset a ser depositado.
+Para depositar em uma conta um determinado asset emitido pela sua organização, utilize a função `makePayment` passando o `id` da sua organização como `source_id` e o `id` da conta como `destination_id`.
 
 ```ts
+const AMOUNT = 10
+
 wallet.getOrganization()
   .then(org => {
     // buscando nos saldos (balances) da
     // organização um asset de nome A
-    balanceOfA = org
+    assetA = org
       .balances
       .find(balance => balance["asset_code"] == "A")
 
-    // se existe saldo do asset A, realizar depósito
-    if (balanceOfA.balance > AMOUNT) {
-      wallet.makePayment({
-        "source_id": org.id,
-        "asset_id": balanceOfA["asset_id"],
-        // informe corretamente o id da conta e 
-        // o valor a ser depositado:
-        "destination_id": ACCOUNT_ID,
-        "amount": AMOUNT
+    // criando nova conta
+    wallet.createAccount()
+      .then(acc => {
+        // realizando depósito
+        return wallet.makePayment({
+          "source_id": org.id,
+          "asset_id": assetA["asset_id"],
+          "destination_id": acc.id,
+          "amount": AMOUNT
+        })
       })
-    }
+      .then(() => console.log("Depósito realizado!"))
+      .catch(err => console.log("Ocorreu um erro:", err))
   })
 ```
 
+## Pagamento Entre Contas
+
+Para efetuar um pagamento entre contas, utilize a função `makePayment` passando o `id` da conta pagadora como `source_id` e o da conta de destino como `destination_id`.
+
+```ts
+wallet.makePayment({
+  "source_id": "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
+  "asset_id": "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
+  "destination_id": "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
+  "amount": 10
+})
+  .then(() => console.log("Depósito realizado!"))
+  .catch(err => console.log("Ocorreu um erro:", err))
+```
