@@ -1,5 +1,6 @@
 .merlin
 lib
+dist
 node_modules
 demo.js
 .bsb.lock
