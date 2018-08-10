@@ -90,7 +90,7 @@ let handleError = (~debug=false, errorResponse) => {
   if (debug) {
     let errorLog = Js.Json.stringifyAny(errorResponse);
     switch (errorLog) {
-    | Some(err) => Js.log(err)
+    | Some(err) => Js.log2("[WalletSDK] Error:", err)
     | None => ()
     };
   };
@@ -101,7 +101,11 @@ let handleError = (~debug=false, errorResponse) => {
 let handleRequest = (~debug, req) =>
   Js.Promise.(req |> then_(handleResponse) |> catch(handleError(~debug)));
 
-let get = (~headers, ~debug=false, ~sandbox=false, path) =>
+let get = (~headers, ~debug=false, ~sandbox=false, path) => {
+  if (debug) {
+    Js.log2("[WalletSDK] Headers:", headers);
+  };
+
   Fetch.fetchWithInit(
     (sandbox ? sandboxHost : host) ++ path,
     Fetch.RequestInit.make(
@@ -110,9 +114,15 @@ let get = (~headers, ~debug=false, ~sandbox=false, path) =>
     ),
   )
   |> handleRequest(~debug);
+};
 
 let post = (~headers, ~body=?, ~debug=false, ~sandbox=false, path) => {
   let strBody = JsonUtil.stringifyOption(body);
+
+  if (debug) {
+    Js.log2("[WalletSDK] Headers:", headers);
+    Js.log2("[WalletSDK] Body:", strBody);
+  };
 
   Fetch.fetchWithInit(
     (sandbox ? sandboxHost : host) ++ path,
