@@ -3,7 +3,6 @@
 .bsb.lock
 npm-debug.log
 /lib/
-/dist/
 /node_modules/
 demo.js
 /_site/
