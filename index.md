@@ -9,7 +9,9 @@ order: 1
 
 SwpWalletSDK é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.
 
-O SDK possibilita realizar criação de contas e gerenciamento/transferência de saldos de forma simples, abstraindo questões como a comunicação HTTP com a API, a assinatura criptográfica das requisições e a utilização de ambiente sandbox.
+O SDK possibilita realizar criação de Tokens/Ativos, gestão de saldos entre contas e pagamentos instantâneos entre elas de forma simples. 
+
+Todas as questões de comunicação HTTP com a API, a assinatura criptográfica das requisições e a utilização de ambiente sandbox são abstraídas.
 
 # Instalação
 
@@ -74,7 +76,7 @@ const swpService = SwpPaySDK.init({
 
 Para criar uma nova conta, utilize a função `createAccount`.
 
-```ts
+```js
 wallet.createAccount()
   .then(account => {
     console.log(account)
@@ -82,17 +84,53 @@ wallet.createAccount()
 ```
 
 **Output:**
-```ts
+```json
 {
   "id": "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"
 }
 ```
 
+## Buscar informações de uma conta
+
+```js
+wallet.getAccount("account id goes here")
+  .then(account => console.log(account))
+```
+
+**Output:**
+
+## Buscar informações sobre todas as contas
+
+```js
+wallet.getAccounts()
+  .then(accounts => console.log(accounts))
+```
+
+**Output:**
+
+## Buscar informações sobre um Asset 
+
+```js
+wallet.getAsset("asset id goes here")
+  .then(asset => console.log(asset))
+```
+
+**Output:**
+
+## Buscar informações sobre sua organização
+
+```js
+wallet.getOrganization()
+  .then(organization => console.log(organization))
+```
+
+**Output:**
+
 ## Depósito em Conta
 
 Para depositar em uma conta um determinado asset emitido pela sua organização, utilize a função `makePayment` passando o `id` da sua organização como `source_id` e o `id` da conta como `destination_id`.
 
-```ts
+```js
 const AMOUNT = 10
 
 wallet.getOrganization()
@@ -123,7 +161,7 @@ wallet.getOrganization()
 
 Para efetuar um pagamento entre contas, utilize a função `makePayment` passando o `id` da conta pagadora como `source_id` e o da conta de destino como `destination_id`.
 
-```ts
+```js
 wallet.makePayment({
   "source_id": "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
   "asset_id": "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
