@@ -115,7 +115,7 @@ wallet.getAccount("c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9
 }
 ```
 
-## Buscar informações sobre todas as contas
+## Buscar informações sobre todas as contas da sua organização
 
 ```js
 wallet.getAllAccounts()
