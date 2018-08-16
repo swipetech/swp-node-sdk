@@ -43,7 +43,7 @@ import * as WalletSDK from "@swp/wallet-sdk";
 
 # Inicialização
 
-Antes de realizar operações, é necessário inicilizar o SDK com uma **api key** e um **secret** válidos:
+Antes de realizar operações, é necessário inicializar o SDK com uma **api key** e um **secret** válidos:
 
 ```js
 const wallet = WalletSDK.init({
@@ -63,7 +63,7 @@ A função `init` retorna um objeto através do qual todas as operações serão
 Para realizar testes utilizando a API em ambiente *sandbox*, utilize a configuração `sandbox: true` na inicialização do SDK:
 
 ```js
-const wallet = SwpPaySDK.init({
+const wallet = WalletSDK.init({
   apiKey: CLIENT_API_KEY,
   secret: CLIENT_SECRET,
   sandbox: true
