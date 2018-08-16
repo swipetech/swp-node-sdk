@@ -63,7 +63,7 @@ A função `init` retorna um objeto através do qual todas as operações serão
 Para realizar testes utilizando a API em ambiente *sandbox*, utilize a configuração `sandbox: true` na inicialização do SDK:
 
 ```js
-const swpService = SwpPaySDK.init({
+const wallet = SwpPaySDK.init({
   apiKey: CLIENT_API_KEY,
   secret: CLIENT_SECRET,
   sandbox: true
@@ -86,7 +86,9 @@ wallet.createAccount()
 **Output:**
 ```json
 {
-  "id": "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"
+    "data": {
+        "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"
+    }
 }
 ```
 
@@ -98,24 +100,52 @@ wallet.getAccount("account id goes here")
 ```
 
 **Output:**
+// TODO!!!!!!!!!!!!!
 
 ## Buscar informações sobre todas as contas
 
 ```js
-wallet.getAccounts()
+wallet.getAllAccounts()
   .then(accounts => console.log(accounts))
 ```
 
 **Output:**
+```json
+{
+    "data": [
+        {
+            "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899",
+            "balances": [
+                {
+                    "balance": 180,
+                    "asset_code": "ASSET1",
+                    "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
+                }
+            ]
+        }
+    ]
+}
+```
 
 ## Buscar informações sobre um Asset 
 
 ```js
-wallet.getAsset("asset id goes here")
-  .then(asset => console.log(asset))
+wallet.getAssets()
+  .then(assets => console.log(assets))
 ```
 
 **Output:**
+```json
+{
+    "data": [
+        {
+            "id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555",
+            "code": "ASSET1",
+            "limit": 20000
+        }
+    ]
+}
+```
 
 ## Buscar informações sobre sua organização
 
@@ -125,6 +155,21 @@ wallet.getOrganization()
 ```
 
 **Output:**
+```json
+{
+    "data": {
+        "id": "3e8bc54a01fed623c37cd1d07aa6818f7ac3e5608cad84c17711ba81d3c50f72",
+        "name": "My Organization",
+        "balances": [
+            {
+                "balance": 19820,
+                "asset_code": "ASSET1",
+                "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
+            }
+        ]
+    }
+}
+```
 
 ## Depósito em Conta
 
@@ -143,15 +188,15 @@ wallet.getOrganization()
 
     // criando nova conta
     wallet.createAccount()
-      .then(acc => {
+      .then(acc => 
         // realizando depósito
-        return wallet.makePayment({
+        wallet.makePayment({
           "source_id": org.id,
           "asset_id": assetA["asset_id"],
           "destination_id": acc.id,
           "amount": AMOUNT
         })
-      })
+      )
       .then(() => console.log("Depósito realizado!"))
       .catch(err => console.log("Ocorreu um erro:", err))
   })
