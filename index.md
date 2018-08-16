@@ -74,8 +74,6 @@ const wallet = WalletSDK.init({
 
 ## Criação de Contas
 
-Para criar uma nova conta, utilize a função `createAccount`.
-
 ```js
 wallet.createAccount()
   .then(account => {
