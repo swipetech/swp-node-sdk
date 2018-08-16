@@ -95,12 +95,25 @@ wallet.createAccount()
 ## Buscar informações de uma conta
 
 ```js
-wallet.getAccount("account id goes here")
+wallet.getAccount("c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899")
   .then(account => console.log(account))
 ```
 
 **Output:**
-// TODO!!!!!!!!!!!!!
+```json
+{
+    "data": {
+        "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899",
+        "balances": [
+            {
+                "balance": 180,
+                "asset_code": "ASSET1",
+                "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
+            }
+        ]
+    }
+}
+```
 
 ## Buscar informações sobre todas as contas
 
