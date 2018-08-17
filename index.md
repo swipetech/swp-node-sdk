@@ -58,6 +58,10 @@ A função `init` retorna um objeto através do qual todas as operações serão
 **Atenção:** a integração deve ser realizada sempre a partir de um servidor Node.js, nunca a partir de um navegador. Não é seguro armazenar seu *api key* e *secret* em um código JavaScript executado no navegador, mesmo que sejam utilizadas práticas de *code obfuscation*.
 </div>
 
+<div class="alert alert-warning" markdown="1">
+**Atenção:** temos um limite de 3 requests por segundo. Se ultrapassar isso, você receberá um erro com código *APP-3*. Para mais detalhes [clique aqui](#lidando-com-erros)
+</div>
+
 ## Utilizando Ambiente Sandbox
 
 Para realizar testes utilizando a API em ambiente *sandbox*, utilize a configuração `sandbox: true` na inicialização do SDK:
@@ -227,3 +231,14 @@ wallet.makePayment({
   .then(() => console.log("Depósito realizado!"))
   .catch(err => console.log("Ocorreu um erro:", err))
 ```
+
+### Lidando com erros
+
+Você pode identificar o tipo do `Error` através do campo `Code`. Segue abaixo a lista de possíveis códigos:
+- APP-1: Erro interno do servidor
+- APP-2: Campo(s) inválido(s). Utilize `FieldErrors` para obter o campo específico.
+- APP-3: Limite de requests excedido.
+- APP-4: Não autorizado. Isso significa que suas credenciais estão inválidas.
+- APP-5: Saldo insuficiente para pagamento.
+- APP-6: Recurso não encontrado.
+- APP-7: Limite de contas criadas excedido.
