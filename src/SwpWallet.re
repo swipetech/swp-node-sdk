@@ -33,7 +33,7 @@ module Endpoints = {
     let getAccount = id => {j|$accounts/$id|j};
     let organizations = "/organizations";
     let assets = {j|$organizations/assets|j};
-    let payments = "/operations/payments";
+    let payments = "/payments";
   };
 
   type paymentInfo;
