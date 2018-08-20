@@ -59,7 +59,7 @@ A função `init` retorna um objeto através do qual todas as operações serão
 </div>
 
 <div class="alert alert-warning" markdown="1">
-**Atenção:** temos um limite de 3 requests por segundo. Se ultrapassar isso, você receberá um erro com código *APP-3*. Para mais detalhes [clique aqui](#lidando-com-erros)
+**Atenção:** temos um limite de 5 requests por segundo (Caso necessite exceder esse limite, entre em contato conosco). Se ultrapassar isso, você receberá um erro com código *APP-3*. Para mais detalhes [clique aqui](#lidando-com-erros)
 </div>
 
 ## Utilizando Ambiente Sandbox
