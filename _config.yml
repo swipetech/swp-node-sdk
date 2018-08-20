@@ -2,7 +2,7 @@
 name: SwpWalletSDK
 
 project:
-    version: 0.0.2
+    version: 0.0.5
     download_url: https://github.com/Swipecoin/swp-wallet-sdk
 
 links:
