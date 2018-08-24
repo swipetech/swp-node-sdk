@@ -217,7 +217,7 @@ wallet.getOrganization()
   })
 ```
 
-## Pagamento Entre Contas
+## Pagamento entre Contas
 
 Para efetuar um pagamento entre contas, utilize a função `makePayment` passando o `id` da conta pagadora como `source_id` e o da conta de destino como `destination_id`.
 
