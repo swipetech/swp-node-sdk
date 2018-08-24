@@ -101,7 +101,7 @@ let handleError = (~debug=false, errorResponse) => {
 let handleRequest = (~debug, req) =>
   Js.Promise.(req |> then_(handleResponse) |> catch(handleError(~debug)));
 
-let sse = (~headers, ~debug=false, ~sandbox=false, path) =>
+let sse = (~headers, ~sandbox=false, path) =>
   EventSource.make(
     (sandbox ? sandboxHost : host) ++ path,
     EventSource.Options.make(~headers),

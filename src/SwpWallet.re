@@ -16,16 +16,27 @@ let sse =
       ~setAuthHeaders,
       ~callback,
       ~eventName,
-      ~debug=?,
+      ~debug=false,
       ~sandbox=?,
       path,
     ) => {
   setAuthHeaders(~path, ~body=?None, headers);
 
-  let es = Service.sse(~headers, ~debug?, ~sandbox?, path);
+  let es = Service.sse(~headers, ~sandbox?, path);
 
   es
-  |> EventSource.(addEventListener(eventName, e => callback(e |> Event.data)));
+  |> EventSource.(
+       addEventListener(
+         eventName,
+         e => {
+           if (debug) {
+             Js.log(e);
+           };
+
+           callback(e |> Event.data);
+         },
+       )
+     );
 
   (.) => es |> EventSource.close();
 };
