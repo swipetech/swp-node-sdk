@@ -234,7 +234,7 @@ wallet.makePayment({
 
 ### Batch de Pagamentos Atômicos
 
-Para efetuar um batch de até 100 pagamentos a serem executados em ordem e ao mesmo tempo, utilize a função `MakePaymentBatch` com uma lista de `Payment`. A lista será atômica, isto é, se algum pagamento falhar, todos falharão.
+Para efetuar um batch de até 100 pagamentos a serem executados em ordem e ao mesmo tempo, utilize a função `makePaymentBatch` com uma lista de `Payment`. A transação será atômica, isto é, se algum pagamento falhar, todos falharão.
 
 ```js
 wallet.makePaymentBatch([
