@@ -88,9 +88,7 @@ wallet.createAccount()
 **Output:**
 ```json
 {
-    "data": {
-        "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"
-    }
+  "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"
 }
 ```
 
@@ -104,16 +102,14 @@ wallet.getAccount("c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9
 **Output:**
 ```json
 {
-    "data": {
-        "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899",
-        "balances": [
-            {
-                "balance": 180,
-                "asset_code": "ASSET1",
-                "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
-            }
-        ]
+  "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899",
+  "balances": [
+    {
+      "balance": 180,
+      "asset_code": "ASSET1",
+      "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
     }
+  ]
 }
 ```
 
@@ -127,18 +123,14 @@ wallet.getAllAccounts()
 **Output:**
 ```json
 {
-    "data": [
-        {
-            "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899",
-            "balances": [
-                {
-                    "balance": 180,
-                    "asset_code": "ASSET1",
-                    "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
-                }
-            ]
-        }
-    ]
+  "id": "c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899",
+  "balances": [
+    {
+      "balance": 180,
+      "asset_code": "ASSET1",
+      "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
+    }
+  ]
 }
 ```
 
@@ -152,13 +144,9 @@ wallet.getAssets()
 **Output:**
 ```json
 {
-    "data": [
-        {
-            "id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555",
-            "code": "ASSET1",
-            "limit": 20000
-        }
-    ]
+  "id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555",
+  "code": "ASSET1",
+  "limit": 20000
 }
 ```
 
@@ -172,17 +160,15 @@ wallet.getOrganization()
 **Output:**
 ```json
 {
-    "data": {
-        "id": "3e8bc54a01fed623c37cd1d07aa6818f7ac3e5608cad84c17711ba81d3c50f72",
-        "name": "My Organization",
-        "balances": [
-            {
-                "balance": 19820,
-                "asset_code": "ASSET1",
-                "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
-            }
-        ]
+  "id": "3e8bc54a01fed623c37cd1d07aa6818f7ac3e5608cad84c17711ba81d3c50f72",
+  "name": "My Organization",
+  "balances": [
+    {
+      "balance": 19820,
+      "asset_code": "ASSET1",
+      "asset_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"
     }
+  ]
 }
 ```
 
@@ -259,6 +245,33 @@ wallet.makePaymentBatch([
 ])
   .then(() => console.log("Batch realizado!"))
   .catch(err => console.log("Ocorreu um erro:", err))
+```
+
+### Streaming de pagamentos por tempo indefinido para uma Conta/Organização  
+
+Para criar um streaming de pagamentos, utilize a função `streamPayments`. É necessário passar o `id` da Conta e um callback que será chamado a cada pagamento recebido. Para cancelá-lo chame a função de retorno. 
+
+```js
+wallet.createAccount()
+  .then(account => {
+    const cancel = w.streamPayments(account.id, (payment) => {
+        console.log(payment)
+    })
+    
+    // Quando quiser cancelar, simplesmente chame a função `cancel`
+    cancel()
+  })
+
+```
+
+**Output:**
+```json
+{
+  "source_id": "01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555",
+  "destination_id": "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
+  "asset_id": "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
+  "amount": 20
+}
 ```
 
 ### Lidando com erros
