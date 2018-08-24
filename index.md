@@ -206,10 +206,10 @@ wallet.getOrganization()
       .then(acc => 
         // realizando depósito
         wallet.makePayment({
-          "source_id": org.id,
-          "asset_id": assetA["asset_id"],
-          "destination_id": acc.id,
-          "amount": AMOUNT
+          source_id: org.id,
+          asset_id: assetA["asset_id"],
+          destination_id: acc.id,
+          amount: AMOUNT
         })
       )
       .then(() => console.log("Depósito realizado!"))
@@ -223,12 +223,41 @@ Para efetuar um pagamento entre contas, utilize a função `makePayment` passand
 
 ```js
 wallet.makePayment({
-  "source_id": "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
-  "asset_id": "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
-  "destination_id": "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
-  "amount": 10
+  source_id: "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
+  asset_id: "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
+  destination_id: "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
+  amount: 10
 })
   .then(() => console.log("Depósito realizado!"))
+  .catch(err => console.log("Ocorreu um erro:", err))
+```
+
+### Batch de Pagamentos Atômicos
+
+Para efetuar um batch de até 100 pagamentos a serem executados em ordem e ao mesmo tempo, utilize a função `MakePaymentBatch` com uma lista de `Payment`. A lista será atômica, isto é, se algum pagamento falhar, todos falharão.
+
+```js
+wallet.makePaymentBatch([
+  {
+    source_id: "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
+    asset_id: "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
+    destination_id: "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
+    amount: 10
+  },
+  {
+    source_id: "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
+    asset_id: "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
+    destination_id: "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
+    amount: 20
+  },
+  {
+    source_id: "f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28",
+    asset_id: "72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492",
+    destination_id: "3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206",
+    amount: 30
+  },
+])
+  .then(() => console.log("Batch realizado!"))
   .catch(err => console.log("Ocorreu um erro:", err))
 ```
 
@@ -242,3 +271,4 @@ Você pode identificar o tipo do `Error` através do campo `Code`. Segue abaixo 
 - APP-5: Saldo insuficiente para pagamento.
 - APP-6: Recurso não encontrado.
 - APP-7: Limite de contas criadas excedido.
+- APP-8: Limite de pagamentos em batch excedidos. Atualmente o limite é de 100 pagamentos em um único batch.
