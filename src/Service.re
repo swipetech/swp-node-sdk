@@ -101,6 +101,12 @@ let handleError = (~debug=false, errorResponse) => {
 let handleRequest = (~debug, req) =>
   Js.Promise.(req |> then_(handleResponse) |> catch(handleError(~debug)));
 
+let sse = (~headers, ~debug=false, ~sandbox=false, path) =>
+  EventSource.make(
+    (sandbox ? sandboxHost : host) ++ path,
+    EventSource.Options.make(~headers),
+  );
+
 let get = (~headers, ~debug=false, ~sandbox=false, path) => {
   if (debug) {
     Js.log2("[WalletSDK] Headers:", headers);

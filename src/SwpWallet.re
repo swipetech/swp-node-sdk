@@ -10,6 +10,26 @@ let post = (~headers, ~body=?, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
   Service.post(~headers, ~body?, ~debug?, ~sandbox?, path);
 };
 
+let sse =
+    (
+      ~headers,
+      ~setAuthHeaders,
+      ~callback,
+      ~eventName,
+      ~debug=?,
+      ~sandbox=?,
+      path,
+    ) => {
+  setAuthHeaders(~path, ~body=?None, headers);
+
+  let es = Service.sse(~headers, ~debug?, ~sandbox?, path);
+
+  es
+  |> EventSource.(addEventListener(eventName, e => callback(e |> Event.data)));
+
+  (.) => es |> EventSource.close();
+};
+
 module Options = {
   [@bs.deriving abstract]
   type t =
@@ -34,10 +54,12 @@ module Endpoints = {
     let organizations = "/organizations";
     let assets = {j|$organizations/assets|j};
     let payments = "/payments";
+    let streamPayments = id => {j|/streams$accounts/$id|j};
   };
 
   type paymentInfo;
   type response = Nullable.t(Service.data);
+  type stream;
 
   [@bs.deriving abstract]
   type t = {
@@ -47,10 +69,13 @@ module Endpoints = {
     getAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
     makePayment: paymentInfo => Promise.t(response),
+    streamPayments: (string, Json.t => unit) => (. unit) => unit,
   };
 
   let make = t;
 };
+
+let handlePaymentMessage = e => Js.log(e);
 
 let init: Options.t => Endpoints.t =
   options => {
@@ -86,6 +111,14 @@ let init: Options.t => Endpoints.t =
         ~sandbox=?options |> Options.sandbox,
       );
 
+    let openSse =
+      sse(
+        ~headers,
+        ~setAuthHeaders=partialSetAuthHeaders,
+        ~debug=?options |> Options.debug,
+        ~sandbox=?options |> Options.sandbox,
+      );
+
     Endpoints.make(
       ~createAccount=() => postToRoute(Endpoints.Routes.accounts),
       ~getAccount=id => getRoute(Endpoints.Routes.getAccount(id)),
@@ -93,5 +126,12 @@ let init: Options.t => Endpoints.t =
       ~getAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
       ~makePayment=body => postToRoute(~body, Endpoints.Routes.payments),
+      ~streamPayments=
+        (id, callback) =>
+          openSse(
+            Endpoints.Routes.streamPayments(id),
+            ~eventName="payment",
+            ~callback,
+          ),
     );
   };
