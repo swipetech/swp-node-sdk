@@ -24,4 +24,4 @@ yarn add @swp/wallet-sdk
 
 ## Documentação
 
-https://swipecoin.github.io/swp-wallet-sdk/
+https://swipetech.github.io/swp-wallet-sdk/
