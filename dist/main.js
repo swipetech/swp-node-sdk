@@ -532,7 +532,7 @@ function handleRequest(debug, req) {
               }));
 }
 
-function sse(headers, _, $staropt$star, path) {
+function sse(headers, $staropt$star, path) {
   var sandbox = $staropt$star ? $staropt$star[0] : false;
   return new Eventsource((
               sandbox ? sandboxHost : host
@@ -576,10 +576,14 @@ function post$1(headers, body, setAuthHeaders, debug, sandbox, path) {
   return post(headers, body, debug, sandbox, path);
 }
 
-function sse$1(headers, setAuthHeaders, callback, eventName, debug, sandbox, path) {
+function sse$1(headers, setAuthHeaders, callback, eventName, $staropt$star, sandbox, path) {
+  var debug = $staropt$star ? $staropt$star[0] : false;
   _3(setAuthHeaders, path, /* None */0, headers);
-  var es = sse(headers, debug, sandbox, path);
+  var es = sse(headers, sandbox, path);
   es.addEventListener(eventName, (function (e) {
+          if (debug) {
+            console.log(e);
+          }
           return _1(callback, e.data);
         }));
   return (function () {
@@ -589,6 +593,8 @@ function sse$1(headers, setAuthHeaders, callback, eventName, debug, sandbox, pat
 }
 
 var Options$1 = /* module */[];
+
+var Payment = /* module */[];
 
 var accounts = "/accounts";
 
@@ -602,6 +608,8 @@ var assets = "" + (String(organizations) + "/assets");
 
 var payments = "/payments";
 
+var paymentBatches = "/payment-batches";
+
 function streamPayments(id) {
   return "/streams" + (String(accounts) + ("/" + (String(id) + "")));
 }
@@ -612,18 +620,20 @@ var Routes = /* module */[
   /* organizations */organizations,
   /* assets */assets,
   /* payments */payments,
+  /* paymentBatches */paymentBatches,
   /* streamPayments */streamPayments
 ];
 
-function make$3(prim, prim$1, prim$2, prim$3, prim$4, prim$5, prim$6) {
+function make$3(prim, prim$1, prim$2, prim$3, prim$4, prim$5, prim$6, prim$7) {
   return {
           createAccount: prim,
           getAccount: prim$1,
           getAllAccounts: prim$2,
           getAssets: prim$3,
           getOrganization: prim$4,
-          makePayment: prim$5,
-          streamPayments: prim$6
+          paymentBatch: prim$5,
+          makePayment: prim$6,
+          streamPayments: prim$7
         };
 }
 
@@ -631,11 +641,6 @@ var Endpoints = /* module */[
   /* Routes */Routes,
   /* make */make$3
 ];
-
-function handlePaymentMessage(e) {
-  console.log(e);
-  return /* () */0;
-}
 
 function init(options) {
   var match = options.language;
@@ -694,6 +699,10 @@ function init(options) {
                 return _1(getRoute, assets);
               }), (function () {
                 return _1(getRoute, organizations);
+              }), (function (payments) {
+                return postToRoute(/* Some */[{
+                                payments: payments
+                              }])(paymentBatches);
               }), (function (body) {
                 return postToRoute(/* Some */[body])(payments);
               }), (function (id, callback) {
@@ -706,6 +715,6 @@ exports.get = get$1;
 exports.post = post$1;
 exports.sse = sse$1;
 exports.Options = Options$1;
+exports.Payment = Payment;
 exports.Endpoints = Endpoints;
-exports.handlePaymentMessage = handlePaymentMessage;
 exports.init = init;

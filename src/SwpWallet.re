@@ -56,6 +56,15 @@ module Options = {
     };
 };
 
+module Payment = {
+  open Js;
+
+  type t;
+
+  [@bs.deriving abstract]
+  type batch = {payments: Array.t(t)};
+};
+
 module Endpoints = {
   open Js;
 
@@ -65,10 +74,10 @@ module Endpoints = {
     let organizations = "/organizations";
     let assets = {j|$organizations/assets|j};
     let payments = "/payments";
+    let paymentBatches = "/payment-batches";
     let streamPayments = id => {j|/streams$accounts/$id|j};
   };
 
-  type paymentInfo;
   type response = Nullable.t(Service.data);
   type stream;
 
@@ -79,14 +88,13 @@ module Endpoints = {
     getAllAccounts: unit => Promise.t(response),
     getAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makePayment: paymentInfo => Promise.t(response),
+    paymentBatch: Array.t(Payment.t) => Promise.t(response),
+    makePayment: Payment.t => Promise.t(response),
     streamPayments: (string, Json.t => unit) => (. unit) => unit,
   };
 
   let make = t;
 };
-
-let handlePaymentMessage = e => Js.log(e);
 
 let init: Options.t => Endpoints.t =
   options => {
@@ -136,7 +144,18 @@ let init: Options.t => Endpoints.t =
       ~getAllAccounts=() => getRoute(Endpoints.Routes.accounts),
       ~getAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
-      ~makePayment=body => postToRoute(~body, Endpoints.Routes.payments),
+      ~makePayment=
+        body =>
+          postToRoute(
+            ~body=JsonUtil.asJson(body),
+            Endpoints.Routes.payments,
+          ),
+      ~paymentBatch=
+        payments =>
+          postToRoute(
+            ~body=JsonUtil.asJson(Payment.batch(~payments)),
+            Endpoints.Routes.paymentBatches,
+          ),
       ~streamPayments=
         (id, callback) =>
           openSse(
