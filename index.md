@@ -186,9 +186,9 @@ wallet.getOrganization()
 }
 ```
 
-## Depósito em Conta
+### Pagamento entre Organização e Conta
 
-Para depositar em uma conta um determinado asset emitido pela sua organização, utilize a função `makePayment` passando o `id` da sua organização como `source_id` e o `id` da conta como `destination_id`.
+Para fazer um pagamento entre sua organização e uma conta utilizando um determinado asset emitido pela sua organização, utilize a função `makePayment` passando o `id` da sua organização como `source_id` e o `id` da conta como `destination_id`.
 
 ```js
 const AMOUNT = 10
