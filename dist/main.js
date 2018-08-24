@@ -608,7 +608,7 @@ var assets = "" + (String(organizations) + "/assets");
 
 var payments = "/payments";
 
-var paymentBatches = "/payment-batches";
+var paymentsBatch = "" + (String(payments) + "/batch");
 
 function streamPayments(id) {
   return "/streams" + (String(accounts) + ("/" + (String(id) + "")));
@@ -620,7 +620,7 @@ var Routes = /* module */[
   /* organizations */organizations,
   /* assets */assets,
   /* payments */payments,
-  /* paymentBatches */paymentBatches,
+  /* paymentsBatch */paymentsBatch,
   /* streamPayments */streamPayments
 ];
 
@@ -702,7 +702,7 @@ function init(options) {
               }), (function (payments) {
                 return postToRoute(/* Some */[{
                                 payments: payments
-                              }])(paymentBatches);
+                              }])(paymentsBatch);
               }), (function (body) {
                 return postToRoute(/* Some */[body])(payments);
               }), (function (id, callback) {

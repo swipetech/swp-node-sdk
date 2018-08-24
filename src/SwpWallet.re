@@ -74,7 +74,7 @@ module Endpoints = {
     let organizations = "/organizations";
     let assets = {j|$organizations/assets|j};
     let payments = "/payments";
-    let paymentBatches = "/payment-batches";
+    let paymentsBatch = {j|$payments/batch|j};
     let streamPayments = id => {j|/streams$accounts/$id|j};
   };
 
@@ -154,7 +154,7 @@ let init: Options.t => Endpoints.t =
         payments =>
           postToRoute(
             ~body=JsonUtil.asJson(Payment.batch(~payments)),
-            Endpoints.Routes.paymentBatches,
+            Endpoints.Routes.paymentsBatch,
           ),
       ~streamPayments=
         (id, callback) =>
