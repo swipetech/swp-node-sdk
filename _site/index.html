@@ -66,7 +66,7 @@
         <h1 class="home-title">SwpWalletSDK</h1>
         <p class="lead"></p>
         
-        <p class="version">v0.0.5</p>
+        <p class="version">v0.1.0</p>
         
     </div>
 </div>
@@ -77,7 +77,9 @@
 
 <p>SwpWalletSDK é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.</p>
 
-<p>O SDK possibilita realizar criação de contas e gerenciamento/transferência de saldos de forma simples, abstraindo questões como a comunicação HTTP com a API, a assinatura criptográfica das requisições e a utilização de ambiente sandbox.</p>
+<p>O SDK possibilita realizar criação de Tokens/Ativos, gestão de saldos entre contas e pagamentos instantâneos entre elas de forma simples.</p>
+
+<p>Todas as questões de comunicação HTTP com a API, a assinatura criptográfica das requisições e a utilização de ambiente sandbox são abstraídas.</p>
 
 <h1 id="instalação">Instalação</h1>
 
@@ -105,7 +107,7 @@
 
 <h1 id="inicialização">Inicialização</h1>
 
-<p>Antes de realizar operações, é necessário inicilizar o SDK com uma <strong>api key</strong> e um <strong>secret</strong> válidos:</p>
+<p>Antes de realizar operações, é necessário inicializar o SDK com uma <strong>api key</strong> e um <strong>secret</strong> válidos:</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="nx">WalletSDK</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
   <span class="na">apiKey</span><span class="p">:</span> <span class="nx">CLIENT_API_KEY</span><span class="p">,</span>
@@ -119,11 +121,15 @@
   <p><strong>Atenção:</strong> a integração deve ser realizada sempre a partir de um servidor Node.js, nunca a partir de um navegador. Não é seguro armazenar seu <em>api key</em> e <em>secret</em> em um código JavaScript executado no navegador, mesmo que sejam utilizadas práticas de <em>code obfuscation</em>.</p>
 </div>
 
+<div class="alert alert-warning">
+  <p><strong>Atenção:</strong> temos um limite de 5 requests por segundo (Caso necessite exceder esse limite, entre em contato conosco). Se ultrapassar isso, você receberá um erro com código <em>APP-3</em>. Para mais detalhes <a href="#lidando-com-erros">clique aqui</a></p>
+</div>
+
 <h2 id="utilizando-ambiente-sandbox">Utilizando Ambiente Sandbox</h2>
 
 <p>Para realizar testes utilizando a API em ambiente <em>sandbox</em>, utilize a configuração <code class="highlighter-rouge">sandbox: true</code> na inicialização do SDK:</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">swpService</span> <span class="o">=</span> <span class="nx">SwpPaySDK</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">wallet</span> <span class="o">=</span> <span class="nx">WalletSDK</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
   <span class="na">apiKey</span><span class="p">:</span> <span class="nx">CLIENT_API_KEY</span><span class="p">,</span>
   <span class="na">secret</span><span class="p">:</span> <span class="nx">CLIENT_SECRET</span><span class="p">,</span>
   <span class="na">sandbox</span><span class="p">:</span> <span class="kc">true</span>
@@ -134,25 +140,95 @@
 
 <h2 id="criação-de-contas">Criação de Contas</h2>
 
-<p>Para criar uma nova conta, utilize a função <code class="highlighter-rouge">createAccount</code>.</p>
-
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">account</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">account</span><span class="p">)</span>
   <span class="p">})</span>
 </code></pre></div></div>
 
 <p><strong>Output:</strong></p>
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
-  <span class="s2">"id"</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span>
-<span class="p">}</span>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="buscar-informações-de-uma-conta">Buscar informações de uma conta</h2>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">getAccount</span><span class="p">(</span><span class="s2">"c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">account</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">account</span><span class="p">))</span>
 </code></pre></div></div>
 
-<h2 id="depósito-em-conta">Depósito em Conta</h2>
+<p><strong>Output:</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"balances"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">180</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"asset_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASSET1"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"asset_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
 
-<p>Para depositar em uma conta um determinado asset emitido pela sua organização, utilize a função <code class="highlighter-rouge">makePayment</code> passando o <code class="highlighter-rouge">id</code> da sua organização como <code class="highlighter-rouge">source_id</code> e o <code class="highlighter-rouge">id</code> da conta como <code class="highlighter-rouge">destination_id</code>.</p>
+<h2 id="buscar-informações-sobre-todas-as-contas-da-sua-organização">Buscar informações sobre todas as contas da sua organização</h2>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">AMOUNT</span> <span class="o">=</span> <span class="mi">10</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">getAllAccounts</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">accounts</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">accounts</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><strong>Output:</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c043ac0f8612b6ccbddb4c22742750a4f7e35746d4382efd4ddb2caa587e9899"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"balances"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">180</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"asset_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASSET1"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"asset_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="buscar-informações-sobre-um-asset">Buscar informações sobre um Asset</h2>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">getAssets</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">assets</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">assets</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><strong>Output:</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASSET1"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">20000</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="buscar-informações-sobre-sua-organização">Buscar informações sobre sua organização</h2>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">getOrganization</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">organization</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">organization</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><strong>Output:</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3e8bc54a01fed623c37cd1d07aa6818f7ac3e5608cad84c17711ba81d3c50f72"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Organization"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"balances"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">19820</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"asset_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ASSET1"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"asset_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="pagamento-entre-organização-e-conta">Pagamento entre Organização e Conta</h3>
+
+<p>Para fazer um pagamento entre sua organização e uma conta utilizando um determinado asset emitido pela sua organização, utilize a função <code class="highlighter-rouge">makePayment</code> passando o <code class="highlighter-rouge">id</code> da sua organização como <code class="highlighter-rouge">source_id</code> e o <code class="highlighter-rouge">id</code> da conta como <code class="highlighter-rouge">destination_id</code>.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">AMOUNT</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="nx">wallet</span><span class="p">.</span><span class="nx">getOrganization</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">org</span> <span class="o">=&gt;</span> <span class="p">{</span>
@@ -164,33 +240,100 @@
 
     <span class="c1">// criando nova conta</span>
     <span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
-      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">acc</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">acc</span> <span class="o">=&gt;</span> 
         <span class="c1">// realizando depósito</span>
-        <span class="k">return</span> <span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
-          <span class="s2">"source_id"</span><span class="p">:</span> <span class="nx">org</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-          <span class="s2">"asset_id"</span><span class="p">:</span> <span class="nx">assetA</span><span class="p">[</span><span class="s2">"asset_id"</span><span class="p">],</span>
-          <span class="s2">"destination_id"</span><span class="p">:</span> <span class="nx">acc</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-          <span class="s2">"amount"</span><span class="p">:</span> <span class="nx">AMOUNT</span>
+        <span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
+          <span class="na">source_id</span><span class="p">:</span> <span class="nx">org</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+          <span class="na">asset_id</span><span class="p">:</span> <span class="nx">assetA</span><span class="p">[</span><span class="s2">"asset_id"</span><span class="p">],</span>
+          <span class="na">destination_id</span><span class="p">:</span> <span class="nx">acc</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+          <span class="na">amount</span><span class="p">:</span> <span class="nx">AMOUNT</span>
         <span class="p">})</span>
-      <span class="p">})</span>
+      <span class="p">)</span>
       <span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Depósito realizado!"</span><span class="p">))</span>
       <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Ocorreu um erro:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">))</span>
   <span class="p">})</span>
 </code></pre></div></div>
 
-<h2 id="pagamento-entre-contas">Pagamento Entre Contas</h2>
+<h2 id="pagamento-entre-contas">Pagamento entre Contas</h2>
 
 <p>Para efetuar um pagamento entre contas, utilize a função <code class="highlighter-rouge">makePayment</code> passando o <code class="highlighter-rouge">id</code> da conta pagadora como <code class="highlighter-rouge">source_id</code> e o da conta de destino como <code class="highlighter-rouge">destination_id</code>.</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
-  <span class="s2">"source_id"</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span><span class="p">,</span>
-  <span class="s2">"asset_id"</span><span class="p">:</span> <span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span>
-  <span class="s2">"destination_id"</span><span class="p">:</span> <span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span>
-  <span class="s2">"amount"</span><span class="p">:</span> <span class="mi">10</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">makePayment</span><span class="p">({</span>
+  <span class="na">source_id</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span><span class="p">,</span>
+  <span class="na">asset_id</span><span class="p">:</span> <span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span>
+  <span class="na">destination_id</span><span class="p">:</span> <span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span>
+  <span class="na">amount</span><span class="p">:</span> <span class="mi">10</span>
 <span class="p">})</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Depósito realizado!"</span><span class="p">))</span>
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Ocorreu um erro:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">))</span>
 </code></pre></div></div>
+
+<h3 id="batch-de-pagamentos-atômicos">Batch de Pagamentos Atômicos</h3>
+
+<p>Para efetuar um batch de até 100 pagamentos a serem executados em ordem e ao mesmo tempo, utilize a função <code class="highlighter-rouge">makePaymentBatch</code> com uma lista de <code class="highlighter-rouge">Payment</code>. A transação será atômica, isto é, se algum pagamento falhar, todos falharão.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">makePaymentBatch</span><span class="p">([</span>
+  <span class="p">{</span>
+    <span class="na">source_id</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span><span class="p">,</span>
+    <span class="na">asset_id</span><span class="p">:</span> <span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span>
+    <span class="na">destination_id</span><span class="p">:</span> <span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span>
+    <span class="na">amount</span><span class="p">:</span> <span class="mi">10</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="na">source_id</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span><span class="p">,</span>
+    <span class="na">asset_id</span><span class="p">:</span> <span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span>
+    <span class="na">destination_id</span><span class="p">:</span> <span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span>
+    <span class="na">amount</span><span class="p">:</span> <span class="mi">20</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="na">source_id</span><span class="p">:</span> <span class="s2">"f9b4aec14bcd558f1f27e7b60cc38ca347f2ca4eebffa3d2d99fbedcfeed9b28"</span><span class="p">,</span>
+    <span class="na">asset_id</span><span class="p">:</span> <span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span>
+    <span class="na">destination_id</span><span class="p">:</span> <span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span>
+    <span class="na">amount</span><span class="p">:</span> <span class="mi">30</span>
+  <span class="p">},</span>
+<span class="p">])</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Batch realizado!"</span><span class="p">))</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Ocorreu um erro:"</span><span class="p">,</span> <span class="nx">err</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h3 id="streaming-de-pagamentos-por-tempo-indefinido-para-uma-contaorganização">Streaming de pagamentos por tempo indefinido para uma Conta/Organização</h3>
+
+<p>Para criar um streaming de pagamentos, utilize a função <code class="highlighter-rouge">streamPayments</code>. É necessário passar o <code class="highlighter-rouge">id</code> da Conta e um callback que será chamado a cada pagamento recebido. Para cancelá-lo chame a função de retorno.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">account</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">cancel</span> <span class="o">=</span> <span class="nx">w</span><span class="p">.</span><span class="nx">streamPayments</span><span class="p">(</span><span class="nx">account</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="p">(</span><span class="nx">payment</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">payment</span><span class="p">)</span>
+    <span class="p">})</span>
+    
+    <span class="c1">// Quando quiser cancelar, simplesmente chame a função `cancel`</span>
+    <span class="nx">cancel</span><span class="p">()</span>
+  <span class="p">})</span>
+
+</code></pre></div></div>
+
+<p><strong>Output:</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"source_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01e300c04a9af3e32b26980ca1a6c05f0150013112b9bd666b0059fa6a834555"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"destination_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3c7caf634e09035c6d11cfa0ce3536d498a634185c875be39bee7a2b90443206"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"asset_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"72dc5b12a040e58202c155cf8175dda7004859320856e4e627ea01cfa10a2492"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="lidando-com-erros">Lidando com erros</h3>
+
+<p>Você pode identificar o tipo do <code class="highlighter-rouge">Error</code> através do campo <code class="highlighter-rouge">Code</code>. Segue abaixo a lista de possíveis códigos:</p>
+<ul>
+  <li>APP-1: Erro interno do servidor</li>
+  <li>APP-2: Campo(s) inválido(s). Utilize <code class="highlighter-rouge">FieldErrors</code> para obter o campo específico.</li>
+  <li>APP-3: Limite de requests excedido.</li>
+  <li>APP-4: Não autorizado. Isso significa que suas credenciais estão inválidas.</li>
+  <li>APP-5: Saldo insuficiente para pagamento.</li>
+  <li>APP-6: Recurso não encontrado.</li>
+  <li>APP-7: Limite de contas criadas excedido.</li>
+  <li>APP-8: Limite de pagamentos em batch excedidos. Atualmente o limite é de 100 pagamentos em um único batch.</li>
+</ul>
 </div>
         </div>
 
@@ -226,7 +369,7 @@
 
         <ul class="bs-docs-footer-links muted">
             
-            <li>v0.0.5</li>
+            <li>v0.1.0</li>
              
             <li>&middot;</li>
             <li>
