@@ -88,8 +88,8 @@ module Endpoints = {
     getAllAccounts: unit => Promise.t(response),
     getAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    paymentBatch: Array.t(Payment.t) => Promise.t(response),
     makePayment: Payment.t => Promise.t(response),
+    makePaymentBatch: Array.t(Payment.t) => Promise.t(response),
     streamPayments: (string, Json.t => unit) => (. unit) => unit,
   };
 
@@ -150,7 +150,7 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.payments,
             ~body=JsonUtil.asJson(body),
           ),
-      ~paymentBatch=
+      ~makePaymentBatch=
         payments =>
           postToRoute(
             Endpoints.Routes.paymentsBatch,

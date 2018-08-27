@@ -631,8 +631,8 @@ function make$3(prim, prim$1, prim$2, prim$3, prim$4, prim$5, prim$6, prim$7) {
           getAllAccounts: prim$2,
           getAssets: prim$3,
           getOrganization: prim$4,
-          paymentBatch: prim$5,
-          makePayment: prim$6,
+          makePayment: prim$5,
+          makePaymentBatch: prim$6,
           streamPayments: prim$7
         };
 }
@@ -699,12 +699,12 @@ function init(options) {
                 return _1(getRoute, assets);
               }), (function () {
                 return _1(getRoute, organizations);
+              }), (function (body) {
+                return postToRoute(/* Some */[body])(payments);
               }), (function (payments) {
                 return postToRoute(/* Some */[{
                                 payments: payments
                               }])(paymentsBatch);
-              }), (function (body) {
-                return postToRoute(/* Some */[body])(payments);
               }), (function (id, callback) {
                 return _1(openSse(callback)("payment"), streamPayments(id));
               }));
