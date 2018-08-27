@@ -1,6 +1,6 @@
 {
   "name": "@swp/wallet-sdk",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "private": false,
   "main": "dist/main.js",
   "publishConfig": {
