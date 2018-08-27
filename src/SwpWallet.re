@@ -147,14 +147,14 @@ let init: Options.t => Endpoints.t =
       ~makePayment=
         body =>
           postToRoute(
-            ~body=JsonUtil.asJson(body),
             Endpoints.Routes.payments,
+            ~body=JsonUtil.asJson(body),
           ),
       ~paymentBatch=
         payments =>
           postToRoute(
-            ~body=JsonUtil.asJson(Payment.batch(~payments)),
             Endpoints.Routes.paymentsBatch,
+            ~body=JsonUtil.asJson(Payment.batch(~payments)),
           ),
       ~streamPayments=
         (id, callback) =>
