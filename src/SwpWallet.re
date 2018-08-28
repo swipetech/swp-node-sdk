@@ -38,7 +38,7 @@ let sse =
        )
      );
 
-  (.) => es |> EventSource.close();
+  es;
 };
 
 module Options = {
@@ -90,7 +90,7 @@ module Endpoints = {
     getOrganization: unit => Promise.t(response),
     makePayment: Payment.t => Promise.t(response),
     makePaymentBatch: Array.t(Payment.t) => Promise.t(response),
-    streamPayments: (string, Json.t => unit) => (. unit) => unit,
+    streamPayments: (string, Json.t => unit) => EventSource.t,
   };
 
   let make = t;

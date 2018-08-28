@@ -586,10 +586,7 @@ function sse$1(headers, setAuthHeaders, callback, eventName, $staropt$star, sand
           }
           return _1(callback, e.data);
         }));
-  return (function () {
-      es.close();
-      return /* () */0;
-    });
+  return es;
 }
 
 var Options$1 = /* module */[];
