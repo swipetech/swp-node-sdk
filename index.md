@@ -7,7 +7,7 @@ order: 1
 
 # Sobre
 
-SwpWalletSDK é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.
+SwpWallet.js é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.
 
 O SDK possibilita realizar criação de Tokens/Ativos, gestão de saldos entre contas e pagamentos instantâneos entre elas de forma simples. 
 
@@ -15,7 +15,7 @@ Todas as questões de comunicação HTTP com a API, a assinatura criptográfica 
 
 # Instalação
 
-SwpWalletSDK pode ser instalado via npm ou Yarn.
+SwpWallet pode ser instalado via npm ou Yarn.
 
 **npm:**
 

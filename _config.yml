@@ -1,19 +1,19 @@
 # name of the software
-name: SwpWalletSDK
+name: SwpWallet.js
 
 project:
     version: 0.1.2
-    download_url: https://github.com/Swipecoin/swp-wallet-sdk
+    download_url: https://github.com/Swipetech/swp-wallet-node-sdk
 
 links:
     header:
       - title: GitHub
-        url: https://github.com/Swipecoin/swp-wallet-sdk
+        url: https://github.com/Swipetech/swp-wallet-node-sdk
     footer:
       - title: GitHub
-        url: https://github.com/Swipecoin/swp-wallet-sdk
+        url: https://github.com/Swipetech/swp-wallet-node-sdk
       - title: Issues
-        url: https://github.com/Swipecoin/swp-wallet-sdk/issues?state=open
+        url: https://github.com/Swipetech/swp-wallet-node-sdk/issues?state=open
 
 ui:
     header:
@@ -23,8 +23,8 @@ ui:
 
 social:
     github:
-        user: Swipecoin
-        repo: swp-wallet-sdk
+        user: Swipetech
+        repo: swp-wallet-node-sdk
     twitter:
         enabled: false
         via:

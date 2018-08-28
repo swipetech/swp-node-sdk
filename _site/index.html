@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Documentação - SwpWalletSDK</title>
+<title>Documentação - SwpWallet.js</title>
 <meta name="description"
       content="">
 
@@ -41,7 +41,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/index.html">SwpWalletSDK</a>
+            <a class="navbar-brand" href="/index.html">SwpWallet.js</a>
         </div>
         <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
             <ul class="nav navbar-nav">
@@ -54,7 +54,7 @@
             <ul class="nav navbar-nav navbar-right">
                 
                 <li>
-                    <a href="https://github.com/Swipecoin/swp-wallet-sdk">GitHub</a>
+                    <a href="https://github.com/Swipetech/swp-wallet-node-sdk">GitHub</a>
                 </li>
                 
             </ul>
@@ -63,10 +63,10 @@
 </header> 
 <div class="bs-docs-masthead" id="jumbotron-header">
     <div class="container">
-        <h1 class="home-title">SwpWalletSDK</h1>
+        <h1 class="home-title">SwpWallet.js</h1>
         <p class="lead"></p>
         
-        <p class="version">v0.1.0</p>
+        <p class="version">v0.1.2</p>
         
     </div>
 </div>
@@ -75,7 +75,7 @@
         <div class="col-md-12" role="main">
             <div class="bs-docs-section"><h1 id="sobre">Sobre</h1>
 
-<p>SwpWalletSDK é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.</p>
+<p>SwpWallet.js é um SDK para Node.js, desenvolvido pela Swipe com o objetivo de facilitar a integração com a Swipe Wallet.</p>
 
 <p>O SDK possibilita realizar criação de Tokens/Ativos, gestão de saldos entre contas e pagamentos instantâneos entre elas de forma simples.</p>
 
@@ -83,7 +83,7 @@
 
 <h1 id="instalação">Instalação</h1>
 
-<p>SwpWalletSDK pode ser instalado via npm ou Yarn.</p>
+<p>SwpWallet pode ser instalado via npm ou Yarn.</p>
 
 <p><strong>npm:</strong></p>
 
@@ -298,16 +298,21 @@
 
 <h3 id="streaming-de-pagamentos-por-tempo-indefinido-para-uma-contaorganização">Streaming de pagamentos por tempo indefinido para uma Conta/Organização</h3>
 
-<p>Para criar um streaming de pagamentos, utilize a função <code class="highlighter-rouge">streamPayments</code>. É necessário passar o <code class="highlighter-rouge">id</code> da Conta e um callback que será chamado a cada pagamento recebido. Para cancelá-lo chame a função de retorno.</p>
+<p>Para criar um streaming de pagamentos, utilize a função <code class="highlighter-rouge">streamPayments</code>. É necessário passar o <code class="highlighter-rouge">id</code> da Conta e um callback que será chamado a cada pagamento recebido. Para cancelá-lo chame o método <code class="highlighter-rouge">close</code>.</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wallet</span><span class="p">.</span><span class="nx">createAccount</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">account</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="kd">const</span> <span class="nx">cancel</span> <span class="o">=</span> <span class="nx">w</span><span class="p">.</span><span class="nx">streamPayments</span><span class="p">(</span><span class="nx">account</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="p">(</span><span class="nx">payment</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">payment</span><span class="p">)</span>
-    <span class="p">})</span>
+    <span class="kd">const</span> <span class="nx">stream</span> <span class="o">=</span> <span class="nx">w</span><span class="p">.</span><span class="nx">streamPayments</span><span class="p">(</span>
+        <span class="nx">account</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> 
+        <span class="c1">// Este callback será chamado a cada pagamento </span>
+        <span class="nx">payment</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">payment</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1">// Em caso de erro este callback será chamado</span>
+    <span class="nx">stream</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="nx">err</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">),</span>
     
-    <span class="c1">// Quando quiser cancelar, simplesmente chame a função `cancel`</span>
-    <span class="nx">cancel</span><span class="p">()</span>
+    <span class="c1">// Quando quiser cancelar, simplesmente chame o método `close`</span>
+    <span class="nx">stream</span><span class="p">.</span><span class="nx">close</span><span class="p">()</span>
   <span class="p">})</span>
 
 </code></pre></div></div>
@@ -356,11 +361,11 @@
             <ul class="bs-docs-social-buttons">
                 
                 <li>
-                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipecoin&amp;repo=swp-wallet-sdk&amp;type=watch&amp;count=true"
+                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipetech&amp;repo=swp-wallet-node-sdk&amp;type=watch&amp;count=true"
                         width="90" height="20" title="Star on GitHub"></iframe>
                 </li>
                 <li>
-                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipecoin&amp;repo=swp-wallet-sdk&amp;type=fork&amp;count=true"
+                    <iframe class="github-btn" src="https://ghbtns.com/github-btn.html?user=Swipetech&amp;repo=swp-wallet-node-sdk&amp;type=fork&amp;count=true"
                         width="90" height="20" title="Fork on GitHub"></iframe>
                 </li>
                     
@@ -369,16 +374,16 @@
 
         <ul class="bs-docs-footer-links muted">
             
-            <li>v0.1.0</li>
+            <li>v0.1.2</li>
              
             <li>&middot;</li>
             <li>
-                <a href="https://github.com/Swipecoin/swp-wallet-sdk">GitHub</a>
+                <a href="https://github.com/Swipetech/swp-wallet-node-sdk">GitHub</a>
             </li>
             
             <li>&middot;</li>
             <li>
-                <a href="https://github.com/Swipecoin/swp-wallet-sdk/issues?state=open">Issues</a>
+                <a href="https://github.com/Swipetech/swp-wallet-node-sdk/issues?state=open">Issues</a>
             </li>
             
         </ul>
