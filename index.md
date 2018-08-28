@@ -249,14 +249,16 @@ wallet.makePaymentBatch([
 
 ### Streaming de pagamentos por tempo indefinido para uma Conta/Organização  
 
-Para criar um streaming de pagamentos, utilize a função `streamPayments`. É necessário passar o `id` da Conta e um callback que será chamado a cada pagamento recebido. Para cancelá-lo chame a função de retorno. 
+Para criar um streaming de pagamentos, utilize a função `streamPayments`. É necessário passar o `id` da Conta, um callback que será chamado a cada pagamento recebido e um último callback para tratar um caso de erro. Para cancelá-lo chame a função de retorno. 
 
 ```js
 wallet.createAccount()
   .then(account => {
-    const cancel = w.streamPayments(account.id, (payment) => {
-        console.log(payment)
-    })
+    const cancel = w.streamPayments(
+        account.id, 
+        payment => console.log(payment),
+        err => console.log(err),
+    )
     
     // Quando quiser cancelar, simplesmente chame a função `cancel`
     cancel()
