@@ -2,7 +2,7 @@
 name: SwpWallet.js
 
 project:
-    version: 0.1.2
+    version: 0.1.3
     download_url: https://github.com/Swipetech/swp-wallet-node-sdk
 
 links:
