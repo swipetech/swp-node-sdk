@@ -225,7 +225,7 @@ wallet.makePayment({
   .catch(err => console.log("Ocorreu um erro:", err))
 ```
 
-### Batch de Pagamentos Atômicos
+## Batch de Pagamentos Atômicos
 
 Para efetuar um batch de até 100 pagamentos a serem executados em ordem e ao mesmo tempo, utilize a função `makePaymentBatch` com uma lista de `Payment`. A transação será atômica, isto é, se algum pagamento falhar, todos falharão.
 
@@ -254,24 +254,24 @@ wallet.makePaymentBatch([
   .catch(err => console.log("Ocorreu um erro:", err))
 ```
 
-### Streaming de pagamentos por tempo indefinido para uma Conta/Organização  
+## Monitorar pagamentos para uma Conta/Organização por tempo indefinido 
 
-Para criar um streaming de pagamentos, utilize a função `streamPayments`. É necessário passar o `id` da Conta e um callback que será chamado a cada pagamento recebido. Para cancelá-lo chame o método `close`. 
+Para ser notificado de pagamentos para uma Conta/Organização em tempo real, utilize a função `listenForPayments`. É necessário passar o `id` da Conta e um callback que será chamado a cada pagamento recebido. O retorno é um `EventSource`. Para cancelá-lo chame o método `close`. 
 
 ```js
 wallet.createAccount()
   .then(account => {
-    const stream = w.streamPayments(
+    const eventSource = w.listenForPayments(
         account.id, 
         // Este callback será chamado a cada pagamento 
         payment => console.log(payment),
     )
 
     // Em caso de erro este callback será chamado
-    stream.onerror = err => console.log(err),
+    eventSource.onerror = err => console.log(err),
     
     // Quando quiser cancelar, simplesmente chame o método `close`
-    stream.close()
+    eventSource.close()
   })
 
 ```
