@@ -261,7 +261,7 @@ Para ser notificado de pagamentos para uma Conta/Organização em tempo real, ut
 ```js
 wallet.createAccount()
   .then(account => {
-    const eventSource = w.listenForPayments(
+    const eventSource = wallet.listenForPayments(
         account.id, 
         // Este callback será chamado a cada pagamento 
         payment => console.log(payment),
