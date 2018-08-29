@@ -136,6 +136,11 @@ wallet.getAllAccounts()
 }
 ```
 
+## Criação de Assets
+<div class="alert alert-warning" markdown="1">
+No momento o SDK ainda não suporta essa funcionalidade. Entre em contato conosco para mais detalhes.
+</div>
+
 ## Buscar informações sobre um Asset 
 
 ```js
