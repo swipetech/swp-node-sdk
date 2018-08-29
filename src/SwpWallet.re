@@ -90,7 +90,7 @@ module Endpoints = {
     getOrganization: unit => Promise.t(response),
     makePayment: Payment.t => Promise.t(response),
     makePaymentBatch: Array.t(Payment.t) => Promise.t(response),
-    streamPayments: (string, Json.t => unit) => EventSource.t,
+    listenForPayments: (string, Json.t => unit) => EventSource.t,
   };
 
   let make = t;
@@ -156,7 +156,7 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.paymentsBatch,
             ~body=JsonUtil.asJson(Payment.batch(~payments)),
           ),
-      ~streamPayments=
+      ~listenForPayments=
         (id, callback) =>
           openSse(
             Endpoints.Routes.streamPayments(id),

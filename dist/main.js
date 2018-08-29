@@ -610,7 +610,7 @@ function make$3(prim, prim$1, prim$2, prim$3, prim$4, prim$5, prim$6, prim$7) {
           getOrganization: prim$4,
           makePayment: prim$5,
           makePaymentBatch: prim$6,
-          streamPayments: prim$7
+          listenForPayments: prim$7
         };
 }
 
