@@ -1,3 +1,5 @@
+let languages = Enums.Languages.enum;
+
 let get = (~headers, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
   setAuthHeaders(~path, ~body=?None, headers);
 
@@ -97,7 +99,7 @@ let init: Options.t => Endpoints.t =
   options => {
     let language =
       switch (options |> Options.language) {
-      | None => "pt-br"
+      | None => languages |> Enums.Languages.ptBr
       | Some(lang) => lang
       };
 
