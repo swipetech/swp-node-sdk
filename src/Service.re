@@ -109,6 +109,7 @@ let sse = (~headers, ~sandbox=false, path) =>
 
 let get = (~headers, ~debug=false, ~sandbox=false, path) => {
   if (debug) {
+    Js.log2("[WalletSDK] Path:", path);
     Js.log2("[WalletSDK] Headers:", headers);
   };
 
@@ -126,6 +127,7 @@ let post = (~headers, ~body=?, ~debug=false, ~sandbox=false, path) => {
   let strBody = JsonUtil.stringifyOption(body);
 
   if (debug) {
+    Js.log2("[WalletSDK] Path:", path);
     Js.log2("[WalletSDK] Headers:", headers);
     Js.log2("[WalletSDK] Body:", strBody);
   };
