@@ -74,12 +74,10 @@ module Endpoints = {
     let organizations = "/organizations";
     let assets = {j|$organizations/assets|j};
     let payments = "/payments";
-    let paymentsBatch = {j|$payments/batch|j};
     let streamPayments = id => {j|/streams$accounts/$id|j};
   };
 
   type response = Nullable.t(Service.data);
-  type stream;
 
   [@bs.deriving abstract]
   type t = {
@@ -88,8 +86,7 @@ module Endpoints = {
     getAllAccounts: unit => Promise.t(response),
     getAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makePayment: Payment.t => Promise.t(response),
-    makePaymentBatch: Array.t(Payment.t) => Promise.t(response),
+    makePayment: Array.t(Payment.t) => Promise.t(response),
     listenForPayments: (string, Json.t => unit) => EventSource.t,
   };
 
@@ -145,15 +142,9 @@ let init: Options.t => Endpoints.t =
       ~getAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
       ~makePayment=
-        body =>
-          postToRoute(
-            Endpoints.Routes.payments,
-            ~body=JsonUtil.asJson(body),
-          ),
-      ~makePaymentBatch=
         payments =>
           postToRoute(
-            Endpoints.Routes.paymentsBatch,
+            Endpoints.Routes.payments,
             ~body=JsonUtil.asJson(Payment.batch(~payments)),
           ),
       ~listenForPayments=
