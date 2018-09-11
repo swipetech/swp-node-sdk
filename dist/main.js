@@ -563,19 +563,21 @@ var languages = Languages[/* enum */0];
 
 var Options$1 = /* module */[];
 
+var organizations = "/organizations";
+
 var accounts = "/accounts";
 
 function getAccount(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "")));
 }
 
-var organizations = "/organizations";
-
 var assets = "" + (String(organizations) + "/assets");
 
-function streamPayments(id) {
-  return "/streams" + (String(accounts) + ("/" + (String(id) + "")));
+function monitorPaymentsToAccount(id) {
+  return "" + (String(accounts) + ("/" + (String(id) + "/payments")));
 }
+
+var monitorPaymentsToOrg = "" + (String(organizations) + "/payments");
 
 function init(options) {
   var match = options.language;
@@ -674,7 +676,10 @@ function init(options) {
                   }])("/payments");
   };
   var prim$6 = function (id, callback) {
-    return _1(openSse(callback)("payment"), streamPayments(id));
+    return _1(openSse(callback)("payment"), monitorPaymentsToAccount(id));
+  };
+  var prim$7 = function (callback) {
+    return _1(openSse(callback)("payment"), monitorPaymentsToOrg);
   };
   return {
           createAccount: prim,
@@ -683,7 +688,8 @@ function init(options) {
           getAssets: prim$3,
           getOrganization: prim$4,
           makePayment: prim$5,
-          listenForPayments: prim$6
+          monitorPaymentsToAccount: prim$6,
+          monitorPaymentsToOrg: prim$7
         };
 }
 

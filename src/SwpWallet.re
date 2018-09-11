@@ -71,12 +71,14 @@ module Endpoints = {
   open Js;
 
   module Routes = {
-    let accounts = "/accounts";
-    let getAccount = id => {j|$accounts/$id|j};
     let organizations = "/organizations";
-    let assets = {j|$organizations/assets|j};
+    let accounts = "/accounts";
     let payments = "/payments";
-    let streamPayments = id => {j|/streams$accounts/$id|j};
+
+    let getAccount = id => {j|$accounts/$id|j};
+    let assets = {j|$organizations/assets|j};
+    let monitorPaymentsToAccount = id => {j|$accounts/$id/payments|j};
+    let monitorPaymentsToOrg = {j|$organizations/payments|j};
   };
 
   type response = Nullable.t(Service.data);
@@ -89,7 +91,8 @@ module Endpoints = {
     getAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
     makePayment: Array.t(Payment.t) => Promise.t(response),
-    listenForPayments: (string, Json.t => unit) => EventSource.t,
+    monitorPaymentsToAccount: (string, Json.t => unit) => EventSource.t,
+    monitorPaymentsToOrg: (Json.t => unit) => EventSource.t,
   };
 
   let make = t;
@@ -149,10 +152,17 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.payments,
             ~body=JsonUtil.asJson(Payment.batch(~payments)),
           ),
-      ~listenForPayments=
+      ~monitorPaymentsToAccount=
         (id, callback) =>
           openSse(
-            Endpoints.Routes.streamPayments(id),
+            Endpoints.Routes.monitorPaymentsToAccount(id),
+            ~eventName="payment",
+            ~callback,
+          ),
+      ~monitorPaymentsToOrg=
+        callback =>
+          openSse(
+            Endpoints.Routes.monitorPaymentsToOrg,
             ~eventName="payment",
             ~callback,
           ),

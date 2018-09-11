@@ -20,7 +20,8 @@ declare module "@swp/wallet-sdk" {
     getAssets: () => Promise<any>
     getOrganization: () => Promise<any>
     makePayment: (payments: Array<Payment>) => Promise<any>
-    listenForPayments: (id: string, cb: (payment: Payment) => void) => EventSource
+    monitorPaymentsToAccount: (id: string, cb: (payment: Payment) => void) => EventSource
+    monitorPaymentsToOrg: (cb: (payment: Payment) => void) => EventSource
   }
   
   export const languages: {
