@@ -7,9 +7,9 @@ declare module "@swp/wallet-sdk" {
   }
 
   interface Payment {
-    source_id: string
-    destination_id: string
-    asset_id: string
+    from: string
+    to: string
+    asset: string
     amount: number
   }
 
