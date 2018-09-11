@@ -78,6 +78,7 @@ module Endpoints = {
 
     let getAccount = id => {j|$accounts/$id|j};
     let assets = {j|$organizations/assets|j};
+    let getPayment = id => {j|$payments/$id|j};
     let monitorPaymentsToAccount = id => {j|$accounts/$id/payments|j};
     let monitorPaymentsToOrg = {j|$organizations/payments|j};
   };
@@ -92,6 +93,7 @@ module Endpoints = {
     getAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
     makePayment: Array.t(Payment.t) => Promise.t(response),
+    getPayment: string => Promise.t(response),
     monitorPaymentsToAccount: (string, Json.t => unit) => EventSource.t,
     monitorPaymentsToOrg: (Json.t => unit) => EventSource.t,
   };
@@ -153,6 +155,7 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.payments,
             ~body=JsonUtil.asJson(Payment.batch(~payments)),
           ),
+      ~getPayment=id => getRoute(Endpoints.Routes.getPayment(id)),
       ~monitorPaymentsToAccount=
         (id, callback) =>
           openSse(

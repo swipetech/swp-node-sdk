@@ -567,11 +567,17 @@ var organizations = "/organizations";
 
 var accounts = "/accounts";
 
+var payments = "/payments";
+
 function getAccount(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "")));
 }
 
 var assets = "" + (String(organizations) + "/assets");
+
+function getPayment(id) {
+  return "" + (String(payments) + ("/" + (String(id) + "")));
+}
 
 function monitorPaymentsToAccount(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "/payments")));
@@ -670,15 +676,18 @@ function init(options) {
   var prim$4 = function () {
     return _1(getRoute, organizations);
   };
-  var prim$5 = function (payments) {
+  var prim$5 = function (payments$1) {
     return postToRoute(/* Some */[{
-                    payments: payments
-                  }])("/payments");
+                    payments: payments$1
+                  }])(payments);
   };
-  var prim$6 = function (id, callback) {
+  var prim$6 = function (id) {
+    return _1(getRoute, getPayment(id));
+  };
+  var prim$7 = function (id, callback) {
     return _1(openSse(callback)("payment"), monitorPaymentsToAccount(id));
   };
-  var prim$7 = function (callback) {
+  var prim$8 = function (callback) {
     return _1(openSse(callback)("payment"), monitorPaymentsToOrg);
   };
   return {
@@ -688,8 +697,9 @@ function init(options) {
           getAssets: prim$3,
           getOrganization: prim$4,
           makePayment: prim$5,
-          monitorPaymentsToAccount: prim$6,
-          monitorPaymentsToOrg: prim$7
+          getPayment: prim$6,
+          monitorPaymentsToAccount: prim$7,
+          monitorPaymentsToOrg: prim$8
         };
 }
 

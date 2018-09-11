@@ -81,6 +81,7 @@ declare module "@swp/wallet-sdk" {
     getAssets: () => Promise<AssetReceipt[]>
     getOrganization: () => Promise<OrganizationReceipt>
     makePayment: (payments: Array<PaymentOp>) => Promise<PaymentReceipt>
+    getPayment: (id: string) => Promise<PaymentReceipt>
     monitorPaymentsToAccount: (id: string, cb: (payment: PaymentReceipt) => void) => EventSource
     monitorPaymentsToOrg: (cb: (payment: PaymentReceipt) => void) => EventSource
   }
