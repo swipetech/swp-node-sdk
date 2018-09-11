@@ -33,22 +33,6 @@ module Api = {
   };
 };
 
-module SdkError = {
-  [@bs.deriving abstract]
-  type t = {
-    message: string,
-    [@bs.optional]
-    code: string,
-    [@bs.optional]
-    statusCode: int,
-    [@bs.optional]
-    fieldErrors: Js.Array.t(fieldError),
-  };
-
-  let make = t;
-  external asSdkError : Js.Promise.error => t = "%identity";
-};
-
 external asExn : 'a => exn = "%identity";
 
 let handleResponse = res =>
@@ -62,23 +46,7 @@ let handleResponse = res =>
          let error = body |> Api.Response.error;
 
          switch (error) {
-         | Some(error) =>
-           let message =
-             switch (error |> Api.Error.message) {
-             | None => res |> Fetch.Response.statusText
-             | Some(message) => message
-             };
-
-           let sdkErr: SdkError.t =
-             SdkError.make(
-               ~statusCode=Fetch.Response.status(res),
-               ~code=?error |> Api.Error.code,
-               ~message,
-               ~fieldErrors=?error |> Api.Error.fieldErrors,
-               (),
-             );
-
-           Js.Promise.reject(asExn(sdkErr));
+         | Some(_) => Js.Promise.reject(asExn(body))
          | None =>
            Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
          };
