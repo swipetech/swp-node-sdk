@@ -1,4 +1,5 @@
 let languages = Enums.Languages.enum;
+let operationTypes = Enums.OpTypes.enum;
 
 let get = (~headers, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
   setAuthHeaders(~path, ~body=?None, headers);
