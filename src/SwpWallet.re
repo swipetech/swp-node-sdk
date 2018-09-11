@@ -74,13 +74,12 @@ module Endpoints = {
   module Routes = {
     let organizations = "/organizations";
     let accounts = "/accounts";
+    let assets = "/assets";
     let payments = "/payments";
 
     let getAccount = id => {j|$accounts/$id|j};
-    let assets = {j|$organizations/assets|j};
     let getPayment = id => {j|$payments/$id|j};
-    let monitorPaymentsToAccount = id => {j|$accounts/$id/payments|j};
-    let monitorPaymentsToOrg = {j|$organizations/payments|j};
+    let accountPayments = id => {j|$accounts/$id/payments|j};
   };
 
   type response = Nullable.t(Service.data);
@@ -159,16 +158,12 @@ let init: Options.t => Endpoints.t =
       ~monitorPaymentsToAccount=
         (id, callback) =>
           openSse(
-            Endpoints.Routes.monitorPaymentsToAccount(id),
+            Endpoints.Routes.accountPayments(id),
             ~eventName="payment",
             ~callback,
           ),
       ~monitorPaymentsToOrg=
         callback =>
-          openSse(
-            Endpoints.Routes.monitorPaymentsToOrg,
-            ~eventName="payment",
-            ~callback,
-          ),
+          openSse(Endpoints.Routes.payments, ~eventName="payment", ~callback),
     );
   };

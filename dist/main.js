@@ -557,8 +557,6 @@ var operationTypes = OpTypes[/* enum */0];
 
 var Options$1 = /* module */[];
 
-var organizations = "/organizations";
-
 var accounts = "/accounts";
 
 var payments = "/payments";
@@ -567,17 +565,13 @@ function getAccount(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "")));
 }
 
-var assets = "" + (String(organizations) + "/assets");
-
 function getPayment(id) {
   return "" + (String(payments) + ("/" + (String(id) + "")));
 }
 
-function monitorPaymentsToAccount(id) {
+function accountPayments(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "/payments")));
 }
-
-var monitorPaymentsToOrg = "" + (String(organizations) + "/payments");
 
 function init(options) {
   var match = options.language;
@@ -665,10 +659,10 @@ function init(options) {
     return _1(getRoute, accounts);
   };
   var prim$3 = function () {
-    return _1(getRoute, assets);
+    return _1(getRoute, "/assets");
   };
   var prim$4 = function () {
-    return _1(getRoute, organizations);
+    return _1(getRoute, "/organizations");
   };
   var prim$5 = function (payments$1) {
     return postToRoute(/* Some */[{
@@ -679,10 +673,10 @@ function init(options) {
     return _1(getRoute, getPayment(id));
   };
   var prim$7 = function (id, callback) {
-    return _1(openSse(callback)("payment"), monitorPaymentsToAccount(id));
+    return _1(openSse(callback)("payment"), accountPayments(id));
   };
   var prim$8 = function (callback) {
-    return _1(openSse(callback)("payment"), monitorPaymentsToOrg);
+    return _1(openSse(callback)("payment"), payments);
   };
   return {
           createAccount: prim,
@@ -698,7 +692,7 @@ function init(options) {
 }
 
 var Endpoints = [];
-/* assets Not a pure module */
+/* Auth-SwpWalletSdk Not a pure module */
 
 exports.Options = Options$1;
 exports.Endpoints = Endpoints;
