@@ -13,36 +13,36 @@ let post = (~headers, ~body=?, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
   Service.post(~headers, ~body?, ~debug?, ~sandbox?, path);
 };
 
-let sse =
-    (
-      ~headers,
-      ~setAuthHeaders,
-      ~callback,
-      ~eventName,
-      ~debug=false,
-      ~sandbox=?,
-      path,
-    ) => {
-  setAuthHeaders(~path, ~body=?None, headers);
+/* let sse =
+       (
+         ~headers,
+         ~setAuthHeaders,
+         ~callback,
+         ~eventName,
+         ~debug=false,
+         ~sandbox=?,
+         path,
+       ) => {
+     setAuthHeaders(~path, ~body=?None, headers);
 
-  let es = Service.sse(~headers, ~sandbox?, path);
+     let es = Service.sse(~headers, ~sandbox?, path);
 
-  es
-  |> EventSource.(
-       addEventListener(
-         eventName,
-         e => {
-           if (debug) {
-             Js.log(e);
-           };
+     es
+     |> EventSource.(
+          addEventListener(
+            eventName,
+            e => {
+              if (debug) {
+                Js.log(e);
+              };
 
-           callback(e |> Event.data);
-         },
-       )
-     );
+              callback(e |> Event.data);
+            },
+          )
+        );
 
-  es;
-};
+     es;
+   }; */
 
 module Options = {
   [@bs.deriving abstract]
@@ -79,7 +79,7 @@ module Endpoints = {
 
     let getAccount = id => {j|$accounts/$id|j};
     let getPayment = id => {j|$payments/$id|j};
-    let accountPayments = id => {j|$accounts/$id/payments|j};
+    /* let accountPayments = id => {j|$accounts/$id/payments|j}; */
   };
 
   type response = Nullable.t(Service.data);
@@ -93,8 +93,8 @@ module Endpoints = {
     getOrganization: unit => Promise.t(response),
     makePayment: Array.t(Payment.t) => Promise.t(response),
     getPayment: string => Promise.t(response),
-    monitorPaymentsToAccount: (string, Json.t => unit) => EventSource.t,
-    monitorPaymentsToOrg: (Json.t => unit) => EventSource.t,
+    /* monitorPaymentsToAccount: (string, Json.t => unit) => EventSource.t,
+       monitorPaymentsToOrg: (Json.t => unit) => EventSource.t, */
   };
 
   let make = t;
@@ -134,13 +134,13 @@ let init: Options.t => Endpoints.t =
         ~sandbox=?options |> Options.sandbox,
       );
 
-    let openSse =
-      sse(
-        ~headers,
-        ~setAuthHeaders=partialSetAuthHeaders,
-        ~debug=?options |> Options.debug,
-        ~sandbox=?options |> Options.sandbox,
-      );
+    /* let openSse =
+       sse(
+         ~headers,
+         ~setAuthHeaders=partialSetAuthHeaders,
+         ~debug=?options |> Options.debug,
+         ~sandbox=?options |> Options.sandbox,
+       ); */
 
     Endpoints.make(
       ~createAccount=() => postToRoute(Endpoints.Routes.accounts),
@@ -155,15 +155,15 @@ let init: Options.t => Endpoints.t =
             ~body=JsonUtil.asJson(Payment.batch(~payments)),
           ),
       ~getPayment=id => getRoute(Endpoints.Routes.getPayment(id)),
-      ~monitorPaymentsToAccount=
-        (id, callback) =>
-          openSse(
-            Endpoints.Routes.accountPayments(id),
-            ~eventName="payment",
-            ~callback,
-          ),
-      ~monitorPaymentsToOrg=
-        callback =>
-          openSse(Endpoints.Routes.payments, ~eventName="payment", ~callback),
+      /* ~monitorPaymentsToAccount=
+           (id, callback) =>
+             openSse(
+               Endpoints.Routes.accountPayments(id),
+               ~eventName="payment",
+               ~callback,
+             ),
+         ~monitorPaymentsToOrg=
+           callback =>
+             openSse(Endpoints.Routes.payments, ~eventName="payment", ~callback), */
     );
   };
