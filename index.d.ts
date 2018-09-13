@@ -78,7 +78,7 @@ declare module "@swp/wallet-sdk" {
     createAccount: () => Promise<AccountReceipt>
     getAccount: (id: string) => Promise<AccountReceipt>
     getAllAccounts: () => Promise<AccountReceipt[]>
-    getAssets: () => Promise<AssetReceipt[]>
+    getAllAssets: () => Promise<AssetReceipt[]>
     getOrganization: () => Promise<OrganizationReceipt>
     makePayment: (payments: Array<PaymentOp>) => Promise<PaymentReceipt>
     getPayment: (id: string) => Promise<PaymentReceipt>

@@ -89,7 +89,7 @@ module Endpoints = {
     createAccount: unit => Promise.t(response),
     getAccount: string => Promise.t(response),
     getAllAccounts: unit => Promise.t(response),
-    getAssets: unit => Promise.t(response),
+    getAllAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
     makePayment: Array.t(Payment.t) => Promise.t(response),
     getPayment: string => Promise.t(response),
@@ -146,7 +146,7 @@ let init: Options.t => Endpoints.t =
       ~createAccount=() => postToRoute(Endpoints.Routes.accounts),
       ~getAccount=id => getRoute(Endpoints.Routes.getAccount(id)),
       ~getAllAccounts=() => getRoute(Endpoints.Routes.accounts),
-      ~getAssets=() => getRoute(Endpoints.Routes.assets),
+      ~getAllAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
       ~makePayment=
         payments =>
