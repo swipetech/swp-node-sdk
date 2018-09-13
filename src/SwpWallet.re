@@ -65,7 +65,7 @@ module Payment = {
   type t;
 
   [@bs.deriving abstract]
-  type batch = {payments: Array.t(t)};
+  type batch = {operations: Array.t(t)};
 };
 
 module Endpoints = {
@@ -149,10 +149,10 @@ let init: Options.t => Endpoints.t =
       ~getAllAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
       ~makePayment=
-        payments =>
+        operations =>
           postToRoute(
             Endpoints.Routes.payments,
-            ~body=JsonUtil.asJson(Payment.batch(~payments)),
+            ~body=JsonUtil.asJson(Payment.batch(~operations)),
           ),
       ~getPayment=id => getRoute(Endpoints.Routes.getPayment(id)),
       /* ~monitorPaymentsToAccount=
