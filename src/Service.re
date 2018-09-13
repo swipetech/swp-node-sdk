@@ -35,13 +35,28 @@ module Api = {
 
 external asExn : 'a => exn = "%identity";
 
-let handleResponse = res =>
+let handleResponse = (~debug=false, res) => {
+  if (debug) {
+    Js.log("");
+    Logger.log("Raw Fetch Response", res);
+  };
+
   if (res |> Fetch.Response.status == 204) {
+    if (debug) {
+      Logger.log("Parsed Response", "No content");
+      Js.log("");
+    };
+
     Js.Promise.resolve(Js.Nullable.null);
   } else {
     res
     |> Fetch.Response.json
     |> Js.Promise.then_(body => {
+         if (debug) {
+           Logger.log("Parsed Response", body);
+           Js.log("");
+         };
+
          let body = Api.Response.asResponse(body);
          let error = body |> Api.Response.error;
 
@@ -53,12 +68,13 @@ let handleResponse = res =>
        })
     |> Js.Promise.catch(err => Js.Promise.reject(asExn(err)));
   };
+};
 
 let handleError = (~debug=false, errorResponse) => {
   if (debug) {
     let errorLog = Js.Json.stringifyAny(errorResponse);
     switch (errorLog) {
-    | Some(err) => Js.log2("[WalletSDK] Error:", err)
+    | Some(err) => Logger.log("Error", err)
     | None => ()
     };
   };
@@ -67,7 +83,9 @@ let handleError = (~debug=false, errorResponse) => {
 };
 
 let handleRequest = (~debug, req) =>
-  Js.Promise.(req |> then_(handleResponse) |> catch(handleError(~debug)));
+  Js.Promise.(
+    req |> then_(handleResponse(~debug)) |> catch(handleError(~debug))
+  );
 
 let sse = (~headers, ~sandbox=false, path) =>
   EventSource.make(
@@ -77,8 +95,9 @@ let sse = (~headers, ~sandbox=false, path) =>
 
 let get = (~headers, ~debug=false, ~sandbox=false, path) => {
   if (debug) {
-    Js.log2("[WalletSDK] Path:", path);
-    Js.log2("[WalletSDK] Headers:", headers);
+    Js.log("");
+    Logger.log("Path", path);
+    Logger.log("Headers", headers);
   };
 
   Fetch.fetchWithInit(
@@ -95,9 +114,10 @@ let post = (~headers, ~body=?, ~debug=false, ~sandbox=false, path) => {
   let strBody = JsonUtil.stringifyOption(body);
 
   if (debug) {
-    Js.log2("[WalletSDK] Path:", path);
-    Js.log2("[WalletSDK] Headers:", headers);
-    Js.log2("[WalletSDK] Body:", strBody);
+    Js.log("");
+    Logger.log("Path", path);
+    Logger.log("Headers", headers);
+    Logger.log("Body", strBody);
   };
 
   Fetch.fetchWithInit(
