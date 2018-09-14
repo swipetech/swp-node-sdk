@@ -34,3 +34,25 @@ module OpTypes = {
       ~changeTrust="change_trust",
     );
 };
+
+module OpCodes = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.as "Ok"]
+    ok: string,
+    [@bs.as "Success"]
+    success: string,
+    [@bs.as "Underfunded"]
+    underfunded: string,
+    [@bs.as "NotProcessed"]
+    notProcessed: string,
+  };
+
+  let enum =
+    t(
+      ~ok="op_ok",
+      ~success="op_success",
+      ~underfunded="op_underfunded",
+      ~notProcessed="op_not_processed",
+    );
+};

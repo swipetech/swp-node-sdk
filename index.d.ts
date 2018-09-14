@@ -13,16 +13,17 @@ declare module "@swp/wallet-sdk" {
     debug: boolean
   }
 
-  interface PaymentOp {
+  interface PaymentOperations {
     from: string
     to: string
     asset: string
     amount: number
+    op_code: string
   }
 
   interface Payment {
     id: string
-    payment_ops: PaymentOp[]
+    operations: PaymentOperations[]
   }
 
   interface Receipt {
@@ -97,6 +98,13 @@ declare module "@swp/wallet-sdk" {
     CreateOrganization: "create_organization",
     IssueAsset: "issue_asset",
     ChangeTrust: "change_trust",
+  }
+
+  export const operationCodes: {
+    Ok: "op_ok"
+    Success: "op_success"
+    Underfunded: "op_underfunded"
+    NotProcessed: "op_not_processed"
   }
 
   export const init: (options: Options) => Endpoints
