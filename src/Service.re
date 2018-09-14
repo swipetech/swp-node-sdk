@@ -74,7 +74,7 @@ let handleError = (~debug=false, errorResponse) => {
   if (debug) {
     let errorLog = Js.Json.stringifyAny(errorResponse);
     switch (errorLog) {
-    | Some(err) => Logger.log("Error", err)
+    | Some(err) => Logger.error("Error", err)
     | None => ()
     };
   };

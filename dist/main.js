@@ -468,10 +468,17 @@ var sandboxHost = "https://api.sandbox.swipetech.com.br";
 
 var blue = "\x1b[34m";
 
+var red = "\x1b[31m";
+
 var reset = "\x1b[0m";
 
 function log(flag, value) {
   console.log("" + (String(blue) + ("[swp] " + (String(flag) + (":" + (String(reset) + ""))))), Util.inspect(value, false, null, true));
+  return /* () */0;
+}
+
+function error(flag, value) {
+  console.log("" + (String(red) + ("[swp] " + (String(flag) + (":" + (String(reset) + ""))))), Util.inspect(value, false, null, true));
   return /* () */0;
 }
 /* util Not a pure module */
@@ -501,8 +508,8 @@ function handleResponse($staropt$star, res) {
                       log("Parsed Response", body);
                       console.log("");
                     }
-                    var error = body.error;
-                    if (error !== undefined) {
+                    var error$$1 = body.error;
+                    if (error$$1 !== undefined) {
                       return Promise.reject(body);
                     } else {
                       return Promise.resolve(body.data);
@@ -518,7 +525,7 @@ function handleError($staropt$star, errorResponse) {
   if (debug) {
     var errorLog = JSON.stringify(errorResponse);
     if (errorLog !== undefined) {
-      log("Error", errorLog);
+      error("Error", errorLog);
     }
     
   }
