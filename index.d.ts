@@ -1,19 +1,19 @@
 declare module "@swp/wallet-sdk" {
-  type OperationType =
+  export type OperationType =
     "payment" |
     "create_account" |
     "create_organization" |
     "issue_asset" |
     "change_trust"
 
-  interface Options {
+  export interface Options {
     apiKey: string
     secret: string
     sandbox: boolean
     debug: boolean
   }
 
-  interface PaymentOperations {
+  export interface PaymentOperations {
     from: string
     to: string
     asset: string
@@ -21,61 +21,61 @@ declare module "@swp/wallet-sdk" {
     op_code: string
   }
 
-  interface Payment {
+  export interface Payment {
     id: string
     operations: PaymentOperations[]
   }
 
-  interface Receipt {
+  export interface Receipt {
     id: string
     created_at: string
     op_type: OperationType
   }
 
-  interface Balance {
+  export interface Balance {
     balance: number
     asset_code: string
     asset_id: string
   }
 
-  interface Account {
+  export interface Account {
     id: string
     balances: Balance[]
   }
 
-  interface Asset {
+  export interface Asset {
     id: string
     code: string
     limit: number
   }
 
-  interface Organization extends Account {
+  export interface Organization extends Account {
     name: string
     api_key: string
     secret: string
   }
 
-  interface WithReceipt {
+  export interface WithReceipt {
     receipt: Receipt
   }
 
-  interface AccountReceipt extends WithReceipt {
+  export interface AccountReceipt extends WithReceipt {
     account: Account
   }
 
-  interface AssetReceipt extends WithReceipt {
+  export interface AssetReceipt extends WithReceipt {
     asset: Asset
   }
 
-  interface OrganizationReceipt extends WithReceipt {
+  export interface OrganizationReceipt extends WithReceipt {
     organization: Organization
   }
 
-  interface PaymentReceipt extends WithReceipt {
+  export interface PaymentReceipt extends WithReceipt {
     payment: Payment
   }
 
-  interface Endpoints {
+  export interface Endpoints {
     createAccount: () => Promise<AccountReceipt>
     getAccount: (id: string) => Promise<AccountReceipt>
     getAllAccounts: () => Promise<AccountReceipt[]>
