@@ -6,6 +6,12 @@ declare module "@swp/wallet-sdk" {
     "issue_asset" |
     "change_trust"
 
+  export type OperationCode =
+  "op_ok" |
+  "op_success" |
+  "op_underfunded" |
+  "op_not_processed"
+
   export interface Options {
     apiKey: string
     secret: string
@@ -13,17 +19,17 @@ declare module "@swp/wallet-sdk" {
     debug: boolean
   }
 
-  export interface PaymentOperations {
+  export interface PaymentOperation {
     from: string
     to: string
     asset: string
     amount: number
-    op_code: string
+    op_code: OperationCode
   }
 
   export interface Payment {
     id: string
-    operations: PaymentOperations[]
+    operations: PaymentOperation[]
   }
 
   export interface Receipt {
@@ -73,6 +79,18 @@ declare module "@swp/wallet-sdk" {
 
   export interface PaymentReceipt extends WithReceipt {
     payment: Payment
+  }
+
+  export interface SubError {
+    code: string
+    msg: string
+    field: string
+  }
+
+  export interface Error {
+    code: string
+    msg: string
+    sub_errors: SubError[]
   }
 
   export interface Endpoints {
