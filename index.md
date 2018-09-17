@@ -5,4 +5,4 @@ homepage: true
 order: 1
 ---
 
-# Esta página é de uma versão antiga! [Clique aqui](https://swipetech.github.io/doc) para acessar a nova documentação completa.
+# Esta link é antigo! [Clique aqui](https://swipetech.github.io/doc) para acessar a nova documentação completa.
