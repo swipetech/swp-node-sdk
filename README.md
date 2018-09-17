@@ -1,24 +1,33 @@
 # SwipeSDK.js
 
-SwipeSDK.js torna fácil a integração com a Swipe para usuários Node.js, abstraindo todas as questões de comunicação HTTP com a API, assinatura criptográfica das requisições e a utilização de ambiente sandbox.
+Bem vindo à documentação da Swipe!
+
+Swipe é a solução que permite criar e gerenciar [Ativos Digitais](#ativo) e as [Contas](#conta) que os detêm. 
+
+As vantagens de performance para sistemas financeiros são: 
+
+- Redução nos custos operacionais 
+
+- Aumento drástico na rapidez de todas as operações
+
+- Elimina inconsistências nos dados, simplificando a conciliação
+
+Além disso, o uso de Ativos Digitais torna a solução versátil para uma série de [exemplos de uso](#exemplos-de-uso).
+
 
 OBS: Esta versão Beta é atualizada constantemente. Por favor certifique-se de usar a versão mais recente.
 
 ## Instalação
 
-SwipeSDK.js pode ser instalado via npm ou Yarn.
+Via npm:
 
-**npm:**
+`npm i @swp/swipe-sdk`
 
-```
-npm i @swp/swipe-sdk
-```
+Via yarn:
 
-**Yarn:**
+`yarn add @swp/swipe-sdk`
 
-```
-yarn add @swp/swipe-sdk
-```
+<b>Atenção:</b> a integração deve ser realizada sempre a partir de um servidor Node.js, nunca a partir de um navegador. Inicializar o SDK JavaScript a partir de um navegador poderá expor indevidamente seu <b>Api Key</b> e <b>Secret</b>, mesmo que sejam utilizadas práticas de <i>code obfuscation</i>.
 
 ## Documentação
 
