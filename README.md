@@ -33,7 +33,7 @@ Via yarn:
 
 Para uma documentação completa do produto e do SDK, acesse o link:
 
-https://swipetech.github.io/doc
+[https://swipetech.github.io/doc](https://swipetech.github.io/doc)
 
 
 ## Suporte
