@@ -2,7 +2,7 @@
 
 Bem vindo à documentação da Swipe!
 
-Swipe é a solução que permite criar e gerenciar [Ativos Digitais](#ativo) e as [Contas](#conta) que os detêm. 
+Swipe é a solução que permite criar e gerenciar [Ativos Digitais](https://swipetech.github.io/doc/#ativo) e as [Contas](https://swipetech.github.io/doc/#conta) que os detêm. 
 
 As vantagens de performance para sistemas financeiros são: 
 
@@ -12,7 +12,7 @@ As vantagens de performance para sistemas financeiros são:
 
 - Elimina inconsistências nos dados, simplificando a conciliação
 
-Além disso, o uso de Ativos Digitais torna a solução versátil para uma série de [exemplos de uso](#exemplos-de-uso).
+Além disso, o uso de Ativos Digitais torna a solução versátil para uma série de [exemplos de uso](https://swipetech.github.io/doc/#exemplos-de-uso).
 
 
 OBS: Esta versão Beta é atualizada constantemente. Por favor certifique-se de usar a versão mais recente.
