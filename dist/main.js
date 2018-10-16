@@ -286,6 +286,15 @@ var $$enum$1 = {
 };
 
 var OpTypes = /* module */[/* enum */$$enum$1];
+
+var $$enum$2 = {
+  Ok: "op_ok",
+  Success: "op_success",
+  Underfunded: "op_underfunded",
+  NotProcessed: "op_not_processed"
+};
+
+var OpCodes = /* module */[/* enum */$$enum$2];
 /* No side effect */
 
 function encodeRequestMethod(param) {
@@ -509,10 +518,10 @@ function handleResponse($staropt$star, res) {
                       console.log("");
                     }
                     var error$$1 = body.error;
-                    if (error$$1 !== undefined) {
-                      return Promise.reject(body);
-                    } else {
+                    if (error$$1 == null) {
                       return Promise.resolve(body.data);
+                    } else {
+                      return Promise.reject(body);
                     }
                   })).catch((function (err) {
                   return Promise.reject(err);
@@ -576,6 +585,8 @@ function post(headers, body, $staropt$star, $staropt$star$1, path) {
 var languages = Languages[/* enum */0];
 
 var operationTypes = OpTypes[/* enum */0];
+
+var operationCodes = OpCodes[/* enum */0];
 
 var Options$1 = /* module */[];
 
@@ -675,4 +686,5 @@ exports.Options = Options$1;
 exports.Endpoints = Endpoints;
 exports.languages = languages;
 exports.operationTypes = operationTypes;
+exports.operationCodes = operationCodes;
 exports.init = init;

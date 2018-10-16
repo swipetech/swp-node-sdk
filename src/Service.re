@@ -25,8 +25,7 @@ module Api = {
     [@bs.deriving abstract]
     type t = {
       data,
-      [@bs.optional]
-      error: Error.t,
+      error: Js.Nullable.t(Error.t),
     };
 
     external asResponse : Js.Json.t => t = "%identity";
@@ -60,8 +59,8 @@ let handleResponse = (~debug=false, res) => {
          let body = Api.Response.asResponse(body);
          let error = body |> Api.Response.error;
 
-         switch (error) {
-         | Some(_) => Js.Promise.reject(asExn(body))
+         switch (Js.Nullable.toOption(error)) {
+         | Some(_) => Js.Promise.reject(asExn(body));
          | None =>
            Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
          };
