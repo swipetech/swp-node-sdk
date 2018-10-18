@@ -2,16 +2,16 @@ let languages = Enums.Languages.enum;
 let operationTypes = Enums.OpTypes.enum;
 let operationCodes = Enums.OpCodes.enum;
 
-let get = (~headers, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
+let get = (~host, ~headers, ~setAuthHeaders, ~debug=?, path) => {
   setAuthHeaders(~path, ~body=?None, headers);
 
-  Service.get(~headers, ~debug?, ~sandbox?, path);
+  Service.get(~host, ~headers, ~debug?, path);
 };
 
-let post = (~headers, ~body=?, ~setAuthHeaders, ~debug=?, ~sandbox=?, path) => {
+let post = (~host, ~headers, ~body=?, ~setAuthHeaders, ~debug=?, path) => {
   setAuthHeaders(~path, ~body?, headers);
 
-  Service.post(~headers, ~body?, ~debug?, ~sandbox?, path);
+  Service.post(~host, ~headers, ~body?, ~debug?, path);
 };
 
 /* let sse =
@@ -57,6 +57,8 @@ module Options = {
       debug: bool,
       [@bs.optional]
       sandbox: bool,
+      [@bs.optional]
+      customHost: string,
     };
 };
 
@@ -103,6 +105,16 @@ module Endpoints = {
 
 let init: Options.t => Endpoints.t =
   options => {
+    let host =
+      switch (options |> Options.customHost) {
+      | Some(host) => host
+      | None =>
+        switch (options |> Options.sandbox) {
+        | Some(sandbox) => sandbox ? Config.sandboxHost : Config.host
+        | None => Config.host
+        }
+      };
+
     let language =
       switch (options |> Options.language) {
       | None => languages |> Enums.Languages.ptBr
@@ -121,26 +133,26 @@ let init: Options.t => Endpoints.t =
 
     let getRoute =
       get(
+        ~host,
         ~headers,
         ~setAuthHeaders=partialSetAuthHeaders,
         ~debug=?options |> Options.debug,
-        ~sandbox=?options |> Options.sandbox,
       );
 
     let postToRoute =
       post(
+        ~host,
         ~headers,
         ~setAuthHeaders=partialSetAuthHeaders,
         ~debug=?options |> Options.debug,
-        ~sandbox=?options |> Options.sandbox,
       );
 
     /* let openSse =
        sse(
+         ~host,
          ~headers,
          ~setAuthHeaders=partialSetAuthHeaders,
          ~debug=?options |> Options.debug,
-         ~sandbox=?options |> Options.sandbox,
        ); */
 
     Endpoints.make(

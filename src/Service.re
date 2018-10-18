@@ -92,7 +92,7 @@ let sse = (~headers, ~sandbox=false, path) =>
     EventSource.Options.make(~headers),
   );
 
-let get = (~headers, ~debug=false, ~sandbox=false, path) => {
+let get = (~host, ~headers, ~debug=false, path) => {
   if (debug) {
     Js.log("");
     Logger.log("Path", path);
@@ -100,7 +100,7 @@ let get = (~headers, ~debug=false, ~sandbox=false, path) => {
   };
 
   Fetch.fetchWithInit(
-    (sandbox ? sandboxHost : host) ++ path,
+    host ++ path,
     Fetch.RequestInit.make(
       ~headers=Fetch.HeadersInit.makeWithDict(headers),
       (),
@@ -109,7 +109,7 @@ let get = (~headers, ~debug=false, ~sandbox=false, path) => {
   |> handleRequest(~debug);
 };
 
-let post = (~headers, ~body=?, ~debug=false, ~sandbox=false, path) => {
+let post = (~host, ~headers, ~body=?, ~debug=false, path) => {
   let strBody = JsonUtil.stringifyOption(body);
 
   if (debug) {
@@ -120,7 +120,7 @@ let post = (~headers, ~body=?, ~debug=false, ~sandbox=false, path) => {
   };
 
   Fetch.fetchWithInit(
-    (sandbox ? sandboxHost : host) ++ path,
+    host ++ path,
     Fetch.RequestInit.make(
       ~method_=Post,
       ~body=Fetch.BodyInit.make(strBody),
