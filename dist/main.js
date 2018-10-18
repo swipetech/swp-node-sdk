@@ -521,7 +521,7 @@ function handleResponse($staropt$star, res) {
                     if (error$$1 == null) {
                       return Promise.resolve(body.data);
                     } else {
-                      return Promise.reject(body);
+                      return Promise.reject(error$$1);
                     }
                   })).catch((function (err) {
                   return Promise.reject(err);

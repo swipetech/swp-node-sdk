@@ -28,11 +28,11 @@ module Api = {
       error: Js.Nullable.t(Error.t),
     };
 
-    external asResponse : Js.Json.t => t = "%identity";
+    external asResponse: Js.Json.t => t = "%identity";
   };
 };
 
-external asExn : 'a => exn = "%identity";
+external asExn: 'a => exn = "%identity";
 
 let handleResponse = (~debug=false, res) => {
   if (debug) {
@@ -60,7 +60,7 @@ let handleResponse = (~debug=false, res) => {
          let error = body |> Api.Response.error;
 
          switch (Js.Nullable.toOption(error)) {
-         | Some(_) => Js.Promise.reject(asExn(body));
+         | Some(e) => Js.Promise.reject(asExn(e))
          | None =>
            Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
          };
