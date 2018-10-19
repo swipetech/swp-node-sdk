@@ -37,12 +37,21 @@ external asExn: 'a => exn = "%identity";
 let handleResponse = (~debug=false, res) => {
   if (debug) {
     Js.log("");
-    Logger.log("Raw Fetch Response", res);
+    Logger.log(
+      "Fetch response",
+      {
+        "url": res |> Fetch.Response.url,
+        "status": res |> Fetch.Response.status,
+        "statusText": res |> Fetch.Response.statusText,
+        "headers": res |> Fetch.Response.headers,
+      },
+    );
+    Js.log("");
   };
 
   if (res |> Fetch.Response.status == 204) {
     if (debug) {
-      Logger.log("Parsed Response", "No content");
+      Logger.log("Response body", "No content");
       Js.log("");
     };
 
@@ -52,7 +61,7 @@ let handleResponse = (~debug=false, res) => {
     |> Fetch.Response.json
     |> Js.Promise.then_(body => {
          if (debug) {
-           Logger.log("Parsed Response", body);
+           Logger.log("Response body", body);
            Js.log("");
          };
 

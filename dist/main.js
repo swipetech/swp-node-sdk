@@ -503,18 +503,24 @@ function handleResponse($staropt$star, res) {
   var debug = $staropt$star ? $staropt$star[0] : false;
   if (debug) {
     console.log("");
-    log("Raw Fetch Response", res);
+    log("Fetch response", {
+          url: res.url,
+          status: res.status,
+          statusText: res.statusText,
+          headers: res.headers
+        });
+    console.log("");
   }
   if (res.status === 204) {
     if (debug) {
-      log("Parsed Response", "No content");
+      log("Response body", "No content");
       console.log("");
     }
     return Promise.resolve(null);
   } else {
     return res.json().then((function (body) {
                     if (debug) {
-                      log("Parsed Response", body);
+                      log("Response body", body);
                       console.log("");
                     }
                     var error$$1 = body.error;
