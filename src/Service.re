@@ -34,25 +34,20 @@ module Api = {
 
 external asExn: 'a => exn = "%identity";
 
-let handleResponse = (~debug=false, res) => {
-  if (debug) {
-    Js.log("");
-    Logger.log(
-      "Fetch response",
-      {
-        "url": res |> Fetch.Response.url,
-        "status": res |> Fetch.Response.status,
-        "statusText": res |> Fetch.Response.statusText,
-        "headers": res |> Fetch.Response.headers,
-      },
-    );
-    Js.log("");
-  };
-
+let handleResponse = (~debug=false, res) =>
   if (res |> Fetch.Response.status == 204) {
     if (debug) {
-      Logger.log("Response body", "No content");
       Js.log("");
+      Logger.log(
+        "Response",
+        {
+          "url": res |> Fetch.Response.url,
+          "status": res |> Fetch.Response.status,
+          "statusText": res |> Fetch.Response.statusText,
+          "headers": res |> Fetch.Response.headers,
+          "body": "No content",
+        },
+      );
     };
 
     Js.Promise.resolve(Js.Nullable.null);
@@ -61,8 +56,17 @@ let handleResponse = (~debug=false, res) => {
     |> Fetch.Response.json
     |> Js.Promise.then_(body => {
          if (debug) {
-           Logger.log("Response body", body);
            Js.log("");
+           Logger.log(
+             "Response",
+             {
+               "url": res |> Fetch.Response.url,
+               "status": res |> Fetch.Response.status,
+               "statusText": res |> Fetch.Response.statusText,
+               "headers": res |> Fetch.Response.headers,
+               "body": body,
+             },
+           );
          };
 
          let body = Api.Response.asResponse(body);
@@ -74,15 +78,30 @@ let handleResponse = (~debug=false, res) => {
            Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
          };
        })
-    |> Js.Promise.catch(err => Js.Promise.reject(asExn(err)));
+    |> Js.Promise.catch(err => {
+         if (debug) {
+           Js.log("");
+           Logger.log(
+             "Response",
+             {
+               "url": res |> Fetch.Response.url,
+               "status": res |> Fetch.Response.status,
+               "statusText": res |> Fetch.Response.statusText,
+               "headers": res |> Fetch.Response.headers,
+             },
+           );
+         };
+         Js.Promise.reject(asExn(err));
+       });
   };
-};
 
 let handleError = (~debug=false, errorResponse) => {
   if (debug) {
     let errorLog = Js.Json.stringifyAny(errorResponse);
     switch (errorLog) {
-    | Some(err) => Logger.error("Error", err)
+    | Some(err) =>
+      Js.log("");
+      Logger.error("Error", err);
     | None => ()
     };
   };
@@ -104,8 +123,7 @@ let sse = (~headers, ~sandbox=false, path) =>
 let get = (~host, ~headers, ~debug=false, path) => {
   if (debug) {
     Js.log("");
-    Logger.log("Path", path);
-    Logger.log("Headers", headers);
+    Logger.log("Request", {"path": path, "headers": headers});
   };
 
   Fetch.fetchWithInit(
@@ -123,9 +141,10 @@ let post = (~host, ~headers, ~body=?, ~debug=false, path) => {
 
   if (debug) {
     Js.log("");
-    Logger.log("Path", path);
-    Logger.log("Headers", headers);
-    Logger.log("Body", strBody);
+    Logger.log(
+      "Request",
+      {"path": path, "headers": headers, "body": strBody},
+    );
   };
 
   Fetch.fetchWithInit(

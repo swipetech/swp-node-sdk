@@ -501,27 +501,29 @@ function error(flag, value) {
 
 function handleResponse($staropt$star, res) {
   var debug = $staropt$star ? $staropt$star[0] : false;
-  if (debug) {
-    console.log("");
-    log("Fetch response", {
-          url: res.url,
-          status: res.status,
-          statusText: res.statusText,
-          headers: res.headers
-        });
-    console.log("");
-  }
   if (res.status === 204) {
     if (debug) {
-      log("Response body", "No content");
       console.log("");
+      log("Response", {
+            url: res.url,
+            status: res.status,
+            statusText: res.statusText,
+            headers: res.headers,
+            body: "No content"
+          });
     }
     return Promise.resolve(null);
   } else {
     return res.json().then((function (body) {
                     if (debug) {
-                      log("Response body", body);
                       console.log("");
+                      log("Response", {
+                            url: res.url,
+                            status: res.status,
+                            statusText: res.statusText,
+                            headers: res.headers,
+                            body: body
+                          });
                     }
                     var error$$1 = body.error;
                     if (error$$1 == null) {
@@ -530,6 +532,15 @@ function handleResponse($staropt$star, res) {
                       return Promise.reject(error$$1);
                     }
                   })).catch((function (err) {
+                  if (debug) {
+                    console.log("");
+                    log("Response", {
+                          url: res.url,
+                          status: res.status,
+                          statusText: res.statusText,
+                          headers: res.headers
+                        });
+                  }
                   return Promise.reject(err);
                 }));
   }
@@ -540,6 +551,7 @@ function handleError($staropt$star, errorResponse) {
   if (debug) {
     var errorLog = JSON.stringify(errorResponse);
     if (errorLog !== undefined) {
+      console.log("");
       error("Error", errorLog);
     }
     
@@ -561,8 +573,10 @@ function get(host$$1, headers, $staropt$star, path) {
   var debug = $staropt$star ? $staropt$star[0] : false;
   if (debug) {
     console.log("");
-    log("Path", path);
-    log("Headers", headers);
+    log("Request", {
+          path: path,
+          headers: headers
+        });
   }
   return handleRequest(debug, fetch(host$$1 + path, RequestInit[/* make */0](/* None */0, /* Some */[headers], /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0)(/* () */0)));
 }
@@ -572,9 +586,11 @@ function post(host$$1, headers, body, $staropt$star, path) {
   var strBody = stringifyOption(body);
   if (debug) {
     console.log("");
-    log("Path", path);
-    log("Headers", headers);
-    log("Body", strBody);
+    log("Request", {
+          path: path,
+          headers: headers,
+          body: strBody
+        });
   }
   return handleRequest(debug, fetch(host$$1 + path, RequestInit[/* make */0](/* Some */[/* Post */2], /* Some */[headers], /* Some */[strBody], /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0)(/* () */0)));
 }
