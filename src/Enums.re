@@ -13,8 +13,8 @@ module Languages = {
 module OpTypes = {
   [@bs.deriving abstract]
   type t = {
-    [@bs.as "Payment"]
-    payment: string,
+    [@bs.as "Transfer"]
+    transfer: string,
     [@bs.as "CreateAccount"]
     createAccount: string,
     [@bs.as "CreateOrganization"]
@@ -27,7 +27,7 @@ module OpTypes = {
 
   let enum =
     t(
-      ~payment="payment",
+      ~transfer="transfer",
       ~createAccount="create_account",
       ~createOrganization="create_organization",
       ~issueAsset="issue_asset",
@@ -48,11 +48,5 @@ module OpCodes = {
     notProcessed: string,
   };
 
-  let enum =
-    t(
-      ~ok="op_ok",
-      ~success="op_success",
-      ~underfunded="op_underfunded",
-      ~notProcessed="op_not_processed",
-    );
+  let enum = t(~ok="op_ok", ~success="op_success", ~underfunded="op_underfunded", ~notProcessed="op_not_processed");
 };

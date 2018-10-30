@@ -62,7 +62,7 @@ module Options = {
     };
 };
 
-module Payment = {
+module Transfer = {
   open Js;
 
   type t;
@@ -78,11 +78,11 @@ module Endpoints = {
     let organizations = "/organizations";
     let accounts = "/accounts";
     let assets = "/assets";
-    let payments = "/payments";
+    let transfers = "/transfers";
 
     let getAccount = id => {j|$accounts/$id|j};
-    let getPayment = id => {j|$payments/$id|j};
-    /* let accountPayments = id => {j|$accounts/$id/payments|j}; */
+    let getTransfer = id => {j|$transfers/$id|j};
+    /* let accountTransfers = id => {j|$accounts/$id/transfers|j}; */
   };
 
   type response = Nullable.t(Service.data);
@@ -94,10 +94,10 @@ module Endpoints = {
     getAllAccounts: unit => Promise.t(response),
     getAllAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makePayment: Array.t(Payment.t) => Promise.t(response),
-    getPayment: string => Promise.t(response),
-    /* monitorPaymentsToAccount: (string, Json.t => unit) => EventSource.t,
-       monitorPaymentsToOrg: (Json.t => unit) => EventSource.t, */
+    makeTransfer: Array.t(Transfer.t) => Promise.t(response),
+    getTransfer: string => Promise.t(response),
+    /* monitorTransfersToAccount: (string, Json.t => unit) => EventSource.t,
+       monitorTransfersToOrg: (Json.t => unit) => EventSource.t, */
   };
 
   let make = t;
@@ -125,11 +125,7 @@ let init: Options.t => Endpoints.t =
     Js.Dict.set(headers, "Content-Type", "application/json");
     Js.Dict.set(headers, "Accept-Language", language);
 
-    let partialSetAuthHeaders =
-      Auth.setHeaders(
-        ~apiKey=options |> Options.apiKey,
-        ~secret=options |> Options.secret,
-      );
+    let partialSetAuthHeaders = Auth.setHeaders(~apiKey=options |> Options.apiKey, ~secret=options |> Options.secret);
 
     let getRoute =
       get(
@@ -161,22 +157,18 @@ let init: Options.t => Endpoints.t =
       ~getAllAccounts=() => getRoute(Endpoints.Routes.accounts),
       ~getAllAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
-      ~makePayment=
-        operations =>
-          postToRoute(
-            Endpoints.Routes.payments,
-            ~body=JsonUtil.asJson(Payment.batch(~operations)),
-          ),
-      ~getPayment=id => getRoute(Endpoints.Routes.getPayment(id)),
-      /* ~monitorPaymentsToAccount=
+      ~makeTransfer=
+        operations => postToRoute(Endpoints.Routes.transfers, ~body=JsonUtil.asJson(Transfer.batch(~operations))),
+      ~getTransfer=id => getRoute(Endpoints.Routes.getTransfer(id)),
+      /* ~monitorTransfersToAccount=
            (id, callback) =>
              openSse(
-               Endpoints.Routes.accountPayments(id),
-               ~eventName="payment",
+               Endpoints.Routes.accountTransfers(id),
+               ~eventName="transfer",
                ~callback,
              ),
-         ~monitorPaymentsToOrg=
+         ~monitorTransfersToOrg=
            callback =>
-             openSse(Endpoints.Routes.payments, ~eventName="payment", ~callback), */
+             openSse(Endpoints.Routes.transfers, ~eventName="transfer", ~callback), */
     );
   };
