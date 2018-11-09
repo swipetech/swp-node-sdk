@@ -1,2 +1,2 @@
-let host = "https://api.swipetech.com.br";
-let sandboxHost = "https://api.sandbox.swipetech.com.br";
+let host = "https://api.swipetech.io";
+let sandboxHost = "https://api.sandbox.swipetech.io";
