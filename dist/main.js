@@ -173,6 +173,53 @@ function _1(o, a0) {
   }
 }
 
+function curry_2(o, a0, a1, arity) {
+  if (arity > 7 || arity < 0) {
+    return app(o, /* array */[
+                a0,
+                a1
+              ]);
+  } else {
+    switch (arity) {
+      case 0 : 
+      case 1 : 
+          return app(o(a0), /* array */[a1]);
+      case 2 : 
+          return o(a0, a1);
+      case 3 : 
+          return (function (param) {
+              return o(a0, a1, param);
+            });
+      case 4 : 
+          return (function (param, param$1) {
+              return o(a0, a1, param, param$1);
+            });
+      case 5 : 
+          return (function (param, param$1, param$2) {
+              return o(a0, a1, param, param$1, param$2);
+            });
+      case 6 : 
+          return (function (param, param$1, param$2, param$3) {
+              return o(a0, a1, param, param$1, param$2, param$3);
+            });
+      case 7 : 
+          return (function (param, param$1, param$2, param$3, param$4) {
+              return o(a0, a1, param, param$1, param$2, param$3, param$4);
+            });
+      
+    }
+  }
+}
+
+function _2(o, a0, a1) {
+  var arity = o.length;
+  if (arity === 2) {
+    return o(a0, a1);
+  } else {
+    return curry_2(o, a0, a1, arity);
+  }
+}
+
 function curry_3(o, a0, a1, a2, arity) {
   var exit = 0;
   if (arity > 7 || arity < 0) {
@@ -229,6 +276,463 @@ function _3(o, a0, a1, a2) {
 }
 /* No side effect */
 
+/* node_std_output Not a pure module */
+
+/* No side effect */
+
+var imul = ( Math.imul || function (x,y) {
+  y |= 0; return ((((x >> 16) * y) << 16) + (x & 0xffff) * y)|0; 
+}
+);
+/* imul Not a pure module */
+
+/* repeat Not a pure module */
+
+/* No side effect */
+
+/* two_ptr_32_dbl Not a pure module */
+
+function caml_failwith(s) {
+  throw [
+        failure,
+        s
+      ];
+}
+
+function lowercase(c) {
+  if (c >= /* "A" */65 && c <= /* "Z" */90 || c >= /* "\192" */192 && c <= /* "\214" */214 || c >= /* "\216" */216 && c <= /* "\222" */222) {
+    return c + 32 | 0;
+  } else {
+    return c;
+  }
+}
+
+function parse_format(fmt) {
+  var len = fmt.length;
+  if (len > 31) {
+    throw [
+          invalid_argument,
+          "format_int: format too long"
+        ];
+  }
+  var f = /* record */[
+    /* justify */"+",
+    /* signstyle */"-",
+    /* filter */" ",
+    /* alternate */false,
+    /* base : Dec */2,
+    /* signedconv */false,
+    /* width */0,
+    /* uppercase */false,
+    /* sign */1,
+    /* prec */-1,
+    /* conv */"f"
+  ];
+  var _i = 0;
+  while(true) {
+    var i = _i;
+    if (i >= len) {
+      return f;
+    } else {
+      var c = fmt.charCodeAt(i);
+      var exit = 0;
+      if (c >= 69) {
+        if (c >= 88) {
+          if (c >= 121) {
+            exit = 1;
+          } else {
+            switch (c - 88 | 0) {
+              case 0 : 
+                  f[/* base */4] = /* Hex */1;
+                  f[/* uppercase */7] = true;
+                  _i = i + 1 | 0;
+                  continue ;
+              case 13 : 
+              case 14 : 
+              case 15 : 
+                  exit = 5;
+                  break;
+              case 12 : 
+              case 17 : 
+                  exit = 4;
+                  break;
+              case 23 : 
+                  f[/* base */4] = /* Oct */0;
+                  _i = i + 1 | 0;
+                  continue ;
+              case 29 : 
+                  f[/* base */4] = /* Dec */2;
+                  _i = i + 1 | 0;
+                  continue ;
+              case 1 : 
+              case 2 : 
+              case 3 : 
+              case 4 : 
+              case 5 : 
+              case 6 : 
+              case 7 : 
+              case 8 : 
+              case 9 : 
+              case 10 : 
+              case 11 : 
+              case 16 : 
+              case 18 : 
+              case 19 : 
+              case 20 : 
+              case 21 : 
+              case 22 : 
+              case 24 : 
+              case 25 : 
+              case 26 : 
+              case 27 : 
+              case 28 : 
+              case 30 : 
+              case 31 : 
+                  exit = 1;
+                  break;
+              case 32 : 
+                  f[/* base */4] = /* Hex */1;
+                  _i = i + 1 | 0;
+                  continue ;
+              
+            }
+          }
+        } else if (c >= 72) {
+          exit = 1;
+        } else {
+          f[/* signedconv */5] = true;
+          f[/* uppercase */7] = true;
+          f[/* conv */10] = String.fromCharCode(lowercase(c));
+          _i = i + 1 | 0;
+          continue ;
+        }
+      } else {
+        var switcher = c - 32 | 0;
+        if (switcher > 25 || switcher < 0) {
+          exit = 1;
+        } else {
+          switch (switcher) {
+            case 3 : 
+                f[/* alternate */3] = true;
+                _i = i + 1 | 0;
+                continue ;
+            case 0 : 
+            case 11 : 
+                exit = 2;
+                break;
+            case 13 : 
+                f[/* justify */0] = "-";
+                _i = i + 1 | 0;
+                continue ;
+            case 14 : 
+                f[/* prec */9] = 0;
+                var j = i + 1 | 0;
+                while((function(j){
+                    return function () {
+                      var w = fmt.charCodeAt(j) - /* "0" */48 | 0;
+                      return w >= 0 && w <= 9;
+                    }
+                    }(j))()) {
+                  f[/* prec */9] = (imul(f[/* prec */9], 10) + fmt.charCodeAt(j) | 0) - /* "0" */48 | 0;
+                  j = j + 1 | 0;
+                }                _i = j;
+                continue ;
+            case 1 : 
+            case 2 : 
+            case 4 : 
+            case 5 : 
+            case 6 : 
+            case 7 : 
+            case 8 : 
+            case 9 : 
+            case 10 : 
+            case 12 : 
+            case 15 : 
+                exit = 1;
+                break;
+            case 16 : 
+                f[/* filter */2] = "0";
+                _i = i + 1 | 0;
+                continue ;
+            case 17 : 
+            case 18 : 
+            case 19 : 
+            case 20 : 
+            case 21 : 
+            case 22 : 
+            case 23 : 
+            case 24 : 
+            case 25 : 
+                exit = 3;
+                break;
+            
+          }
+        }
+      }
+      switch (exit) {
+        case 1 : 
+            _i = i + 1 | 0;
+            continue ;
+        case 2 : 
+            f[/* signstyle */1] = String.fromCharCode(c);
+            _i = i + 1 | 0;
+            continue ;
+        case 3 : 
+            f[/* width */6] = 0;
+            var j$1 = i;
+            while((function(j$1){
+                return function () {
+                  var w = fmt.charCodeAt(j$1) - /* "0" */48 | 0;
+                  return w >= 0 && w <= 9;
+                }
+                }(j$1))()) {
+              f[/* width */6] = (imul(f[/* width */6], 10) + fmt.charCodeAt(j$1) | 0) - /* "0" */48 | 0;
+              j$1 = j$1 + 1 | 0;
+            }            _i = j$1;
+            continue ;
+        case 4 : 
+            f[/* signedconv */5] = true;
+            f[/* base */4] = /* Dec */2;
+            _i = i + 1 | 0;
+            continue ;
+        case 5 : 
+            f[/* signedconv */5] = true;
+            f[/* conv */10] = String.fromCharCode(c);
+            _i = i + 1 | 0;
+            continue ;
+        
+      }
+    }
+  }}
+
+function finish_formatting(param, rawbuffer) {
+  var justify = param[/* justify */0];
+  var signstyle = param[/* signstyle */1];
+  var filter = param[/* filter */2];
+  var alternate = param[/* alternate */3];
+  var base = param[/* base */4];
+  var signedconv = param[/* signedconv */5];
+  var width = param[/* width */6];
+  var uppercase = param[/* uppercase */7];
+  var sign = param[/* sign */8];
+  var len = rawbuffer.length;
+  if (signedconv && (sign < 0 || signstyle !== "-")) {
+    len = len + 1 | 0;
+  }
+  if (alternate) {
+    if (base === /* Oct */0) {
+      len = len + 1 | 0;
+    } else if (base === /* Hex */1) {
+      len = len + 2 | 0;
+    }
+    
+  }
+  var buffer = "";
+  if (justify === "+" && filter === " ") {
+    for(var i = len ,i_finish = width - 1 | 0; i <= i_finish; ++i){
+      buffer = buffer + filter;
+    }
+  }
+  if (signedconv) {
+    if (sign < 0) {
+      buffer = buffer + "-";
+    } else if (signstyle !== "-") {
+      buffer = buffer + signstyle;
+    }
+    
+  }
+  if (alternate && base === /* Oct */0) {
+    buffer = buffer + "0";
+  }
+  if (alternate && base === /* Hex */1) {
+    buffer = buffer + "0x";
+  }
+  if (justify === "+" && filter === "0") {
+    for(var i$1 = len ,i_finish$1 = width - 1 | 0; i$1 <= i_finish$1; ++i$1){
+      buffer = buffer + filter;
+    }
+  }
+  buffer = uppercase ? buffer + rawbuffer.toUpperCase() : buffer + rawbuffer;
+  if (justify === "-") {
+    for(var i$2 = len ,i_finish$2 = width - 1 | 0; i$2 <= i_finish$2; ++i$2){
+      buffer = buffer + " ";
+    }
+  }
+  return buffer;
+}
+
+function caml_format_float(fmt, x) {
+  var f = parse_format(fmt);
+  var prec = f[/* prec */9] < 0 ? 6 : f[/* prec */9];
+  var x$1 = x < 0 ? (f[/* sign */8] = -1, -x) : x;
+  var s = "";
+  if (isNaN(x$1)) {
+    s = "nan";
+    f[/* filter */2] = " ";
+  } else if (isFinite(x$1)) {
+    var match = f[/* conv */10];
+    switch (match) {
+      case "e" : 
+          s = x$1.toExponential(prec);
+          var i = s.length;
+          if (s[i - 3 | 0] === "e") {
+            s = s.slice(0, i - 1 | 0) + ("0" + s.slice(i - 1 | 0));
+          }
+          break;
+      case "f" : 
+          s = x$1.toFixed(prec);
+          break;
+      case "g" : 
+          var prec$1 = prec !== 0 ? prec : 1;
+          s = x$1.toExponential(prec$1 - 1 | 0);
+          var j = s.indexOf("e");
+          var exp = Number(s.slice(j + 1 | 0)) | 0;
+          if (exp < -4 || x$1 >= 1e21 || x$1.toFixed().length > prec$1) {
+            var i$1 = j - 1 | 0;
+            while(s[i$1] === "0") {
+              i$1 = i$1 - 1 | 0;
+            }            if (s[i$1] === ".") {
+              i$1 = i$1 - 1 | 0;
+            }
+            s = s.slice(0, i$1 + 1 | 0) + s.slice(j);
+            var i$2 = s.length;
+            if (s[i$2 - 3 | 0] === "e") {
+              s = s.slice(0, i$2 - 1 | 0) + ("0" + s.slice(i$2 - 1 | 0));
+            }
+            
+          } else {
+            var p = prec$1;
+            if (exp < 0) {
+              p = p - (exp + 1 | 0) | 0;
+              s = x$1.toFixed(p);
+            } else {
+              while((function () {
+                      s = x$1.toFixed(p);
+                      return s.length > (prec$1 + 1 | 0);
+                    })()) {
+                p = p - 1 | 0;
+              }            }
+            if (p !== 0) {
+              var k = s.length - 1 | 0;
+              while(s[k] === "0") {
+                k = k - 1 | 0;
+              }              if (s[k] === ".") {
+                k = k - 1 | 0;
+              }
+              s = s.slice(0, k + 1 | 0);
+            }
+            
+          }
+          break;
+      default:
+        
+    }
+  } else {
+    s = "inf";
+    f[/* filter */2] = " ";
+  }
+  return finish_formatting(f, s);
+}
+
+var float_of_string = (
+  function (s, caml_failwith) {
+    var res = +s;
+    if ((s.length > 0) && (res === res))
+        return res;
+    s = s.replace(/_/g, "");
+    res = +s;
+    if (((s.length > 0) && (res === res)) || /^[+-]?nan$/i.test(s)) {
+        return res;
+    }
+    if (/^ *0x[0-9a-f_]+p[+-]?[0-9_]+/i.test(s)) {
+        var pidx = s.indexOf('p');
+        pidx = (pidx == -1) ? s.indexOf('P') : pidx;
+        var exp = +s.substring(pidx + 1);
+        res = +s.substring(0, pidx);
+        return res * Math.pow(2, exp);
+    }
+    if (/^\+?inf(inity)?$/i.test(s))
+        return Infinity;
+    if (/^-inf(inity)?$/i.test(s))
+        return -Infinity;
+    caml_failwith("float_of_string");
+}
+
+);
+
+function caml_float_of_string(s) {
+  return _2(float_of_string, s, caml_failwith);
+}
+/* float_of_string Not a pure module */
+
+function get(s, i) {
+  if (i < 0 || i >= s.length) {
+    throw [
+          invalid_argument,
+          "index out of bounds"
+        ];
+  } else {
+    return s.charCodeAt(i);
+  }
+}
+/* No side effect */
+
+var id = [0];
+
+function get_id() {
+  id[0] += 1;
+  return id[0];
+}
+
+function create(str) {
+  var v_001 = get_id(/* () */0);
+  var v = /* tuple */[
+    str,
+    v_001
+  ];
+  v.tag = 248;
+  return v;
+}
+/* No side effect */
+
+/* No side effect */
+
+/* No side effect */
+
+/* No side effect */
+
+var Exit = create("Pervasives.Exit");
+
+function valid_float_lexem(s) {
+  var l = s.length;
+  var _i = 0;
+  while(true) {
+    var i = _i;
+    if (i >= l) {
+      return s + ".";
+    } else {
+      var match = get(s, i);
+      if (match >= 48) {
+        if (match >= 58) {
+          return s;
+        } else {
+          _i = i + 1 | 0;
+          continue ;
+        }
+      } else if (match !== 45) {
+        return s;
+      } else {
+        _i = i + 1 | 0;
+        continue ;
+      }
+    }
+  }}
+
+function string_of_float(f) {
+  return valid_float_lexem(caml_format_float("%.12g", f));
+}
+/* No side effect */
+
 function undefined_to_opt(x) {
   if (x === undefined) {
     return /* None */0;
@@ -238,16 +742,16 @@ function undefined_to_opt(x) {
 }
 /* No side effect */
 
-var max = 2147483647;
+var max$1 = 2147483647;
 
-var min = -2147483648;
+var min$1 = -2147483648;
 /* No side effect */
 
 function floor_int(f) {
-  if (f > max) {
-    return max;
-  } else if (f < min) {
-    return min;
+  if (f > max$1) {
+    return max$1;
+  } else if (f < min$1) {
+    return min$1;
   } else {
     return Math.floor(f);
   }
@@ -589,7 +1093,7 @@ function handleRequest(debug, req) {
               }));
 }
 
-function get(host$$1, headers, $staropt$star, path) {
+function get$1(host$$1, headers, $staropt$star, path) {
   var debug = $staropt$star ? $staropt$star[0] : false;
   if (debug) {
     console.log("");
@@ -625,6 +1129,32 @@ var operationTypes = OpTypes[/* enum */0];
 var operationCodes = OpCodes[/* enum */0];
 
 var Options$1 = /* module */[];
+
+function make$3(prim, prim$1, prim$2, prim$3, prim$4, _) {
+  var tmp = {
+    from: prim,
+    to: prim$1,
+    asset: prim$2,
+    amount: prim$3
+  };
+  if (prim$4) {
+    tmp.opCode = prim$4[0];
+  }
+  return tmp;
+}
+
+function make$1$1(prim, prim$1, prim$2, prim$3, prim$4, _) {
+  var tmp = {
+    from: prim,
+    to: prim$1,
+    asset: prim$2,
+    amount: prim$3
+  };
+  if (prim$4) {
+    tmp.opCode = prim$4[0];
+  }
+  return tmp;
+}
 
 var accounts = "/accounts";
 
@@ -665,7 +1195,7 @@ function init(options) {
     var debug = partial_arg$2;
     var path = param;
     _3(setAuthHeaders, path, /* None */0, headers$1);
-    return get(host$1$$1, headers$1, debug, path);
+    return get$1(host$1$$1, headers$1, debug, path);
   };
   var func = function (param, param$1, param$2, param$3) {
     var host$1$$1 = host$$1;
@@ -694,13 +1224,34 @@ function init(options) {
   var prim$4 = function () {
     return _1(getRoute, "/organizations");
   };
-  var prim$5 = function (operations) {
+  var prim$5 = function (ops_compat) {
+    var operations = ops_compat.map((function (op) {
+            return make$1$1(op.from, op.to, op.asset, string_of_float(op.amount), /* None */0, /* () */0);
+          }));
     var partial_arg = /* Some */[{
         operations: operations
       }];
     return (function (param) {
-                return func(partial_arg, partialSetAuthHeaders, arg$1, param);
-              })(transfers);
+                    return func(partial_arg, partialSetAuthHeaders, arg$1, param);
+                  })(transfers).then((function (a) {
+                    return Promise.resolve(a);
+                  })).then((function (data) {
+                  var transfer = data.value;
+                  var operations = transfer.operations.map((function (op) {
+                          return make$3(op.from, op.to, op.asset, caml_float_of_string(op.amount), undefined_to_opt(op.opCode), /* () */0);
+                        }));
+                  var tmp = {
+                    operations: operations
+                  };
+                  var tmp$1 = undefined_to_opt(transfer.id);
+                  if (tmp$1) {
+                    tmp.id = tmp$1[0];
+                  }
+                  return Promise.resolve({
+                              receipt: data.receipt,
+                              value: tmp
+                            });
+                }));
   };
   var prim$6 = function (id) {
     return _1(getRoute, getTransfer(id));

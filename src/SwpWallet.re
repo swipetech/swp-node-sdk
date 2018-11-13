@@ -14,37 +14,6 @@ let post = (~host, ~headers, ~body=?, ~setAuthHeaders, ~debug=?, path) => {
   Service.post(~host, ~headers, ~body?, ~debug?, path);
 };
 
-/* let sse =
-       (
-         ~headers,
-         ~setAuthHeaders,
-         ~callback,
-         ~eventName,
-         ~debug=false,
-         ~sandbox=?,
-         path,
-       ) => {
-     setAuthHeaders(~path, ~body=?None, headers);
-
-     let es = Service.sse(~headers, ~sandbox?, path);
-
-     es
-     |> EventSource.(
-          addEventListener(
-            eventName,
-            e => {
-              if (debug) {
-                Js.log(e);
-              };
-
-              callback(e |> Event.data);
-            },
-          )
-        );
-
-     es;
-   }; */
-
 module Options = {
   [@bs.deriving abstract]
   type t =
@@ -62,13 +31,78 @@ module Options = {
     };
 };
 
+module Data = {
+  module Receipt = {
+    type t;
+  };
+
+  [@bs.deriving abstract]
+  type t('a) = {
+    receipt: Receipt.t,
+    value: 'a,
+  };
+
+  external asData: 'a => t('a) = "%identity";
+
+  let make = t;
+};
+
+module TransferCompat = {
+  open Js;
+
+  module OperationCompat = {
+    [@bs.deriving abstract]
+    type t = {
+      from: string,
+      [@bs.as "to"]
+      to_: string,
+      asset: string,
+      amount: float,
+      [@bs.optional]
+      opCode: string,
+    };
+
+    let make = t;
+  };
+
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional]
+    id: string,
+    operations: Array.t(OperationCompat.t),
+  };
+
+  let make = t;
+};
+
 module Transfer = {
   open Js;
 
-  type t;
+  module Operation = {
+    [@bs.deriving abstract]
+    type t = {
+      from: string,
+      [@bs.as "to"]
+      to_: string,
+      asset: string,
+      amount: string,
+      [@bs.optional]
+      opCode: string,
+    };
+
+    let make = t;
+  };
 
   [@bs.deriving abstract]
-  type batch = {operations: Array.t(t)};
+  type t = {
+    [@bs.optional]
+    id: string,
+    operations: Array.t(Operation.t),
+  };
+
+  external asTransfer: 'a => t = "%identity";
+
+  let make = t;
 };
 
 module Endpoints = {
@@ -82,7 +116,6 @@ module Endpoints = {
 
     let getAccount = id => {j|$accounts/$id|j};
     let getTransfer = id => {j|$transfers/$id|j};
-    /* let accountTransfers = id => {j|$accounts/$id/transfers|j}; */
   };
 
   type response = Nullable.t(Service.data);
@@ -94,10 +127,10 @@ module Endpoints = {
     getAllAccounts: unit => Promise.t(response),
     getAllAssets: unit => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makeTransfer: Array.t(Transfer.t) => Promise.t(response),
+    makeTransfer:
+      Array.t(TransferCompat.OperationCompat.t) =>
+      Promise.t(Data.t(TransferCompat.t)),
     getTransfer: string => Promise.t(response),
-    /* monitorTransfersToAccount: (string, Json.t => unit) => EventSource.t,
-       monitorTransfersToOrg: (Json.t => unit) => EventSource.t, */
   };
 
   let make = t;
@@ -125,7 +158,11 @@ let init: Options.t => Endpoints.t =
     Js.Dict.set(headers, "Content-Type", "application/json");
     Js.Dict.set(headers, "Accept-Language", language);
 
-    let partialSetAuthHeaders = Auth.setHeaders(~apiKey=options |> Options.apiKey, ~secret=options |> Options.secret);
+    let partialSetAuthHeaders =
+      Auth.setHeaders(
+        ~apiKey=options |> Options.apiKey,
+        ~secret=options |> Options.secret,
+      );
 
     let getRoute =
       get(
@@ -143,14 +180,6 @@ let init: Options.t => Endpoints.t =
         ~debug=?options |> Options.debug,
       );
 
-    /* let openSse =
-       sse(
-         ~host,
-         ~headers,
-         ~setAuthHeaders=partialSetAuthHeaders,
-         ~debug=?options |> Options.debug,
-       ); */
-
     Endpoints.make(
       ~createAccount=() => postToRoute(Endpoints.Routes.accounts),
       ~getAccount=id => getRoute(Endpoints.Routes.getAccount(id)),
@@ -158,17 +187,57 @@ let init: Options.t => Endpoints.t =
       ~getAllAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
       ~makeTransfer=
-        operations => postToRoute(Endpoints.Routes.transfers, ~body=JsonUtil.asJson(Transfer.batch(~operations))),
+        ops_compat => {
+          let operations =
+            ops_compat
+            |> Js.Array.map(op =>
+                 Transfer.Operation.make(
+                   ~from=TransferCompat.OperationCompat.from(op),
+                   ~to_=TransferCompat.OperationCompat.to_(op),
+                   ~asset=TransferCompat.OperationCompat.asset(op),
+                   ~amount=
+                     string_of_float(
+                       TransferCompat.OperationCompat.amount(op),
+                     ),
+                   (),
+                 )
+               );
+
+          postToRoute(
+            Endpoints.Routes.transfers,
+            ~body=JsonUtil.asJson(Transfer.make(~operations, ())),
+          )
+          |> Js.Promise.then_(a => Js.Promise.resolve(Data.asData(a)))
+          |> Js.Promise.then_(data => {
+               let transfer = Data.value(data) |> Transfer.asTransfer;
+               let operations =
+                 Transfer.operations(transfer)
+                 |> Js.Array.map(op =>
+                      TransferCompat.OperationCompat.make(
+                        ~opCode=?Transfer.Operation.opCode(op),
+                        ~from=Transfer.Operation.from(op),
+                        ~to_=Transfer.Operation.to_(op),
+                        ~asset=Transfer.Operation.asset(op),
+                        ~amount=
+                          float_of_string(Transfer.Operation.amount(op)),
+                        (),
+                      )
+                    );
+
+               let resData =
+                 Data.make(
+                   ~receipt=Data.receipt(data),
+                   ~value=
+                     TransferCompat.make(
+                       ~id=?Transfer.id(transfer),
+                       ~operations,
+                       (),
+                     ),
+                 );
+
+               Js.Promise.resolve(resData);
+             });
+        },
       ~getTransfer=id => getRoute(Endpoints.Routes.getTransfer(id)),
-      /* ~monitorTransfersToAccount=
-           (id, callback) =>
-             openSse(
-               Endpoints.Routes.accountTransfers(id),
-               ~eventName="transfer",
-               ~callback,
-             ),
-         ~monitorTransfersToOrg=
-           callback =>
-             openSse(Endpoints.Routes.transfers, ~eventName="transfer", ~callback), */
     );
   };
