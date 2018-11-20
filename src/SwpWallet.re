@@ -14,37 +14,6 @@ let post = (~host, ~headers, ~body=?, ~setAuthHeaders, ~debug=?, path) => {
   Service.post(~host, ~headers, ~body?, ~debug?, path);
 };
 
-/* let sse =
-       (
-         ~headers,
-         ~setAuthHeaders,
-         ~callback,
-         ~eventName,
-         ~debug=false,
-         ~sandbox=?,
-         path,
-       ) => {
-     setAuthHeaders(~path, ~body=?None, headers);
-
-     let es = Service.sse(~headers, ~sandbox?, path);
-
-     es
-     |> EventSource.(
-          addEventListener(
-            eventName,
-            e => {
-              if (debug) {
-                Js.log(e);
-              };
-
-              callback(e |> Event.data);
-            },
-          )
-        );
-
-     es;
-   }; */
-
 module Options = {
   [@bs.deriving abstract]
   type t =
@@ -82,7 +51,7 @@ module Endpoints = {
 
     let getAccount = id => {j|$accounts/$id|j};
     let getTransfer = id => {j|$transfers/$id|j};
-    /* let accountTransfers = id => {j|$accounts/$id/transfers|j}; */
+    let getAllTransfers = id => {j|$accounts/$id/transfers|j};
   };
 
   type response = Nullable.t(Service.data);
@@ -96,8 +65,7 @@ module Endpoints = {
     getOrganization: unit => Promise.t(response),
     makeTransfer: Array.t(Transfer.t) => Promise.t(response),
     getTransfer: string => Promise.t(response),
-    /* monitorTransfersToAccount: (string, Json.t => unit) => EventSource.t,
-       monitorTransfersToOrg: (Json.t => unit) => EventSource.t, */
+    getAllTransfers: string => Promise.t(response),
   };
 
   let make = t;
@@ -125,7 +93,11 @@ let init: Options.t => Endpoints.t =
     Js.Dict.set(headers, "Content-Type", "application/json");
     Js.Dict.set(headers, "Accept-Language", language);
 
-    let partialSetAuthHeaders = Auth.setHeaders(~apiKey=options |> Options.apiKey, ~secret=options |> Options.secret);
+    let partialSetAuthHeaders =
+      Auth.setHeaders(
+        ~apiKey=options |> Options.apiKey,
+        ~secret=options |> Options.secret,
+      );
 
     let getRoute =
       get(
@@ -143,14 +115,6 @@ let init: Options.t => Endpoints.t =
         ~debug=?options |> Options.debug,
       );
 
-    /* let openSse =
-       sse(
-         ~host,
-         ~headers,
-         ~setAuthHeaders=partialSetAuthHeaders,
-         ~debug=?options |> Options.debug,
-       ); */
-
     Endpoints.make(
       ~createAccount=() => postToRoute(Endpoints.Routes.accounts),
       ~getAccount=id => getRoute(Endpoints.Routes.getAccount(id)),
@@ -158,17 +122,12 @@ let init: Options.t => Endpoints.t =
       ~getAllAssets=() => getRoute(Endpoints.Routes.assets),
       ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
       ~makeTransfer=
-        operations => postToRoute(Endpoints.Routes.transfers, ~body=JsonUtil.asJson(Transfer.batch(~operations))),
+        operations =>
+          postToRoute(
+            Endpoints.Routes.transfers,
+            ~body=JsonUtil.asJson(Transfer.batch(~operations)),
+          ),
       ~getTransfer=id => getRoute(Endpoints.Routes.getTransfer(id)),
-      /* ~monitorTransfersToAccount=
-           (id, callback) =>
-             openSse(
-               Endpoints.Routes.accountTransfers(id),
-               ~eventName="transfer",
-               ~callback,
-             ),
-         ~monitorTransfersToOrg=
-           callback =>
-             openSse(Endpoints.Routes.transfers, ~eventName="transfer", ~callback), */
+      ~getAllTransfers=id => getRoute(Endpoints.Routes.getAllTransfers(id)),
     );
   };
