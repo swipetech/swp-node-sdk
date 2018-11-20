@@ -114,12 +114,6 @@ let handleRequest = (~debug, req) =>
     req |> then_(handleResponse(~debug)) |> catch(handleError(~debug))
   );
 
-let sse = (~headers, ~sandbox=false, path) =>
-  EventSource.make(
-    (sandbox ? sandboxHost : host) ++ path,
-    EventSource.Options.make(~headers),
-  );
-
 let get = (~host, ~headers, ~debug=false, path) => {
   if (debug) {
     Js.log("");
