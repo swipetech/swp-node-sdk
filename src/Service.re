@@ -28,11 +28,11 @@ module Api = {
       error: Js.Nullable.t(Error.t),
     };
 
-    external asResponse: Js.Json.t => t = "%identity";
+    external asResponse : Js.Json.t => t = "%identity";
   };
 };
 
-external asExn: 'a => exn = "%identity";
+external asExn : 'a => exn = "%identity";
 
 let handleResponse = (~debug=false, res) =>
   if (res |> Fetch.Response.status == 204) {
@@ -74,8 +74,7 @@ let handleResponse = (~debug=false, res) =>
 
          switch (Js.Nullable.toOption(error)) {
          | Some(e) => Js.Promise.reject(asExn(e))
-         | None =>
-           Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
+         | None => Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
          };
        })
     |> Js.Promise.catch(err => {
@@ -110,22 +109,35 @@ let handleError = (~debug=false, errorResponse) => {
 };
 
 let handleRequest = (~debug, req) =>
-  Js.Promise.(
-    req |> then_(handleResponse(~debug)) |> catch(handleError(~debug))
-  );
+  Js.Promise.(req |> then_(handleResponse(~debug)) |> catch(handleError(~debug)));
 
-let get = (~host, ~headers, ~debug=false, path) => {
+let pathWithQueryParams = (path, params: Js.Dict.t(string)) =>
+  params
+  |> Js.Dict.keys
+  |> Js.Array.reduce(
+       (acc, key) =>
+         switch (Js.Dict.get(params, key)) {
+         | Some(k) => {j|$acc$key=$k&|j}
+         | None => acc
+         },
+       path ++ "?",
+     );
+
+let get = (~host, ~headers, ~debug=false, ~queryParams=?, path) => {
   if (debug) {
     Js.log("");
     Logger.log("Request", {"path": path, "headers": headers});
   };
 
+  let finalPath =
+    switch (queryParams) {
+    | Some(q) => pathWithQueryParams(path, q)
+    | None => path
+    };
+
   Fetch.fetchWithInit(
-    host ++ path,
-    Fetch.RequestInit.make(
-      ~headers=Fetch.HeadersInit.makeWithDict(headers),
-      (),
-    ),
+    host ++ finalPath,
+    Fetch.RequestInit.make(~headers=Fetch.HeadersInit.makeWithDict(headers), ()),
   )
   |> handleRequest(~debug);
 };
@@ -135,10 +147,7 @@ let post = (~host, ~headers, ~body=?, ~debug=false, path) => {
 
   if (debug) {
     Js.log("");
-    Logger.log(
-      "Request",
-      {"path": path, "headers": headers, "body": strBody},
-    );
+    Logger.log("Request", {"path": path, "headers": headers, "body": strBody});
   };
 
   Fetch.fetchWithInit(
