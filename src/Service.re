@@ -169,3 +169,16 @@ let post = (~host, ~headers, ~body=?, ~debug=false, path) => {
   )
   |> handleRequest(~debug);
 };
+
+let delete = (~host, ~headers, ~debug=false, path) => {
+  if (debug) {
+    Js.log("");
+    Logger.log("Request", {"path": path, "headers": headers});
+  };
+
+  Fetch.fetchWithInit(
+    host ++ path,
+    Fetch.RequestInit.make(~method_=Delete, ~headers=Fetch.HeadersInit.makeWithDict(headers), ()),
+  )
+  |> handleRequest(~debug);
+};

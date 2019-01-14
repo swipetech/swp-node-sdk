@@ -14,6 +14,12 @@ let post = (~host, ~headers, ~body=?, ~setAuthHeaders, ~debug=?, path) => {
   Service.post(~host, ~headers, ~body?, ~debug?, path);
 };
 
+let delete = (~host, ~headers, ~setAuthHeaders, ~debug=?, path) => {
+  setAuthHeaders(~path, ~body=?None, headers);
+
+  Service.delete(~host, ~headers, ~debug?, path);
+};
+
 module Options = {
   [@bs.deriving abstract]
   type t =
@@ -50,6 +56,7 @@ module Endpoints = {
     let transfers = "/transfers";
 
     let getAccount = id => {j|$accounts/$id|j};
+    let deleteAccount = getAccount;
     let getTransfer = id => {j|$transfers/$id|j};
     let getAllTransfers = id => {j|$accounts/$id/transfers|j};
   };
@@ -65,8 +72,8 @@ module Endpoints = {
     getOrganization: unit => Promise.t(response),
     makeTransfer: Array.t(Transfer.t) => Promise.t(response),
     getTransfer: string => Promise.t(response),
-    getAllTransfers:
-      (string, Js.Nullable.t(Js.Dict.t(string))) => Promise.t(response),
+    getAllTransfers: (string, Js.Nullable.t(Js.Dict.t(string))) => Promise.t(response),
+    destroyAccount: string => Promise.t(response),
   };
 
   let make = t;
@@ -116,6 +123,8 @@ let init: Options.t => Endpoints.t =
         ~debug=?options |> Options.debug,
       );
 
+    let delete = delete(~host, ~headers, ~setAuthHeaders=partialSetAuthHeaders, ~debug=?options |> Options.debug);
+
     Endpoints.make(
       ~createAccount=() => postToRoute(Endpoints.Routes.accounts),
       ~getAccount=id => getRoute(Endpoints.Routes.getAccount(id)),
@@ -141,9 +150,7 @@ let init: Options.t => Endpoints.t =
       ~getTransfer=id => getRoute(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
         (id, queryParams) =>
-          getRoute(
-            Endpoints.Routes.getAllTransfers(id),
-            ~queryParams=?Js.Nullable.toOption(queryParams),
-          ),
+          getRoute(Endpoints.Routes.getAllTransfers(id), ~queryParams=?Js.Nullable.toOption(queryParams)),
+      ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
     );
   };
