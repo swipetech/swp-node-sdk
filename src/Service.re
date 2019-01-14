@@ -28,11 +28,11 @@ module Api = {
       error: Js.Nullable.t(Error.t),
     };
 
-    external asResponse : Js.Json.t => t = "%identity";
+    external asResponse: Js.Json.t => t = "%identity";
   };
 };
 
-external asExn : 'a => exn = "%identity";
+external asExn: 'a => exn = "%identity";
 
 let handleResponse = (~debug=false, res) =>
   if (res |> Fetch.Response.status == 204) {
@@ -74,7 +74,7 @@ let handleResponse = (~debug=false, res) =>
 
          switch (Js.Nullable.toOption(error)) {
          | Some(e) => Js.Promise.reject(asExn(e))
-         | None => Js.Promise.resolve(Js.Nullable.return(body |> Api.Response.data))
+         | None => Js.Promise.resolve(Js.Nullable.return(body))
          };
        })
     |> Js.Promise.catch(err => {
@@ -109,7 +109,9 @@ let handleError = (~debug=false, errorResponse) => {
 };
 
 let handleRequest = (~debug, req) =>
-  Js.Promise.(req |> then_(handleResponse(~debug)) |> catch(handleError(~debug)));
+  Js.Promise.(
+    req |> then_(handleResponse(~debug)) |> catch(handleError(~debug))
+  );
 
 let pathWithQueryParams = (path, params: Js.Dict.t(string)) =>
   params
@@ -137,7 +139,10 @@ let get = (~host, ~headers, ~debug=false, ~queryParams=?, path) => {
 
   Fetch.fetchWithInit(
     host ++ finalPath,
-    Fetch.RequestInit.make(~headers=Fetch.HeadersInit.makeWithDict(headers), ()),
+    Fetch.RequestInit.make(
+      ~headers=Fetch.HeadersInit.makeWithDict(headers),
+      (),
+    ),
   )
   |> handleRequest(~debug);
 };
@@ -147,7 +152,10 @@ let post = (~host, ~headers, ~body=?, ~debug=false, path) => {
 
   if (debug) {
     Js.log("");
-    Logger.log("Request", {"path": path, "headers": headers, "body": strBody});
+    Logger.log(
+      "Request",
+      {"path": path, "headers": headers, "body": strBody},
+    );
   };
 
   Fetch.fetchWithInit(

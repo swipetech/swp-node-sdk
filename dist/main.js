@@ -590,7 +590,7 @@ function handleResponse($staropt$star, res) {
                     }
                     var error$$1 = body.error;
                     if (error$$1 == null) {
-                      return Promise.resolve(body.data);
+                      return Promise.resolve(body);
                     } else {
                       return Promise.reject(error$$1);
                     }
