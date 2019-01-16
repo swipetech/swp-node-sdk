@@ -368,7 +368,7 @@ var OpCodes = /* module */[/* enum */$$enum$2];
 
 var host = "https://api.swipetech.io";
 
-var sandboxHost = "https://api.sandbox.swipetech.io";
+var sandboxHost = "https://api-sandbox.swipetech.io";
 /* No side effect */
 
 function encodeRequestMethod(param) {
