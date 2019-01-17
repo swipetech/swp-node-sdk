@@ -35,7 +35,7 @@ declare module "@swp/wallet-sdk" {
   export interface Receipt {
     id: string
     created_at: string
-    op_type: ActionType
+    type: ActionType
   }
 
   export interface Balance {
