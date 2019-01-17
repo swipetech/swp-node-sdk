@@ -10,32 +10,32 @@ module Languages = {
   let enum = t(~ptBr="pt-BR", ~enUs="en-US");
 };
 
-module OpTypes = {
+module ActionTypes = {
   [@bs.deriving abstract]
   type t = {
     [@bs.as "Transfer"]
     transfer: string,
     [@bs.as "CreateAccount"]
     createAccount: string,
+    [@bs.as "DestroyAccount"]
+    destroyAccount: string,
     [@bs.as "CreateOrganization"]
     createOrganization: string,
     [@bs.as "IssueAsset"]
     issueAsset: string,
-    [@bs.as "ChangeTrust"]
-    changeTrust: string,
   };
 
   let enum =
     t(
-      ~transfer="transfer",
-      ~createAccount="create_account",
-      ~createOrganization="create_organization",
-      ~issueAsset="issue_asset",
-      ~changeTrust="change_trust",
+      ~transfer="TRANSFER",
+      ~createAccount="CREATE_ACC",
+      ~destroyAccount="DESTROY_ACC",
+      ~createOrganization="CREATE_ORG",
+      ~issueAsset="ISSUE_ASSET",
     );
 };
 
-module OpCodes = {
+module OperationCodes = {
   [@bs.deriving abstract]
   type t = {
     [@bs.as "Ok"]

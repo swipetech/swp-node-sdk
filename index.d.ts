@@ -1,10 +1,10 @@
 declare module "@swp/wallet-sdk" {
-  export type OperationType =
-    "payment" |
-    "create_account" |
-    "create_organization" |
-    "issue_asset" |
-    "change_trust"
+  export type ActionType =
+    "PAYMENT" |
+    "CREATE_ACC" |
+    "DESTROY_ACC" |
+    "CREATE_ORG" |
+    "ISSUE_ASSET"
 
   export type OperationCode =
   "op_ok" |
@@ -35,7 +35,7 @@ declare module "@swp/wallet-sdk" {
   export interface Receipt {
     id: string
     created_at: string
-    op_type: OperationType
+    op_type: ActionType
   }
 
   export interface Balance {
@@ -53,6 +53,13 @@ declare module "@swp/wallet-sdk" {
     id: string
     code: string
     limit: number
+  }
+
+  export interface PaymentOp {
+    from: string
+    to: string
+    amount: string
+    asset: string
   }
 
   export interface Organization extends Account {
@@ -110,7 +117,7 @@ declare module "@swp/wallet-sdk" {
     EN_US: string
   }
 
-  export const operationTypes: {
+  export const actionTypes: {
     Payment: "payment",
     CreateAccount: "create_account",
     CreateOrganization: "create_organization",
