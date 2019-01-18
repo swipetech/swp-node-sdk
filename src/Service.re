@@ -113,7 +113,7 @@ let handleRequest = (~debug, req) =>
     req |> then_(handleResponse(~debug)) |> catch(handleError(~debug))
   );
 
-let pathWithQueryParams = (path, params: Js.Dict.t(string)) =>
+let formatQueryParams = params =>
   params
   |> Js.Dict.keys
   |> Js.Array.reduce(
@@ -122,63 +122,55 @@ let pathWithQueryParams = (path, params: Js.Dict.t(string)) =>
          | Some(k) => {j|$acc$key=$k&|j}
          | None => acc
          },
-       path ++ "?",
+       "?",
      );
 
-let get = (~host, ~headers, ~debug=false, ~queryParams=?, path) => {
-  if (debug) {
-    Js.log("");
-    Logger.log("Request", {"path": path, "headers": headers});
+let methodName = method =>
+  switch (method) {
+  | Fetch.Post => "POST"
+  | Fetch.Put => "PUT"
+  | Fetch.Delete => "DELETE"
+  | Fetch.Get => "GET"
+  | _ => "Other"
   };
 
-  let finalPath =
+let request =
+    (~host, ~headers, ~method, ~body=?, ~queryParams=?, ~debug=false, path) => {
+  let queryParamsString =
     switch (queryParams) {
-    | Some(q) => pathWithQueryParams(path, q)
-    | None => path
+    | Some(q) => formatQueryParams(q)
+    | None => ""
     };
 
-  Fetch.fetchWithInit(
-    host ++ finalPath,
-    Fetch.RequestInit.make(
-      ~headers=Fetch.HeadersInit.makeWithDict(headers),
-      (),
-    ),
-  )
-  |> handleRequest(~debug);
-};
-
-let post = (~host, ~headers, ~body=?, ~debug=false, path) => {
   let strBody = JsonUtil.stringifyOption(body);
 
   if (debug) {
     Js.log("");
     Logger.log(
       "Request",
-      {"path": path, "headers": headers, "body": strBody},
+      {
+        "method": methodName(method),
+        "path": path,
+        "headers": headers,
+        "body": strBody,
+        "queryParams": queryParamsString,
+      },
     );
   };
 
-  Fetch.fetchWithInit(
-    host ++ path,
+  let baseOptions =
     Fetch.RequestInit.make(
-      ~method_=Post,
-      ~body=Fetch.BodyInit.make(strBody),
+      ~method_=method,
       ~headers=Fetch.HeadersInit.makeWithDict(headers),
-      (),
-    ),
-  )
-  |> handleRequest(~debug);
-};
+    );
 
-let delete = (~host, ~headers, ~debug=false, path) => {
-  if (debug) {
-    Js.log("");
-    Logger.log("Request", {"path": path, "headers": headers});
-  };
+  let options =
+    switch (method) {
+    | Fetch.Head
+    | Fetch.Get => baseOptions()
+    | _ => baseOptions(~body=Fetch.BodyInit.make(strBody), ())
+    };
 
-  Fetch.fetchWithInit(
-    host ++ path,
-    Fetch.RequestInit.make(~method_=Delete, ~headers=Fetch.HeadersInit.makeWithDict(headers), ()),
-  )
+  Fetch.fetchWithInit(host ++ path ++ queryParamsString, options)
   |> handleRequest(~debug);
 };

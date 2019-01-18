@@ -172,53 +172,6 @@ function _1(o, a0) {
   }
 }
 
-function curry_2(o, a0, a1, arity) {
-  if (arity > 7 || arity < 0) {
-    return app(o, /* array */[
-                a0,
-                a1
-              ]);
-  } else {
-    switch (arity) {
-      case 0 : 
-      case 1 : 
-          return app(o(a0), /* array */[a1]);
-      case 2 : 
-          return o(a0, a1);
-      case 3 : 
-          return (function (param) {
-              return o(a0, a1, param);
-            });
-      case 4 : 
-          return (function (param, param$1) {
-              return o(a0, a1, param, param$1);
-            });
-      case 5 : 
-          return (function (param, param$1, param$2) {
-              return o(a0, a1, param, param$1, param$2);
-            });
-      case 6 : 
-          return (function (param, param$1, param$2, param$3) {
-              return o(a0, a1, param, param$1, param$2, param$3);
-            });
-      case 7 : 
-          return (function (param, param$1, param$2, param$3, param$4) {
-              return o(a0, a1, param, param$1, param$2, param$3, param$4);
-            });
-      
-    }
-  }
-}
-
-function _2(o, a0, a1) {
-  var arity = o.length;
-  if (arity === 2) {
-    return o(a0, a1);
-  } else {
-    return curry_2(o, a0, a1, arity);
-  }
-}
-
 function curry_3(o, a0, a1, a2, arity) {
   var exit = 0;
   if (arity > 7 || arity < 0) {
@@ -271,15 +224,6 @@ function _3(o, a0, a1, a2) {
     return o(a0, a1, a2);
   } else {
     return curry_3(o, a0, a1, a2, arity);
-  }
-}
-/* No side effect */
-
-function undefined_to_opt(x) {
-  if (x === undefined) {
-    return /* None */0;
-  } else {
-    return /* Some */[x];
   }
 }
 /* No side effect */
@@ -632,7 +576,7 @@ function handleRequest(debug, req) {
               }));
 }
 
-function pathWithQueryParams(path, params) {
+function formatQueryParams(params) {
   return Object.keys(params).reduce((function (acc, key) {
                 var match = params[key];
                 if (match !== undefined) {
@@ -640,46 +584,86 @@ function pathWithQueryParams(path, params) {
                 } else {
                   return acc;
                 }
-              }), path + "?");
+              }), "?");
 }
 
-function get(host$$1, headers, $staropt$star, queryParams, path) {
-  var debug = $staropt$star ? $staropt$star[0] : false;
-  if (debug) {
-    console.log("");
-    log("Request", {
-          path: path,
-          headers: headers
-        });
+function methodName(method_) {
+  if (typeof method_ === "number") {
+    switch (method_) {
+      case 0 : 
+          return "GET";
+      case 2 : 
+          return "POST";
+      case 3 : 
+          return "PUT";
+      case 4 : 
+          return "DELETE";
+      case 1 : 
+      case 5 : 
+      case 6 : 
+      case 7 : 
+      case 8 : 
+          return "Other";
+      
+    }
+  } else {
+    return "Other";
   }
-  var finalPath = queryParams ? pathWithQueryParams(path, queryParams[0]) : path;
-  return handleRequest(debug, fetch(host$$1 + finalPath, RequestInit[/* make */0](/* None */0, /* Some */[headers], /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0)(/* () */0)));
 }
 
-function post(host$$1, headers, body, $staropt$star, path) {
+function request(host$$1, headers, method_, body, queryParams, $staropt$star, path) {
   var debug = $staropt$star ? $staropt$star[0] : false;
+  var queryParamsString = queryParams ? formatQueryParams(queryParams[0]) : "";
   var strBody = stringifyOption(body);
   if (debug) {
     console.log("");
     log("Request", {
+          method: methodName(method_),
           path: path,
           headers: headers,
-          body: strBody
+          body: strBody,
+          queryParams: queryParamsString
         });
   }
-  return handleRequest(debug, fetch(host$$1 + path, RequestInit[/* make */0](/* Some */[/* Post */2], /* Some */[headers], /* Some */[strBody], /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0)(/* () */0)));
-}
-
-function $$delete(host$$1, headers, $staropt$star, path) {
-  var debug = $staropt$star ? $staropt$star[0] : false;
-  if (debug) {
-    console.log("");
-    log("Request", {
-          path: path,
-          headers: headers
-        });
+  var partial_arg = /* Some */[headers];
+  var partial_arg$1 = /* Some */[method_];
+  var partial_arg$2 = RequestInit[/* make */0];
+  var baseOptions = function (param, param$1, param$2, param$3, param$4, param$5, param$6, param$7, param$8) {
+    return partial_arg$2(partial_arg$1, partial_arg, param, param$1, param$2, param$3, param$4, param$5, param$6, param$7, param$8);
+  };
+  var options;
+  var exit = 0;
+  if (typeof method_ === "number" && method_ < 2) {
+    options = app(baseOptions, [
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* () */0
+        ]);
+  } else {
+    exit = 1;
   }
-  return handleRequest(debug, fetch(host$$1 + path, RequestInit[/* make */0](/* Some */[/* Delete */4], /* Some */[headers], /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* None */0)(/* () */0)));
+  if (exit === 1) {
+    options = app(baseOptions, [
+          /* Some */[strBody],
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* None */0,
+          /* () */0
+        ]);
+  }
+  return handleRequest(debug, fetch(host$$1 + (path + queryParamsString), options));
 }
 /*  Not a pure module */
 
@@ -709,6 +693,25 @@ function getAllTransfers(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "/transfers")));
 }
 
+function updateTags(id) {
+  return "" + (String("/tags") + ("/" + (String(id) + "")));
+}
+
+function mergeDicts(dict1, dict2) {
+  var newDict = { };
+  /* array */[
+      dict1,
+      dict2
+    ].forEach((function (dict) {
+          Object.keys(dict).forEach((function (key) {
+                  newDict[key] = dict[key];
+                  return /* () */0;
+                }));
+          return /* () */0;
+        }));
+  return newDict;
+}
+
 function init(options) {
   var match = options.customHost;
   var host$$1;
@@ -728,70 +731,73 @@ function init(options) {
   var partialSetAuthHeaders = function (param, param$1, param$2) {
     return setHeaders(partial_arg$1, partial_arg, param, param$1, param$2);
   };
-  var partial_arg$2 = undefined_to_opt(options.debug);
-  var getRoute = function (param, param$1) {
-    var host$1$$1 = host$$1;
-    var headers$1 = headers;
-    var setAuthHeaders = partialSetAuthHeaders;
-    var debug = partial_arg$2;
-    var queryParams = param;
-    var path = param$1;
-    _3(setAuthHeaders, path, /* None */0, headers$1);
-    return get(host$1$$1, headers$1, debug, queryParams, path);
-  };
-  var func = function (param, param$1, param$2, param$3) {
-    var host$1$$1 = host$$1;
-    var headers$1 = headers;
-    var body = param;
-    var setAuthHeaders = param$1;
-    var debug = param$2;
-    var path = param$3;
-    _3(setAuthHeaders, path, body, headers$1);
-    return post(host$1$$1, headers$1, body, debug, path);
-  };
   var arg = options.debug;
   var arg$1 = arg === undefined ? /* None */0 : [arg];
-  var partial_arg$3 = undefined_to_opt(options.debug);
-  var $$delete$$1 = function (param) {
-    var host$1$$1 = host$$1;
-    var headers$1 = headers;
-    var setAuthHeaders = partialSetAuthHeaders;
-    var debug = partial_arg$3;
-    var path = param;
-    _3(setAuthHeaders, path, /* None */0, headers$1);
-    return $$delete(host$1$$1, headers$1, debug, path);
+  var baseRequest = function (param) {
+    var func = function (param$1, param$2, param$3, param$4) {
+      var param$5 = param;
+      var param$6 = partialSetAuthHeaders;
+      var param$7 = param$1;
+      var param$8 = param$2;
+      var param$9 = param$3;
+      var param$10 = param$4;
+      var host$1$$1 = host$$1;
+      var headers$1 = headers;
+      var method_ = param$5;
+      var setAuthHeaders = param$6;
+      var body = param$7;
+      var queryParams = param$8;
+      var debug = param$9;
+      var path = param$10;
+      _3(setAuthHeaders, path, body, headers$1);
+      return request(host$1$$1, headers$1, method_, body, queryParams, debug, path);
+    };
+    return (function (param, param$1) {
+        return _3(func, param, param$1, arg$1);
+      });
   };
-  var prim = function () {
-    return func(/* None */0, partialSetAuthHeaders, arg$1, accounts);
+  var get = baseRequest(/* Get */0);
+  var post = baseRequest(/* Post */2);
+  var $$delete = baseRequest(/* Delete */4);
+  var put = baseRequest(/* Put */3);
+  var prim = function (body) {
+    return _3(post, (body == null) ? /* None */0 : [body], /* None */0, accounts);
   };
   var prim$1 = function (id) {
-    return _2(getRoute, /* None */0, getAccount(id));
+    return _3(get, /* None */0, /* None */0, getAccount(id));
   };
-  var prim$2 = function (queryParams) {
-    return _2(getRoute, (queryParams == null) ? /* None */0 : [queryParams], accounts);
+  var prim$2 = function (pagination, filters) {
+    var queryParams = (pagination == null) ? (
+        (filters == null) ? /* None */0 : /* Some */[filters]
+      ) : (
+        (filters == null) ? /* Some */[pagination] : /* Some */[mergeDicts(pagination, filters)]
+      );
+    return _3(get, /* None */0, queryParams, accounts);
   };
   var prim$3 = function (queryParams) {
-    return _2(getRoute, (queryParams == null) ? /* None */0 : [queryParams], "/assets");
+    return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], "/assets");
   };
   var prim$4 = function () {
-    return _2(getRoute, /* None */0, "/organizations");
+    return _3(get, /* None */0, /* None */0, "/organizations");
   };
   var prim$5 = function (operations) {
-    var partial_arg = /* Some */[{
-        operations: operations
-      }];
-    return (function (param) {
-                return func(partial_arg, partialSetAuthHeaders, arg$1, param);
-              })(transfers);
+    return _3(post, /* Some */[{
+                  operations: operations
+                }], /* None */0, transfers);
   };
   var prim$6 = function (id) {
-    return _2(getRoute, /* None */0, getTransfer(id));
+    return _3(get, /* None */0, /* None */0, getTransfer(id));
   };
   var prim$7 = function (id, queryParams) {
-    return _2(getRoute, (queryParams == null) ? /* None */0 : [queryParams], getAllTransfers(id));
+    return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], getAllTransfers(id));
   };
   var prim$8 = function (id) {
-    return _1($$delete$$1, getAccount(id));
+    return _3($$delete, /* None */0, /* None */0, getAccount(id));
+  };
+  var prim$9 = function (id, tags) {
+    return _3(put, /* Some */[{
+                  tags: tags
+                }], /* None */0, updateTags(id));
   };
   return {
           createAccount: prim,
@@ -802,7 +808,8 @@ function init(options) {
           makeTransfer: prim$5,
           getTransfer: prim$6,
           getAllTransfers: prim$7,
-          destroyAccount: prim$8
+          destroyAccount: prim$8,
+          updateTags: prim$9
         };
 }
 

@@ -2,22 +2,28 @@ let languages = Enums.Languages.enum;
 let actionTypes = Enums.ActionTypes.enum;
 let operationCodes = Enums.OperationCodes.enum;
 
-let get = (~host, ~headers, ~setAuthHeaders, ~debug=?, ~queryParams=?, path) => {
-  setAuthHeaders(~path, ~body=?None, headers);
-
-  Service.get(~host, ~headers, ~debug?, ~queryParams?, path);
-};
-
-let post = (~host, ~headers, ~body=?, ~setAuthHeaders, ~debug=?, path) => {
+let request =
+    (
+      ~host,
+      ~headers,
+      ~method,
+      ~setAuthHeaders,
+      ~body=?,
+      ~queryParams=?,
+      ~debug=?,
+      path,
+    ) => {
   setAuthHeaders(~path, ~body?, headers);
 
-  Service.post(~host, ~headers, ~body?, ~debug?, path);
-};
-
-let delete = (~host, ~headers, ~setAuthHeaders, ~debug=?, path) => {
-  setAuthHeaders(~path, ~body=?None, headers);
-
-  Service.delete(~host, ~headers, ~debug?, path);
+  Service.request(
+    ~host,
+    ~headers,
+    ~method,
+    ~body?,
+    ~queryParams?,
+    ~debug?,
+    path,
+  );
 };
 
 module Options = {
@@ -37,13 +43,16 @@ module Options = {
     };
 };
 
-module Transfer = {
-  open Js;
-
-  type t;
-
+module EncapsulatedOperations = {
   [@bs.deriving abstract]
-  type batch = {operations: Array.t(t)};
+  type t = {operations: Js.Array.t(Js.Json.t)};
+  let make = t;
+};
+
+module EncapsulatedTags = {
+  [@bs.deriving abstract]
+  type t = {tags: Js.Array.t(string)};
+  let make = t;
 };
 
 module Endpoints = {
@@ -54,52 +63,44 @@ module Endpoints = {
     let accounts = "/accounts";
     let assets = "/assets";
     let transfers = "/transfers";
+    let tags = "/tags";
 
     let getAccount = id => {j|$accounts/$id|j};
     let deleteAccount = getAccount;
     let getTransfer = id => {j|$transfers/$id|j};
     let getAllTransfers = id => {j|$accounts/$id/transfers|j};
+    let updateTags = id => {j|$tags/$id|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
-  type dictParams = Js.Nullable.t(Js.Dict.t(string));
+  type dictParams = Nullable.t(Js.Dict.t(string));
 
   [@bs.deriving abstract]
   type t = {
-    createAccount: Js.Nullable.t(Js.Json.t) => Promise.t(response),
+    createAccount: Nullable.t(Js.Json.t) => Promise.t(response),
     getAccount: string => Promise.t(response),
     getAllAccounts: (dictParams, dictParams) => Promise.t(response),
     getAllAssets: dictParams => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makeTransfer: Array.t(Transfer.t) => Promise.t(response),
+    makeTransfer: Array.t(Json.t) => Promise.t(response),
     getTransfer: string => Promise.t(response),
     getAllTransfers: (string, dictParams) => Promise.t(response),
     destroyAccount: string => Promise.t(response),
+    updateTags: (string, Array.t(string)) => Promise.t(response),
   };
 
   let make = t;
 };
 
-let mergeDicts = list => {
+let mergeDicts = (dict1, dict2) => {
   let newDict = Js.Dict.empty();
 
-  list
+  [|dict1, dict2|]
   |> Js.Array.forEach(dict =>
-       switch (dict) {
-       | Some(p) =>
-         Js.Dict.keys(p)
-         |> Js.Array.forEach(key => {
-              let value = Js.Dict.get(p, key);
-              switch (value) {
-              | Some(value) =>
-                Js.Dict.set(newDict, key, value);
-                ();
-              | None => ()
-              };
-            });
-         ();
-       | None => ()
-       }
+       Js.Dict.keys(dict)
+       |> Js.Array.forEach(key =>
+            Js.Dict.set(newDict, key, Js.Dict.unsafeGet(dict, key))
+          )
      );
 
   newDict;
@@ -133,68 +134,65 @@ let init: Options.t => Endpoints.t =
         ~secret=options |> Options.secret,
       );
 
-    let getRoute =
-      get(
+    let baseRequest =
+      request(
         ~host,
         ~headers,
         ~setAuthHeaders=partialSetAuthHeaders,
         ~debug=?options |> Options.debug,
       );
 
-    let postToRoute =
-      post(
-        ~host,
-        ~headers,
-        ~setAuthHeaders=partialSetAuthHeaders,
-        ~debug=?options |> Options.debug,
-      );
-
-    let delete =
-      delete(
-        ~host,
-        ~headers,
-        ~setAuthHeaders=partialSetAuthHeaders,
-        ~debug=?options |> Options.debug,
-      );
+    let get = baseRequest(~method=Fetch.Get);
+    let post = baseRequest(~method=Fetch.Post);
+    let delete = baseRequest(~method=Fetch.Delete);
+    let put = baseRequest(~method=Fetch.Put);
 
     Endpoints.make(
       ~createAccount=
         body =>
-          postToRoute(
-            Endpoints.Routes.accounts,
-            ~body=?Js.Nullable.toOption(body),
-          ),
-      ~getAccount=id => getRoute(Endpoints.Routes.getAccount(id)),
+          post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
+      ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
       ~getAllAccounts=
         (pagination, filters) => {
           let queryParams =
-            mergeDicts([|
+            switch (
               Js.Nullable.toOption(pagination),
               Js.Nullable.toOption(filters),
-            |]);
+            ) {
+            | (Some(p), Some(f)) => Some(mergeDicts(p, f))
+            | (Some(p), None) => Some(p)
+            | (None, Some(f)) => Some(f)
+            | (None, None) => None
+            };
 
-          getRoute(Endpoints.Routes.accounts, ~queryParams);
+          get(Endpoints.Routes.accounts, ~queryParams?);
         },
       ~getAllAssets=
         queryParams =>
-          getRoute(
+          get(
             Endpoints.Routes.assets,
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
-      ~getOrganization=() => getRoute(Endpoints.Routes.organizations),
+      ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~makeTransfer=
         operations =>
-          postToRoute(
+          post(
             Endpoints.Routes.transfers,
-            ~body=JsonUtil.asJson(Transfer.batch(~operations)),
+            ~body=JsonUtil.asJson(EncapsulatedOperations.make(~operations)),
           ),
-      ~getTransfer=id => getRoute(Endpoints.Routes.getTransfer(id)),
+      ~getTransfer=id => get(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
         (id, queryParams) =>
-          getRoute(
+          get(
             Endpoints.Routes.getAllTransfers(id),
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
       ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
+      ~updateTags=
+        (id, tags) =>
+          put(
+            Endpoints.Routes.updateTags(id),
+            ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags)),
+          ),
     );
   };
