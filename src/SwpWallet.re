@@ -70,6 +70,7 @@ module Endpoints = {
     let getTransfer = id => {j|$transfers/$id|j};
     let getAllTransfers = id => {j|$accounts/$id/transfers|j};
     let updateTags = id => {j|$tags/$id|j};
+    let resetOrganization = {j|$organizations/reset|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -87,6 +88,7 @@ module Endpoints = {
     getAllTransfers: (string, dictParams) => Promise.t(response),
     destroyAccount: string => Promise.t(response),
     updateTags: (string, Array.t(string)) => Promise.t(response),
+    resetOrganization: unit => Promise.t(response),
   };
 
   let make = t;
@@ -194,5 +196,6 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.updateTags(id),
             ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags)),
           ),
+      ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
     );
   };

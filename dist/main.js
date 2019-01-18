@@ -677,6 +677,8 @@ var operationCodes = OperationCodes[/* enum */0];
 
 var Options = /* module */[];
 
+var organizations = "/organizations";
+
 var accounts = "/accounts";
 
 var transfers = "/transfers";
@@ -696,6 +698,8 @@ function getAllTransfers(id) {
 function updateTags(id) {
   return "" + (String("/tags") + ("/" + (String(id) + "")));
 }
+
+var resetOrganization = "" + (String(organizations) + "/reset");
 
 function mergeDicts(dict1, dict2) {
   var newDict = { };
@@ -778,7 +782,7 @@ function init(options) {
     return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], "/assets");
   };
   var prim$4 = function () {
-    return _3(get, /* None */0, /* None */0, "/organizations");
+    return _3(get, /* None */0, /* None */0, organizations);
   };
   var prim$5 = function (operations) {
     return _3(post, /* Some */[{
@@ -799,6 +803,9 @@ function init(options) {
                   tags: tags
                 }], /* None */0, updateTags(id));
   };
+  var prim$10 = function () {
+    return _3(post, /* None */0, /* None */0, resetOrganization);
+  };
   return {
           createAccount: prim,
           getAccount: prim$1,
@@ -809,12 +816,13 @@ function init(options) {
           getTransfer: prim$6,
           getAllTransfers: prim$7,
           destroyAccount: prim$8,
-          updateTags: prim$9
+          updateTags: prim$9,
+          resetOrganization: prim$10
         };
 }
 
 var Endpoints = [];
-/* Auth-SwpWalletSdk Not a pure module */
+/* resetOrganization Not a pure module */
 
 exports.Options = Options;
 exports.Endpoints = Endpoints;
