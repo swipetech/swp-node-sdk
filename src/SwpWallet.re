@@ -80,7 +80,7 @@ module Endpoints = {
   type t = {
     createAccount: Nullable.t(Js.Json.t) => Promise.t(response),
     getAccount: string => Promise.t(response),
-    getAllAccounts: (dictParams, dictParams) => Promise.t(response),
+    getAllAccounts: dictParams => Promise.t(response),
     getAllAssets: dictParams => Promise.t(response),
     getOrganization: unit => Promise.t(response),
     makeTransfer: Array.t(Json.t) => Promise.t(response),
@@ -94,19 +94,19 @@ module Endpoints = {
   let make = t;
 };
 
-let mergeDicts = (dict1, dict2) => {
-  let newDict = Js.Dict.empty();
+/* let mergeDicts = (dict1, dict2) => {
+     let newDict = Js.Dict.empty();
 
-  [|dict1, dict2|]
-  |> Js.Array.forEach(dict =>
-       Js.Dict.keys(dict)
-       |> Js.Array.forEach(key =>
-            Js.Dict.set(newDict, key, Js.Dict.unsafeGet(dict, key))
-          )
-     );
+     [|dict1, dict2|]
+     |> Js.Array.forEach(dict =>
+          Js.Dict.keys(dict)
+          |> Js.Array.forEach(key =>
+               Js.Dict.set(newDict, key, Js.Dict.unsafeGet(dict, key))
+             )
+        );
 
-  newDict;
-};
+     newDict;
+   }; */
 
 let init: Options.t => Endpoints.t =
   options => {
@@ -155,20 +155,11 @@ let init: Options.t => Endpoints.t =
           post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
       ~getAllAccounts=
-        (pagination, filters) => {
-          let queryParams =
-            switch (
-              Js.Nullable.toOption(pagination),
-              Js.Nullable.toOption(filters),
-            ) {
-            | (Some(p), Some(f)) => Some(mergeDicts(p, f))
-            | (Some(p), None) => Some(p)
-            | (None, Some(f)) => Some(f)
-            | (None, None) => None
-            };
-
-          get(Endpoints.Routes.accounts, ~queryParams?);
-        },
+        queryParams =>
+          get(
+            Endpoints.Routes.accounts,
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
       ~getAllAssets=
         queryParams =>
           get(

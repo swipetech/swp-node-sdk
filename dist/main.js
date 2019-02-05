@@ -701,21 +701,6 @@ function updateTags(id) {
 
 var resetOrganization = "" + (String(organizations) + "/reset");
 
-function mergeDicts(dict1, dict2) {
-  var newDict = { };
-  /* array */[
-      dict1,
-      dict2
-    ].forEach((function (dict) {
-          Object.keys(dict).forEach((function (key) {
-                  newDict[key] = dict[key];
-                  return /* () */0;
-                }));
-          return /* () */0;
-        }));
-  return newDict;
-}
-
 function init(options) {
   var match = options.customHost;
   var host$$1;
@@ -770,13 +755,8 @@ function init(options) {
   var prim$1 = function (id) {
     return _3(get, /* None */0, /* None */0, getAccount(id));
   };
-  var prim$2 = function (pagination, filters) {
-    var queryParams = (pagination == null) ? (
-        (filters == null) ? /* None */0 : /* Some */[filters]
-      ) : (
-        (filters == null) ? /* Some */[pagination] : /* Some */[mergeDicts(pagination, filters)]
-      );
-    return _3(get, /* None */0, queryParams, accounts);
+  var prim$2 = function (queryParams) {
+    return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], accounts);
   };
   var prim$3 = function (queryParams) {
     return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], "/assets");
