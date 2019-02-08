@@ -764,10 +764,8 @@ function init(options) {
   var prim$4 = function () {
     return _3(get, /* None */0, /* None */0, organizations);
   };
-  var prim$5 = function (operations) {
-    return _3(post, /* Some */[{
-                  operations: operations
-                }], /* None */0, transfers);
+  var prim$5 = function (transferDTO) {
+    return _3(post, /* Some */[transferDTO], /* None */0, transfers);
   };
   var prim$6 = function (id) {
     return _3(get, /* None */0, /* None */0, getTransfer(id));

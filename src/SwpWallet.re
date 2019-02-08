@@ -28,8 +28,7 @@ let request =
 
 module Options = {
   [@bs.deriving abstract]
-  type t =
-    pri {
+  type t = {
       apiKey: string,
       secret: string,
       [@bs.optional]
@@ -41,12 +40,6 @@ module Options = {
       [@bs.optional]
       customHost: string,
     };
-};
-
-module EncapsulatedOperations = {
-  [@bs.deriving abstract]
-  type t = {operations: Js.Array.t(Js.Json.t)};
-  let make = t;
 };
 
 module EncapsulatedTags = {
@@ -83,7 +76,7 @@ module Endpoints = {
     getAllAccounts: dictParams => Promise.t(response),
     getAllAssets: dictParams => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makeTransfer: Array.t(Json.t) => Promise.t(response),
+    makeTransfer: Json.t => Promise.t(response),
     getTransfer: string => Promise.t(response),
     getAllTransfers: (string, dictParams) => Promise.t(response),
     destroyAccount: string => Promise.t(response),
@@ -168,10 +161,10 @@ let init: Options.t => Endpoints.t =
           ),
       ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~makeTransfer=
-        operations =>
+        (transferDTO) =>
           post(
             Endpoints.Routes.transfers,
-            ~body=JsonUtil.asJson(EncapsulatedOperations.make(~operations)),
+            ~body=transferDTO,
           ),
       ~getTransfer=id => get(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
