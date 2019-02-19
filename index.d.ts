@@ -29,7 +29,7 @@ declare module "@swp/wallet-sdk" {
 
   export interface Payment {
     id: string
-    operations: PaymentOperation[]
+    transfers: PaymentOperation[]
   }
 
   export interface Receipt {

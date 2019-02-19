@@ -76,7 +76,7 @@ module Endpoints = {
     getAllAccounts: dictParams => Promise.t(response),
     getAllAssets: dictParams => Promise.t(response),
     getOrganization: unit => Promise.t(response),
-    makeTransfer: Json.t => Promise.t(response),
+    makeTransfers: Json.t => Promise.t(response),
     getTransfer: string => Promise.t(response),
     getAllTransfers: (string, dictParams) => Promise.t(response),
     destroyAccount: string => Promise.t(response),
@@ -160,7 +160,7 @@ let init: Options.t => Endpoints.t =
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
       ~getOrganization=() => get(Endpoints.Routes.organizations),
-      ~makeTransfer=
+      ~makeTransfers=
         (transferDTO) =>
           post(
             Endpoints.Routes.transfers,

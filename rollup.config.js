@@ -12,9 +12,7 @@ export default {
       include: ["node_modules/bs-platform"]
     }),
     nodeResolve({
-      jsnext: true,
-      main: false,
-      modulesOnly: true,
+      modulesOnly: true
     })
   ]
 };
