@@ -57,6 +57,7 @@ module Endpoints = {
     let assets = "/assets";
     let transfers = "/transfers";
     let tags = "/tags";
+    let revoke = "/revoke"
 
     let getAccount = id => {j|$accounts/$id|j};
     let deleteAccount = getAccount;
@@ -64,6 +65,8 @@ module Endpoints = {
     let getAllTransfers = id => {j|$accounts/$id/transfers|j};
     let updateTags = id => {j|$tags/$id|j};
     let resetOrganization = {j|$organizations/reset|j};
+    let getToken = {j|$organizations$revoke|j};
+    let revokeCredentials = token => {j|$organizations$revoke/$token|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -82,6 +85,8 @@ module Endpoints = {
     destroyAccount: string => Promise.t(response),
     updateTags: (string, Array.t(string)) => Promise.t(response),
     resetOrganization: unit => Promise.t(response),
+    getToken: unit => Promise.t(response),
+    revokeCredentials: string => Promise.t(response),
   };
 
   let make = t;
@@ -91,7 +96,7 @@ module Endpoints = {
      let newDict = Js.Dict.empty();
 
      [|dict1, dict2|]
-     |> Js.Array.forEach(dict =>
+     |> Js.Array.forEach(dict =>getToken
           Js.Dict.keys(dict)
           |> Js.Array.forEach(key =>
                Js.Dict.set(newDict, key, Js.Dict.unsafeGet(dict, key))
@@ -181,5 +186,7 @@ let init: Options.t => Endpoints.t =
             ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags)),
           ),
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
+      ~getToken = () => get(Endpoints.Routes.getToken),
+      ~revokeCredentials = token => post(Endpoints.Routes.revokeCredentials(token)),
     );
   };

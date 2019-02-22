@@ -683,6 +683,8 @@ var accounts = "/accounts";
 
 var transfers = "/transfers";
 
+var revoke = "/revoke";
+
 function getAccount(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "")));
 }
@@ -700,6 +702,12 @@ function updateTags(id) {
 }
 
 var resetOrganization = "" + (String(organizations) + "/reset");
+
+var getToken = "" + (String(organizations) + ("" + (String(revoke) + "")));
+
+function revokeCredentials(token) {
+  return "" + (String(organizations) + ("" + (String(revoke) + ("/" + (String(token) + "")))));
+}
 
 function init(options) {
   var match = options.customHost;
@@ -784,18 +792,26 @@ function init(options) {
   var prim$10 = function () {
     return _3(post, /* None */0, /* None */0, resetOrganization);
   };
+  var prim$11 = function () {
+    return _3(get, /* None */0, /* None */0, getToken);
+  };
+  var prim$12 = function (token) {
+    return _3(post, /* None */0, /* None */0, revokeCredentials(token));
+  };
   return {
           createAccount: prim,
           getAccount: prim$1,
           getAllAccounts: prim$2,
           getAllAssets: prim$3,
           getOrganization: prim$4,
-          makeTransfer: prim$5,
+          makeTransfers: prim$5,
           getTransfer: prim$6,
           getAllTransfers: prim$7,
           destroyAccount: prim$8,
           updateTags: prim$9,
-          resetOrganization: prim$10
+          resetOrganization: prim$10,
+          getToken: prim$11,
+          revokeCredentials: prim$12
         };
 }
 
