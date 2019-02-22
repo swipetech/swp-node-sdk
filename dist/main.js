@@ -683,6 +683,8 @@ var accounts = "/accounts";
 
 var transfers = "/transfers";
 
+var actions = "/actions";
+
 var revoke = "/revoke";
 
 function getAccount(id) {
@@ -707,6 +709,10 @@ var getToken = "" + (String(organizations) + ("" + (String(revoke) + "")));
 
 function revokeCredentials(token) {
   return "" + (String(organizations) + ("" + (String(revoke) + ("/" + (String(token) + "")))));
+}
+
+function getActions(id) {
+  return "" + (String(actions) + ("/" + (String(id) + "")));
 }
 
 function init(options) {
@@ -772,8 +778,8 @@ function init(options) {
   var prim$4 = function () {
     return _3(get, /* None */0, /* None */0, organizations);
   };
-  var prim$5 = function (transferDTO) {
-    return _3(post, /* Some */[transferDTO], /* None */0, transfers);
+  var prim$5 = function (body) {
+    return _3(post, /* Some */[body], /* None */0, transfers);
   };
   var prim$6 = function (id) {
     return _3(get, /* None */0, /* None */0, getTransfer(id));
@@ -792,10 +798,16 @@ function init(options) {
   var prim$10 = function () {
     return _3(post, /* None */0, /* None */0, resetOrganization);
   };
-  var prim$11 = function () {
+  var prim$11 = function (body) {
+    return _3(post, /* Some */[body], /* None */0, actions);
+  };
+  var prim$12 = function (id) {
+    return _3(get, /* None */0, /* None */0, getActions(id));
+  };
+  var prim$13 = function () {
     return _3(get, /* None */0, /* None */0, getToken);
   };
-  var prim$12 = function (token) {
+  var prim$14 = function (token) {
     return _3(post, /* None */0, /* None */0, revokeCredentials(token));
   };
   return {
@@ -810,8 +822,10 @@ function init(options) {
           destroyAccount: prim$8,
           updateTags: prim$9,
           resetOrganization: prim$10,
-          getToken: prim$11,
-          revokeCredentials: prim$12
+          makeActionBatch: prim$11,
+          getActionBatch: prim$12,
+          getToken: prim$13,
+          revokeCredentials: prim$14
         };
 }
 

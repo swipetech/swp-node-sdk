@@ -29,17 +29,17 @@ let request =
 module Options = {
   [@bs.deriving abstract]
   type t = {
-      apiKey: string,
-      secret: string,
-      [@bs.optional]
-      language: string,
-      [@bs.optional]
-      debug: bool,
-      [@bs.optional]
-      sandbox: bool,
-      [@bs.optional]
-      customHost: string,
-    };
+    apiKey: string,
+    secret: string,
+    [@bs.optional]
+    language: string,
+    [@bs.optional]
+    debug: bool,
+    [@bs.optional]
+    sandbox: bool,
+    [@bs.optional]
+    customHost: string,
+  };
 };
 
 module EncapsulatedTags = {
@@ -57,6 +57,7 @@ module Endpoints = {
     let assets = "/assets";
     let transfers = "/transfers";
     let tags = "/tags";
+    let actions = "/actions";
     let revoke = "/revoke"
 
     let getAccount = id => {j|$accounts/$id|j};
@@ -67,6 +68,7 @@ module Endpoints = {
     let resetOrganization = {j|$organizations/reset|j};
     let getToken = {j|$organizations$revoke|j};
     let revokeCredentials = token => {j|$organizations$revoke/$token|j};
+    let getActions = id => {j|$actions/$id|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -85,6 +87,8 @@ module Endpoints = {
     destroyAccount: string => Promise.t(response),
     updateTags: (string, Array.t(string)) => Promise.t(response),
     resetOrganization: unit => Promise.t(response),
+    makeActionBatch: Json.t => Promise.t(response),
+    getActionBatch: string => Promise.t(response),
     getToken: unit => Promise.t(response),
     revokeCredentials: string => Promise.t(response),
   };
@@ -165,12 +169,7 @@ let init: Options.t => Endpoints.t =
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
       ~getOrganization=() => get(Endpoints.Routes.organizations),
-      ~makeTransfers=
-        (transferDTO) =>
-          post(
-            Endpoints.Routes.transfers,
-            ~body=transferDTO,
-          ),
+      ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
       ~getTransfer=id => get(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
         (id, queryParams) =>
@@ -188,5 +187,7 @@ let init: Options.t => Endpoints.t =
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getToken = () => get(Endpoints.Routes.getToken),
       ~revokeCredentials = token => post(Endpoints.Routes.revokeCredentials(token)),
+      ~makeActionBatch=body => post(Endpoints.Routes.actions, ~body),
+      ~getActionBatch=id => get(Endpoints.Routes.getActions(id)),
     );
   };
