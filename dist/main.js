@@ -108,14 +108,13 @@ function app(_f, _args) {
     var args = _args;
     var f = _f;
     var arity = f.length;
-    var arity$1 = arity === 0 ? 1 : arity;
     var len = args.length;
-    var d = arity$1 - len | 0;
+    var d = arity - len | 0;
     if (d === 0) {
       return f.apply(null, args);
     } else if (d < 0) {
-      _args = caml_array_sub(args, arity$1, -d | 0);
-      _f = f.apply(null, caml_array_sub(args, 0, arity$1));
+      _args = caml_array_sub(args, arity, -d | 0);
+      _f = f.apply(null, caml_array_sub(args, 0, arity));
       continue ;
     } else {
       return (function(f,args){
@@ -127,39 +126,35 @@ function app(_f, _args) {
   }}
 
 function curry_1(o, a0, arity) {
-  if (arity > 7 || arity < 0) {
-    return app(o, /* array */[a0]);
-  } else {
-    switch (arity) {
-      case 0 : 
-      case 1 : 
-          return o(a0);
-      case 2 : 
-          return (function (param) {
-              return o(a0, param);
-            });
-      case 3 : 
-          return (function (param, param$1) {
-              return o(a0, param, param$1);
-            });
-      case 4 : 
-          return (function (param, param$1, param$2) {
-              return o(a0, param, param$1, param$2);
-            });
-      case 5 : 
-          return (function (param, param$1, param$2, param$3) {
-              return o(a0, param, param$1, param$2, param$3);
-            });
-      case 6 : 
-          return (function (param, param$1, param$2, param$3, param$4) {
-              return o(a0, param, param$1, param$2, param$3, param$4);
-            });
-      case 7 : 
-          return (function (param, param$1, param$2, param$3, param$4, param$5) {
-              return o(a0, param, param$1, param$2, param$3, param$4, param$5);
-            });
-      
-    }
+  switch (arity) {
+    case 1 : 
+        return o(a0);
+    case 2 : 
+        return (function (param) {
+            return o(a0, param);
+          });
+    case 3 : 
+        return (function (param, param$1) {
+            return o(a0, param, param$1);
+          });
+    case 4 : 
+        return (function (param, param$1, param$2) {
+            return o(a0, param, param$1, param$2);
+          });
+    case 5 : 
+        return (function (param, param$1, param$2, param$3) {
+            return o(a0, param, param$1, param$2, param$3);
+          });
+    case 6 : 
+        return (function (param, param$1, param$2, param$3, param$4) {
+            return o(a0, param, param$1, param$2, param$3, param$4);
+          });
+    case 7 : 
+        return (function (param, param$1, param$2, param$3, param$4, param$5) {
+            return o(a0, param, param$1, param$2, param$3, param$4, param$5);
+          });
+    default:
+      return app(o, /* array */[a0]);
   }
 }
 
@@ -173,49 +168,39 @@ function _1(o, a0) {
 }
 
 function curry_3(o, a0, a1, a2, arity) {
-  var exit = 0;
-  if (arity > 7 || arity < 0) {
-    return app(o, /* array */[
-                a0,
-                a1,
-                a2
-              ]);
-  } else {
-    switch (arity) {
-      case 0 : 
-      case 1 : 
-          exit = 1;
-          break;
-      case 2 : 
-          return app(o(a0, a1), /* array */[a2]);
-      case 3 : 
-          return o(a0, a1, a2);
-      case 4 : 
-          return (function (param) {
-              return o(a0, a1, a2, param);
-            });
-      case 5 : 
-          return (function (param, param$1) {
-              return o(a0, a1, a2, param, param$1);
-            });
-      case 6 : 
-          return (function (param, param$1, param$2) {
-              return o(a0, a1, a2, param, param$1, param$2);
-            });
-      case 7 : 
-          return (function (param, param$1, param$2, param$3) {
-              return o(a0, a1, a2, param, param$1, param$2, param$3);
-            });
-      
-    }
+  switch (arity) {
+    case 1 : 
+        return app(o(a0), /* array */[
+                    a1,
+                    a2
+                  ]);
+    case 2 : 
+        return app(o(a0, a1), /* array */[a2]);
+    case 3 : 
+        return o(a0, a1, a2);
+    case 4 : 
+        return (function (param) {
+            return o(a0, a1, a2, param);
+          });
+    case 5 : 
+        return (function (param, param$1) {
+            return o(a0, a1, a2, param, param$1);
+          });
+    case 6 : 
+        return (function (param, param$1, param$2) {
+            return o(a0, a1, a2, param, param$1, param$2);
+          });
+    case 7 : 
+        return (function (param, param$1, param$2, param$3) {
+            return o(a0, a1, a2, param, param$1, param$2, param$3);
+          });
+    default:
+      return app(o, /* array */[
+                  a0,
+                  a1,
+                  a2
+                ]);
   }
-  if (exit === 1) {
-    return app(o(a0), /* array */[
-                a1,
-                a2
-              ]);
-  }
-  
 }
 
 function _3(o, a0, a1, a2) {
@@ -224,6 +209,54 @@ function _3(o, a0, a1, a2) {
     return o(a0, a1, a2);
   } else {
     return curry_3(o, a0, a1, a2, arity);
+  }
+}
+/* No side effect */
+
+var undefinedHeader = /* array */[];
+
+function some(x) {
+  if (x === undefined) {
+    var block = /* tuple */[
+      undefinedHeader,
+      0
+    ];
+    block.tag = 256;
+    return block;
+  } else if (x !== null && x[0] === undefinedHeader) {
+    var nid = x[1] + 1 | 0;
+    var block$1 = /* tuple */[
+      undefinedHeader,
+      nid
+    ];
+    block$1.tag = 256;
+    return block$1;
+  } else {
+    return x;
+  }
+}
+
+function undefined_to_opt(x) {
+  if (x === undefined) {
+    return undefined;
+  } else {
+    return some(x);
+  }
+}
+
+function valFromOption(x) {
+  if (x !== null && x[0] === undefinedHeader) {
+    var depth = x[1];
+    if (depth === 0) {
+      return undefined;
+    } else {
+      return /* tuple */[
+              undefinedHeader,
+              depth - 1 | 0
+            ];
+    }
+  } else {
+    return x;
   }
 }
 /* No side effect */
@@ -246,12 +279,11 @@ function floor_int(f) {
 var floor = floor_int;
 /* No side effect */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
-
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 function stringifyOption(op) {
-  if (op) {
-    var match = JSON.stringify(op[0]);
+  if (op !== undefined) {
+    var match = JSON.stringify(valFromOption(op));
     if (match !== undefined) {
       return match;
     } else {
@@ -263,7 +295,7 @@ function stringifyOption(op) {
 }
 /* No side effect */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 function setHeaders(apiKey, secret, path, body, headers) {
   var strBody = stringifyOption(body);
@@ -277,7 +309,7 @@ function setHeaders(apiKey, secret, path, body, headers) {
 }
 /* crypto-js Not a pure module */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 
 var $$enum = {
@@ -287,15 +319,32 @@ var $$enum = {
 
 var Languages = /* module */[/* enum */$$enum];
 
+var transfer = "TRANSFER";
+
+var createAccount = "CREATE_ACC";
+
+var destroyAccount = "DESTROY_ACC";
+
+var issueAsset = "ISSUE_ASSET";
+
+var createOrganization = "CREATE_ORG";
+
 var $$enum$1 = {
-  Transfer: "TRANSFER",
-  CreateAccount: "CREATE_ACC",
-  DestroyAccount: "DESTROY_ACC",
-  CreateOrganization: "CREATE_ORG",
-  IssueAsset: "ISSUE_ASSET"
+  Transfer: transfer,
+  CreateAccount: createAccount,
+  DestroyAccount: destroyAccount,
+  CreateOrganization: createOrganization,
+  IssueAsset: issueAsset
 };
 
-var ActionTypes = /* module */[/* enum */$$enum$1];
+var ActionTypes = /* module */[
+  /* transfer */transfer,
+  /* createAccount */createAccount,
+  /* destroyAccount */destroyAccount,
+  /* issueAsset */issueAsset,
+  /* createOrganization */createOrganization,
+  /* enum */$$enum$1
+];
 
 var $$enum$2 = {
   Ok: "op_ok",
@@ -307,7 +356,7 @@ var $$enum$2 = {
 var OperationCodes = /* module */[/* enum */$$enum$2];
 /* No side effect */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 
 var host = "https://api.swipetech.io";
@@ -424,57 +473,56 @@ function encodeRequestRedirect(param) {
 }
 
 function map(f, param) {
-  if (param) {
-    return /* Some */[_1(f, param[0])];
-  } else {
-    return /* None */0;
+  if (param !== undefined) {
+    return some(_1(f, valFromOption(param)));
   }
+  
 }
 
 function make(method_, headers, body, referrer, $staropt$star, mode, credentials, cache, redirect, $staropt$star$1, keepalive) {
-  var referrerPolicy = $staropt$star ? $staropt$star[0] : /* None */0;
-  var integrity = $staropt$star$1 ? $staropt$star$1[0] : "";
-  var partial_arg = /* Some */[integrity];
+  var referrerPolicy = $staropt$star !== undefined ? $staropt$star : /* None */0;
+  var integrity = $staropt$star$1 !== undefined ? $staropt$star$1 : "";
+  var partial_arg = integrity;
   var partial_arg$1 = map(encodeRequestRedirect, redirect);
   var partial_arg$2 = map(encodeRequestCache, cache);
   var partial_arg$3 = map(encodeRequestCredentials, credentials);
   var partial_arg$4 = map(encodeRequestMode, mode);
-  var partial_arg$5 = /* Some */[encodeReferrerPolicy(referrerPolicy)];
+  var partial_arg$5 = encodeReferrerPolicy(referrerPolicy);
   var partial_arg$6 = map(encodeRequestMethod, method_);
-  return (function () {
+  return (function (param) {
       var tmp = { };
-      if (partial_arg$6) {
-        tmp.method = partial_arg$6[0];
+      if (partial_arg$6 !== undefined) {
+        tmp.method = valFromOption(partial_arg$6);
       }
-      if (headers) {
-        tmp.headers = headers[0];
+      if (headers !== undefined) {
+        tmp.headers = valFromOption(headers);
       }
-      if (body) {
-        tmp.body = body[0];
+      if (body !== undefined) {
+        tmp.body = valFromOption(body);
       }
-      if (referrer) {
-        tmp.referrer = referrer[0];
+      if (referrer !== undefined) {
+        tmp.referrer = valFromOption(referrer);
       }
-      if (partial_arg$5) {
-        tmp.referrerPolicy = partial_arg$5[0];
+      if (partial_arg$5 !== undefined) {
+        tmp.referrerPolicy = valFromOption(partial_arg$5);
       }
-      if (partial_arg$4) {
-        tmp.mode = partial_arg$4[0];
+      if (partial_arg$4 !== undefined) {
+        tmp.mode = valFromOption(partial_arg$4);
       }
-      if (partial_arg$3) {
-        tmp.credentials = partial_arg$3[0];
+      if (partial_arg$3 !== undefined) {
+        tmp.credentials = valFromOption(partial_arg$3);
       }
-      if (partial_arg$2) {
-        tmp.cache = partial_arg$2[0];
+      if (partial_arg$2 !== undefined) {
+        tmp.cache = valFromOption(partial_arg$2);
       }
-      if (partial_arg$1) {
-        tmp.redirect = partial_arg$1[0];
+      if (partial_arg$1 !== undefined) {
+        tmp.redirect = valFromOption(partial_arg$1);
       }
-      if (partial_arg) {
-        tmp.integrity = partial_arg[0];
+      if (partial_arg !== undefined) {
+        tmp.integrity = valFromOption(partial_arg);
       }
-      if (keepalive) {
-        tmp.keepalive = keepalive[0];
+      if (keepalive !== undefined) {
+        tmp.keepalive = valFromOption(keepalive);
       }
       return tmp;
     });
@@ -483,7 +531,15 @@ function make(method_, headers, body, referrer, $staropt$star, mode, credentials
 var RequestInit = [make];
 /* No side effect */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
+function get(dict, k) {
+  if ((k in dict)) {
+    return some(dict[k]);
+  }
+  
+}
+/* No side effect */
+
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 var blue = "\x1b[34m";
 
@@ -502,12 +558,12 @@ function error(flag, value) {
 }
 /* util Not a pure module */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 ((require("cross-fetch/polyfill")));
 
 function handleResponse($staropt$star, res) {
-  var debug = $staropt$star ? $staropt$star[0] : false;
+  var debug = $staropt$star !== undefined ? $staropt$star : false;
   if (res.status === 204) {
     if (debug) {
       console.log("");
@@ -554,7 +610,7 @@ function handleResponse($staropt$star, res) {
 }
 
 function handleError($staropt$star, errorResponse) {
-  var debug = $staropt$star ? $staropt$star[0] : false;
+  var debug = $staropt$star !== undefined ? $staropt$star : false;
   if (debug) {
     var errorLog = JSON.stringify(errorResponse);
     if (errorLog !== undefined) {
@@ -567,8 +623,8 @@ function handleError($staropt$star, errorResponse) {
 }
 
 function handleRequest(debug, req) {
-  var partial_arg = /* Some */[debug];
-  var partial_arg$1 = /* Some */[debug];
+  var partial_arg = debug;
+  var partial_arg$1 = debug;
   return req.then((function (param) {
                   return handleResponse(partial_arg$1, param);
                 })).catch((function (param) {
@@ -578,9 +634,9 @@ function handleRequest(debug, req) {
 
 function formatQueryParams(params) {
   return Object.keys(params).reduce((function (acc, key) {
-                var match = params[key];
+                var match = get(params, key);
                 if (match !== undefined) {
-                  return "" + (String(acc) + ("" + (String(key) + ("=" + (String(match) + "&")))));
+                  return "" + (String(acc) + ("" + (String(key) + ("=" + (String(valFromOption(match)) + "&")))));
                 } else {
                   return acc;
                 }
@@ -612,8 +668,8 @@ function methodName(method_) {
 }
 
 function request(host$$1, headers, method_, body, queryParams, $staropt$star, path) {
-  var debug = $staropt$star ? $staropt$star[0] : false;
-  var queryParamsString = queryParams ? formatQueryParams(queryParams[0]) : "";
+  var debug = $staropt$star !== undefined ? $staropt$star : false;
+  var queryParamsString = queryParams !== undefined ? formatQueryParams(valFromOption(queryParams)) : "";
   var strBody = stringifyOption(body);
   if (debug) {
     console.log("");
@@ -625,8 +681,8 @@ function request(host$$1, headers, method_, body, queryParams, $staropt$star, pa
           queryParams: queryParamsString
         });
   }
-  var partial_arg = /* Some */[headers];
-  var partial_arg$1 = /* Some */[method_];
+  var partial_arg = some(headers);
+  var partial_arg$1 = method_;
   var partial_arg$2 = RequestInit[/* make */0];
   var baseOptions = function (param, param$1, param$2, param$3, param$4, param$5, param$6, param$7, param$8) {
     return partial_arg$2(partial_arg$1, partial_arg, param, param$1, param$2, param$3, param$4, param$5, param$6, param$7, param$8);
@@ -635,15 +691,15 @@ function request(host$$1, headers, method_, body, queryParams, $staropt$star, pa
   var exit = 0;
   if (typeof method_ === "number" && method_ < 2) {
     options = app(baseOptions, [
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
           /* () */0
         ]);
   } else {
@@ -651,15 +707,15 @@ function request(host$$1, headers, method_, body, queryParams, $staropt$star, pa
   }
   if (exit === 1) {
     options = app(baseOptions, [
-          /* Some */[strBody],
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
-          /* None */0,
+          some(strBody),
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
           /* () */0
         ]);
   }
@@ -667,11 +723,11 @@ function request(host$$1, headers, method_, body, queryParams, $staropt$star, pa
 }
 /*  Not a pure module */
 
-// Generated by BUCKLESCRIPT VERSION 3.1.5, PLEASE EDIT WITH CARE
+// Generated by BUCKLESCRIPT VERSION 4.0.18, PLEASE EDIT WITH CARE
 
 var languages = Languages[/* enum */0];
 
-var actionTypes = ActionTypes[/* enum */0];
+var actionTypes = ActionTypes[/* enum */5];
 
 var operationCodes = OperationCodes[/* enum */0];
 
@@ -715,6 +771,59 @@ function getActions(id) {
   return "" + (String(actions) + ("/" + (String(id) + "")));
 }
 
+var Account = /* module */[];
+
+var Asset = /* module */[];
+
+var Transfer = /* module */[];
+
+function createAccountAction(acc) {
+  if (acc == null) {
+    return {
+            type: ActionTypes[/* createAccount */1]
+          };
+  } else {
+    var tmp = {
+      type: ActionTypes[/* createAccount */1]
+    };
+    var tmp$1 = undefined_to_opt(acc.tags);
+    if (tmp$1 !== undefined) {
+      tmp.tags = valFromOption(tmp$1);
+    }
+    var tmp$2 = undefined_to_opt(acc.starting_balances);
+    if (tmp$2 !== undefined) {
+      tmp.starting_balances = valFromOption(tmp$2);
+    }
+    return tmp;
+  }
+}
+
+function issueAssetAction(asset) {
+  var tmp = {
+    type: ActionTypes[/* issueAsset */3],
+    code: asset.code
+  };
+  var tmp$1 = undefined_to_opt(asset.limit);
+  if (tmp$1 !== undefined) {
+    tmp.limit = valFromOption(tmp$1);
+  }
+  var tmp$2 = undefined_to_opt(asset.tags);
+  if (tmp$2 !== undefined) {
+    tmp.tags = valFromOption(tmp$2);
+  }
+  return tmp;
+}
+
+function transferAction(transfer) {
+  return {
+          type: ActionTypes[/* transfer */0],
+          from: transfer.from,
+          to: transfer.to,
+          asset: transfer.asset,
+          amount: transfer.amount
+        };
+}
+
 function init(options) {
   var match = options.customHost;
   var host$$1;
@@ -735,7 +844,7 @@ function init(options) {
     return setHeaders(partial_arg$1, partial_arg, param, param$1, param$2);
   };
   var arg = options.debug;
-  var arg$1 = arg === undefined ? /* None */0 : [arg];
+  var arg$1 = arg === undefined ? undefined : some(arg);
   var baseRequest = function (param) {
     var func = function (param$1, param$2, param$3, param$4) {
       var param$5 = param;
@@ -764,51 +873,51 @@ function init(options) {
   var $$delete = baseRequest(/* Delete */4);
   var put = baseRequest(/* Put */3);
   var prim = function (body) {
-    return _3(post, (body == null) ? /* None */0 : [body], /* None */0, accounts);
+    return _3(post, (body == null) ? undefined : some(body), undefined, accounts);
   };
   var prim$1 = function (id) {
-    return _3(get, /* None */0, /* None */0, getAccount(id));
+    return _3(get, undefined, undefined, getAccount(id));
   };
   var prim$2 = function (queryParams) {
-    return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], accounts);
+    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), accounts);
   };
   var prim$3 = function (queryParams) {
-    return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], "/assets");
+    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), "/assets");
   };
-  var prim$4 = function () {
-    return _3(get, /* None */0, /* None */0, organizations);
+  var prim$4 = function (param) {
+    return _3(get, undefined, undefined, organizations);
   };
   var prim$5 = function (body) {
-    return _3(post, /* Some */[body], /* None */0, transfers);
+    return _3(post, some(body), undefined, transfers);
   };
   var prim$6 = function (id) {
-    return _3(get, /* None */0, /* None */0, getTransfer(id));
+    return _3(get, undefined, undefined, getTransfer(id));
   };
   var prim$7 = function (id, queryParams) {
-    return _3(get, /* None */0, (queryParams == null) ? /* None */0 : [queryParams], getAllTransfers(id));
+    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), getAllTransfers(id));
   };
   var prim$8 = function (id) {
-    return _3($$delete, /* None */0, /* None */0, getAccount(id));
+    return _3($$delete, undefined, undefined, getAccount(id));
   };
   var prim$9 = function (id, tags) {
-    return _3(put, /* Some */[{
-                  tags: tags
-                }], /* None */0, updateTags(id));
+    return _3(put, {
+                tags: tags
+              }, undefined, updateTags(id));
   };
-  var prim$10 = function () {
-    return _3(post, /* None */0, /* None */0, resetOrganization);
+  var prim$10 = function (param) {
+    return _3(post, undefined, undefined, resetOrganization);
   };
   var prim$11 = function (body) {
-    return _3(post, /* Some */[body], /* None */0, actions);
+    return _3(post, some(body), undefined, actions);
   };
   var prim$12 = function (id) {
-    return _3(get, /* None */0, /* None */0, getActions(id));
+    return _3(get, undefined, undefined, getActions(id));
   };
-  var prim$13 = function () {
-    return _3(get, /* None */0, /* None */0, getRevokeToken);
+  var prim$13 = function (param) {
+    return _3(get, undefined, undefined, getRevokeToken);
   };
   var prim$14 = function (token) {
-    return _3(post, /* None */0, /* None */0, revokeCredentials(token));
+    return _3(post, undefined, undefined, revokeCredentials(token));
   };
   return {
           createAccount: prim,
@@ -834,7 +943,13 @@ var Endpoints = [];
 
 exports.Options = Options;
 exports.Endpoints = Endpoints;
+exports.Account = Account;
+exports.Asset = Asset;
+exports.Transfer = Transfer;
 exports.languages = languages;
 exports.actionTypes = actionTypes;
 exports.operationCodes = operationCodes;
+exports.createAccountAction = createAccountAction;
+exports.issueAssetAction = issueAssetAction;
+exports.transferAction = transferAction;
 exports.init = init;

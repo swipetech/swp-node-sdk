@@ -21,7 +21,7 @@
   ],
   "author": "Ítalo Nascimento <italo.nascimento@swipecoin.com.br>",
   "devDependencies": {
-    "bs-platform": "^3.1.5",
+    "bs-platform": "^4.0.0",
     "rollup": "^0.62.0",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-node-builtins": "^2.1.2",

@@ -92,21 +92,92 @@ module Endpoints = {
      newDict;
    }; */
 
+module Account = {
+  type balance;
+
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional] [@bs.as "type"]
+    type_: string,
+    [@bs.optional]
+    tags: Js.Array.t(string),
+    [@bs.optional] [@bs.as "starting_balances"]
+    startingBalances: Js.Array.t(balance),
+  };
+};
+
+module Asset = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional] [@bs.as "type"]
+    type_: string,
+    code: string,
+    [@bs.optional]
+    limit: string,
+    [@bs.optional]
+    tags: Js.Array.t(string),
+  };
+};
+
+module Transfer = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional] [@bs.as "type"]
+    type_: string,
+    from: string,
+    [@bs.as "to"]
+    to_: string,
+    asset: string,
+    amount: string,
+  };
+};
+
+let createAccountAction = (acc: Js.Nullable.t(Account.t)) =>
+  switch (Js.Nullable.toOption(acc)) {
+  | Some(a) =>
+    Account.t(
+      ~tags=?Account.tagsGet(a),
+      ~startingBalances=?Account.startingBalancesGet(a),
+      ~type_=Enums.ActionTypes.createAccount,
+      (),
+    )
+  | None => Account.t(~type_=Enums.ActionTypes.createAccount, ())
+  };
+
+let issueAssetAction = (asset: Asset.t) =>
+  Asset.t(
+    ~code=Asset.codeGet(asset),
+    ~limit=?Asset.limitGet(asset),
+    ~tags=?Asset.tagsGet(asset),
+    ~type_=Enums.ActionTypes.issueAsset,
+    (),
+  );
+
+let transferAction = (transfer: Transfer.t) =>
+  Transfer.t(
+    ~from=Transfer.fromGet(transfer),
+    ~to_=Transfer.to_Get(transfer),
+    ~asset=Transfer.assetGet(transfer),
+    ~amount=Transfer.amountGet(transfer),
+    ~type_=Enums.ActionTypes.transfer,
+    (),
+  );
+
 let init: Options.t => Endpoints.t =
   options => {
     let host =
-      switch (options |> Options.customHost) {
+      switch (options |> Options.customHostGet) {
       | Some(host) => host
       | None =>
-        switch (options |> Options.sandbox) {
+        switch (options |> Options.sandboxGet) {
         | Some(sandbox) => sandbox ? Config.sandboxHost : Config.host
         | None => Config.host
         }
       };
 
     let language =
-      switch (options |> Options.language) {
-      | None => languages |> Enums.Languages.ptBr
+      switch (options |> Options.languageGet) {
+      | None => languages |> Enums.Languages.ptBrGet
       | Some(lang) => lang
       };
 
@@ -114,10 +185,19 @@ let init: Options.t => Endpoints.t =
     Js.Dict.set(headers, "Content-Type", "application/json");
     Js.Dict.set(headers, "Accept-Language", language);
 
-    let partialSetAuthHeaders = Auth.setHeaders(~apiKey=options |> Options.apiKey, ~secret=options |> Options.secret);
+    let partialSetAuthHeaders =
+      Auth.setHeaders(
+        ~apiKey=options |> Options.apiKeyGet,
+        ~secret=options |> Options.secretGet,
+      );
 
     let baseRequest =
-      request(~host, ~headers, ~setAuthHeaders=partialSetAuthHeaders, ~debug=?options |> Options.debug);
+      request(
+        ~host,
+        ~headers,
+        ~setAuthHeaders=partialSetAuthHeaders,
+        ~debug=?options |> Options.debugGet,
+      );
 
     let get = baseRequest(~method=Fetch.Get);
     let post = baseRequest(~method=Fetch.Post);

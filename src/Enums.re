@@ -25,13 +25,19 @@ module ActionTypes = {
     issueAsset: string,
   };
 
+  let transfer = "TRANSFER";
+  let createAccount = "CREATE_ACC";
+  let destroyAccount = "DESTROY_ACC";
+  let issueAsset = "ISSUE_ASSET";
+  let createOrganization = "CREATE_ORG";
+
   let enum =
     t(
-      ~transfer="TRANSFER",
-      ~createAccount="CREATE_ACC",
-      ~destroyAccount="DESTROY_ACC",
-      ~createOrganization="CREATE_ORG",
-      ~issueAsset="ISSUE_ASSET",
+      ~transfer,
+      ~createAccount,
+      ~destroyAccount,
+      ~createOrganization,
+      ~issueAsset,
     );
 };
 
@@ -48,5 +54,11 @@ module OperationCodes = {
     notProcessed: string,
   };
 
-  let enum = t(~ok="op_ok", ~success="op_success", ~underfunded="op_underfunded", ~notProcessed="op_not_processed");
+  let enum =
+    t(
+      ~ok="op_ok",
+      ~success="op_success",
+      ~underfunded="op_underfunded",
+      ~notProcessed="op_not_processed",
+    );
 };
