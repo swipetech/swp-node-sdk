@@ -705,7 +705,7 @@ function updateTags(id) {
 
 var resetOrganization = "" + (String(organizations) + "/reset");
 
-var getToken = "" + (String(organizations) + ("" + (String(revoke) + "")));
+var getRevokeToken = "" + (String(organizations) + ("" + (String(revoke) + "")));
 
 function revokeCredentials(token) {
   return "" + (String(organizations) + ("" + (String(revoke) + ("/" + (String(token) + "")))));
@@ -805,7 +805,7 @@ function init(options) {
     return _3(get, /* None */0, /* None */0, getActions(id));
   };
   var prim$13 = function () {
-    return _3(get, /* None */0, /* None */0, getToken);
+    return _3(get, /* None */0, /* None */0, getRevokeToken);
   };
   var prim$14 = function (token) {
     return _3(post, /* None */0, /* None */0, revokeCredentials(token));
@@ -824,7 +824,7 @@ function init(options) {
           resetOrganization: prim$10,
           makeActionBatch: prim$11,
           getActionBatch: prim$12,
-          getToken: prim$13,
+          getRevokeToken: prim$13,
           revokeCredentials: prim$14
         };
 }
