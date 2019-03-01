@@ -2,10 +2,28 @@ let languages = Enums.Languages.enum;
 let actionTypes = Enums.ActionTypes.enum;
 let operationCodes = Enums.OperationCodes.enum;
 
-let request = (~host, ~headers, ~method, ~setAuthHeaders, ~body=?, ~queryParams=?, ~debug=?, path) => {
+let request =
+    (
+      ~host,
+      ~headers,
+      ~method,
+      ~setAuthHeaders,
+      ~body=?,
+      ~queryParams=?,
+      ~debug=?,
+      path,
+    ) => {
   setAuthHeaders(~path, ~body?, headers);
 
-  Service.request(~host, ~headers, ~method, ~body?, ~queryParams?, ~debug?, path);
+  Service.request(
+    ~host,
+    ~headers,
+    ~method,
+    ~body?,
+    ~queryParams?,
+    ~debug?,
+    path,
+  );
 };
 
 module Options = {
@@ -205,22 +223,42 @@ let init: Options.t => Endpoints.t =
     let put = baseRequest(~method=Fetch.Put);
 
     Endpoints.make(
-      ~createAccount=body => post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
+      ~createAccount=
+        body =>
+          post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
-      ~getAllAccounts=queryParams => get(Endpoints.Routes.accounts, ~queryParams=?Js.Nullable.toOption(queryParams)),
-      ~getAllAssets=queryParams => get(Endpoints.Routes.assets, ~queryParams=?Js.Nullable.toOption(queryParams)),
+      ~getAllAccounts=
+        queryParams =>
+          get(
+            Endpoints.Routes.accounts,
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
+      ~getAllAssets=
+        queryParams =>
+          get(
+            Endpoints.Routes.assets,
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
       ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
       ~getTransfer=id => get(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
         (id, queryParams) =>
-          get(Endpoints.Routes.getAllTransfers(id), ~queryParams=?Js.Nullable.toOption(queryParams)),
+          get(
+            Endpoints.Routes.getAllTransfers(id),
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
       ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
       ~updateTags=
-        (id, tags) => put(Endpoints.Routes.updateTags(id), ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags))),
+        (id, tags) =>
+          put(
+            Endpoints.Routes.updateTags(id),
+            ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags)),
+          ),
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getRevokeToken=() => get(Endpoints.Routes.getRevokeToken),
-      ~revokeCredentials=token => post(Endpoints.Routes.revokeCredentials(token)),
+      ~revokeCredentials=
+        token => post(Endpoints.Routes.revokeCredentials(token)),
       ~makeActionBatch=body => post(Endpoints.Routes.actions, ~body),
       ~getActionBatch=id => get(Endpoints.Routes.getActions(id)),
     );
