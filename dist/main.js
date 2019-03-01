@@ -737,6 +737,8 @@ var organizations = "/organizations";
 
 var accounts = "/accounts";
 
+var assets = "/assets";
+
 var transfers = "/transfers";
 
 var actions = "/actions";
@@ -872,69 +874,73 @@ function init(options) {
   var post = baseRequest(/* Post */2);
   var $$delete = baseRequest(/* Delete */4);
   var put = baseRequest(/* Put */3);
-  var prim = function (body) {
-    return _3(post, (body == null) ? undefined : some(body), undefined, accounts);
-  };
-  var prim$1 = function (id) {
-    return _3(get, undefined, undefined, getAccount(id));
-  };
-  var prim$2 = function (queryParams) {
-    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), accounts);
-  };
-  var prim$3 = function (queryParams) {
-    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), "/assets");
-  };
-  var prim$4 = function (param) {
+  var prim = function (param) {
     return _3(get, undefined, undefined, organizations);
   };
-  var prim$5 = function (body) {
-    return _3(post, some(body), undefined, transfers);
+  var prim$1 = function (param) {
+    return _3(post, undefined, undefined, resetOrganization);
   };
-  var prim$6 = function (id) {
-    return _3(get, undefined, undefined, getTransfer(id));
+  var prim$2 = function (id) {
+    return _3(get, undefined, undefined, getAccount(id));
   };
-  var prim$7 = function (id, queryParams) {
-    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), getAllTransfers(id));
+  var prim$3 = function (queryParams) {
+    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), accounts);
   };
-  var prim$8 = function (id) {
+  var prim$4 = function (body) {
+    return _3(post, (body == null) ? undefined : some(body), undefined, accounts);
+  };
+  var prim$5 = function (id) {
     return _3($$delete, undefined, undefined, getAccount(id));
   };
-  var prim$9 = function (id, tags) {
+  var prim$6 = function (body) {
+    return _3(post, some(body), undefined, assets);
+  };
+  var prim$7 = function (queryParams) {
+    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), assets);
+  };
+  var prim$8 = function (id) {
+    return _3(get, undefined, undefined, getTransfer(id));
+  };
+  var prim$9 = function (id, queryParams) {
+    return _3(get, undefined, (queryParams == null) ? undefined : some(queryParams), getAllTransfers(id));
+  };
+  var prim$10 = function (body) {
+    return _3(post, some(body), undefined, transfers);
+  };
+  var prim$11 = function (id, tags) {
     return _3(put, {
                 tags: tags
               }, undefined, updateTags(id));
   };
-  var prim$10 = function (param) {
-    return _3(post, undefined, undefined, resetOrganization);
-  };
-  var prim$11 = function (body) {
-    return _3(post, some(body), undefined, actions);
-  };
   var prim$12 = function (id) {
     return _3(get, undefined, undefined, getActions(id));
   };
-  var prim$13 = function (param) {
+  var prim$13 = function (body) {
+    return _3(post, some(body), undefined, actions);
+  };
+  var prim$14 = function (param) {
     return _3(get, undefined, undefined, getRevokeToken);
   };
-  var prim$14 = function (token) {
+  var prim$15 = function (token) {
     return _3(post, undefined, undefined, revokeCredentials(token));
   };
   return {
-          createAccount: prim,
-          getAccount: prim$1,
-          getAllAccounts: prim$2,
-          getAllAssets: prim$3,
-          getOrganization: prim$4,
-          makeTransfers: prim$5,
-          getTransfer: prim$6,
-          getAllTransfers: prim$7,
-          destroyAccount: prim$8,
-          updateTags: prim$9,
-          resetOrganization: prim$10,
-          makeActionBatch: prim$11,
+          getOrganization: prim,
+          resetOrganization: prim$1,
+          getAccount: prim$2,
+          getAllAccounts: prim$3,
+          createAccount: prim$4,
+          destroyAccount: prim$5,
+          issueAsset: prim$6,
+          getAllAssets: prim$7,
+          getTransfer: prim$8,
+          getAllTransfers: prim$9,
+          makeTransfers: prim$10,
+          updateTags: prim$11,
           getActionBatch: prim$12,
-          getRevokeToken: prim$13,
-          revokeCredentials: prim$14
+          makeActionBatch: prim$13,
+          getRevokeToken: prim$14,
+          revokeCredentials: prim$15
         };
 }
 

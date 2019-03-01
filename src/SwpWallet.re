@@ -76,19 +76,20 @@ module Endpoints = {
 
   [@bs.deriving abstract]
   type t = {
-    createAccount: Nullable.t(Js.Json.t) => Promise.t(response),
+    getOrganization: unit => Promise.t(response),
+    resetOrganization: unit => Promise.t(response),
     getAccount: string => Promise.t(response),
     getAllAccounts: dictParams => Promise.t(response),
+    createAccount: Nullable.t(Js.Json.t) => Promise.t(response),
+    destroyAccount: string => Promise.t(response),
+    issueAsset: Json.t => Promise.t(response),
     getAllAssets: dictParams => Promise.t(response),
-    getOrganization: unit => Promise.t(response),
-    makeTransfers: Json.t => Promise.t(response),
     getTransfer: string => Promise.t(response),
     getAllTransfers: (string, dictParams) => Promise.t(response),
-    destroyAccount: string => Promise.t(response),
+    makeTransfers: Json.t => Promise.t(response),
     updateTags: (string, Array.t(string)) => Promise.t(response),
-    resetOrganization: unit => Promise.t(response),
-    makeActionBatch: Json.t => Promise.t(response),
     getActionBatch: string => Promise.t(response),
+    makeActionBatch: Json.t => Promise.t(response),
     getRevokeToken: unit => Promise.t(response),
     revokeCredentials: string => Promise.t(response),
   };
@@ -223,9 +224,8 @@ let init: Options.t => Endpoints.t =
     let put = baseRequest(~method=Fetch.Put);
 
     Endpoints.make(
-      ~createAccount=
-        body =>
-          post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
+      ~getOrganization=() => get(Endpoints.Routes.organizations),
+      ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
       ~getAllAccounts=
         queryParams =>
@@ -233,14 +233,17 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.accounts,
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
+      ~createAccount=
+        body =>
+          post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
+      ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
       ~getAllAssets=
         queryParams =>
           get(
             Endpoints.Routes.assets,
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
-      ~getOrganization=() => get(Endpoints.Routes.organizations),
-      ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
+      ~issueAsset=body => post(Endpoints.Routes.assets, ~body),
       ~getTransfer=id => get(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
         (id, queryParams) =>
@@ -248,18 +251,17 @@ let init: Options.t => Endpoints.t =
             Endpoints.Routes.getAllTransfers(id),
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
-      ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
+      ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
       ~updateTags=
         (id, tags) =>
           put(
             Endpoints.Routes.updateTags(id),
             ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags)),
           ),
-      ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
+      ~getActionBatch=id => get(Endpoints.Routes.getActions(id)),
+      ~makeActionBatch=body => post(Endpoints.Routes.actions, ~body),
       ~getRevokeToken=() => get(Endpoints.Routes.getRevokeToken),
       ~revokeCredentials=
         token => post(Endpoints.Routes.revokeCredentials(token)),
-      ~makeActionBatch=body => post(Endpoints.Routes.actions, ~body),
-      ~getActionBatch=id => get(Endpoints.Routes.getActions(id)),
     );
   };
