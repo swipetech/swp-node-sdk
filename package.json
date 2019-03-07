@@ -1,6 +1,6 @@
 {
   "name": "@swp/swipe-sdk",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": false,
   "main": "dist/main.js",
   "publishConfig": {
