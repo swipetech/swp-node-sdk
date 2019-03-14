@@ -56,9 +56,9 @@ module OperationCodes = {
 
   let enum =
     t(
-      ~ok="op_ok",
-      ~success="op_success",
-      ~underfunded="op_underfunded",
-      ~notProcessed="op_not_processed",
+      ~ok="transfer_ok",
+      ~success="transfer_success",
+      ~underfunded="transfer_underfunded",
+      ~notProcessed="transfer_not_processed",
     );
 };

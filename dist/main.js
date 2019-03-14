@@ -347,10 +347,10 @@ var ActionTypes = /* module */[
 ];
 
 var $$enum$2 = {
-  Ok: "op_ok",
-  Success: "op_success",
-  Underfunded: "op_underfunded",
-  NotProcessed: "op_not_processed"
+  Ok: "transfer_ok",
+  Success: "transfer_success",
+  Underfunded: "transfer_underfunded",
+  NotProcessed: "transfer_not_processed"
 };
 
 var OperationCodes = /* module */[/* enum */$$enum$2];
