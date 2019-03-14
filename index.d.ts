@@ -7,10 +7,10 @@ declare module "@swp/wallet-sdk" {
     "ISSUE_ASSET"
 
   export type OperationCode =
-  "transfer_ok" |
-  "transfer_success" |
-  "transfer_underfunded" |
-  "transfer_not_processed"
+  "action_ok" |
+  "action_success" |
+  "action_underfunded" |
+  "action_not_processed"
 
   export interface Options {
     apiKey: string
@@ -126,10 +126,10 @@ declare module "@swp/wallet-sdk" {
   }
 
   export const operationCodes: {
-    Ok: "transfer_ok"
-    Success: "transfer_success"
-    Underfunded: "transfer_underfunded"
-    NotProcessed: "transfer_not_processed"
+    Ok: "action_ok"
+    Success: "action_success"
+    Underfunded: "action_underfunded"
+    NotProcessed: "action_not_processed"
   }
 
   export const init: (options: Options) => Endpoints
