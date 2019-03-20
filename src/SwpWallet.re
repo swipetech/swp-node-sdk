@@ -1,6 +1,6 @@
 let languages = Enums.Languages.enum;
 let actionTypes = Enums.ActionTypes.enum;
-let operationCodes = Enums.OperationCodes.enum;
+let actionCodes = Enums.ActionCodes.enum;
 
 let request =
     (

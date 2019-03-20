@@ -6,7 +6,7 @@ module Transfer: {type t;};
 
 let languages: Enums.Languages.t;
 let actionTypes: Enums.ActionTypes.t;
-let operationCodes: Enums.OperationCodes.t;
+let actionCodes: Enums.ActionCodes.t;
 
 let createAccountAction: Js.Nullable.t(Account.t) => Account.t;
 let issueAssetAction: Asset.t => Asset.t;

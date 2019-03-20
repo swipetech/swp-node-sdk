@@ -6,7 +6,7 @@ declare module "@swp/wallet-sdk" {
     "CREATE_ORG" |
     "ISSUE_ASSET"
 
-  export type OperationCode =
+  export type ActionCode =
   "action_ok" |
   "action_success" |
   "action_underfunded" |
@@ -24,7 +24,7 @@ declare module "@swp/wallet-sdk" {
     to: string
     asset: string
     amount: number
-    op_code: OperationCode
+    action_code: ActionCode
   }
 
   export interface Payment {
@@ -125,7 +125,7 @@ declare module "@swp/wallet-sdk" {
     ChangeTrust: "change_trust",
   }
 
-  export const operationCodes: {
+  export const actionCodes: {
     Ok: "action_ok"
     Success: "action_success"
     Underfunded: "action_underfunded"

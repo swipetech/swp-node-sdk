@@ -41,7 +41,7 @@ module ActionTypes = {
     );
 };
 
-module OperationCodes = {
+module ActionCodes = {
   [@bs.deriving abstract]
   type t = {
     [@bs.as "Ok"]
