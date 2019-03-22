@@ -796,6 +796,10 @@ function createAccountAction(acc) {
     if (tmp$2 !== undefined) {
       tmp.starting_balances = valFromOption(tmp$2);
     }
+    var tmp$3 = undefined_to_opt(acc.fields);
+    if (tmp$3 !== undefined) {
+      tmp.fields = valFromOption(tmp$3);
+    }
     return tmp;
   }
 }
