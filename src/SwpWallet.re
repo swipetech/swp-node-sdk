@@ -59,6 +59,7 @@ module Endpoints = {
     let tags = "/tags";
     let actions = "/actions";
     let revoke = "/revoke";
+    let webhook = "/webhook";
 
     let getAccount = id => {j|$accounts/$id|j};
     let deleteAccount = getAccount;
@@ -69,6 +70,8 @@ module Endpoints = {
     let getRevokeToken = {j|$organizations$revoke|j};
     let revokeCredentials = token => {j|$organizations$revoke/$token|j};
     let getActions = id => {j|$actions/$id|j};
+    let deleteWebhook = id => {j|$webhook/$id|j};
+    let getWebhook = id => {j|$webhook/$id|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -92,6 +95,9 @@ module Endpoints = {
     makeActionBatch: Json.t => Promise.t(response),
     getRevokeToken: unit => Promise.t(response),
     revokeCredentials: string => Promise.t(response),
+    createWebhook: Json.t => Promise.t(response),
+    deleteWebhook: string => Promise.t(response),
+    getWebhook: string => Promise.t(response),
   };
 
   let make = t;
@@ -104,7 +110,8 @@ module Endpoints = {
      |> Js.Array.forEach(dict =>getRevokeToken
           Js.Dict.keys(dict)
           |> Js.Array.forEach(key =>
-               Js.Dict.set(newDict, key, Js.Dict.unsafeGet(dict, key))
+               Js.Dict.set(newDict, key, Js.DictgetOrganization
+getOrganization.unsafeGet(dict, key))
              )
         );
 
@@ -152,6 +159,8 @@ module Transfer = {
     amount: string,
   };
 };
+
+
 
 let createAccountAction = (acc: Js.Nullable.t(Account.t)) =>
   switch (Js.Nullable.toOption(acc)) {
@@ -209,7 +218,7 @@ let init: Options.t => Endpoints.t =
 
     let partialSetAuthHeaders =
       Auth.setHeaders(
-        ~apiKey=options |> Options.apiKeyGet,
+~apiKey=options |> Options.apiKeyGet,
         ~secret=options |> Options.secretGet,
       );
 
@@ -266,5 +275,8 @@ let init: Options.t => Endpoints.t =
       ~getRevokeToken=() => get(Endpoints.Routes.getRevokeToken),
       ~revokeCredentials=
         token => post(Endpoints.Routes.revokeCredentials(token)),
+      ~deleteWebhook=id => delete(Endpoints.Routes.deleteWebhook(id)),
+      ~createWebhook=body => post(Endpoints.Routes.webhook, ~body),
+      ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
     );
   };

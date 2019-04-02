@@ -745,6 +745,8 @@ var actions = "/actions";
 
 var revoke = "/revoke";
 
+var webhook = "/webhook";
+
 function getAccount(id) {
   return "" + (String(accounts) + ("/" + (String(id) + "")));
 }
@@ -771,6 +773,14 @@ function revokeCredentials(token) {
 
 function getActions(id) {
   return "" + (String(actions) + ("/" + (String(id) + "")));
+}
+
+function deleteWebhook(id) {
+  return "" + (String(webhook) + ("/" + (String(id) + "")));
+}
+
+function getWebhook(id) {
+  return "" + (String(webhook) + ("/" + (String(id) + "")));
 }
 
 var Account = /* module */[];
@@ -928,6 +938,15 @@ function init(options) {
   var prim$15 = function (token) {
     return _3(post, undefined, undefined, revokeCredentials(token));
   };
+  var prim$16 = function (body) {
+    return _3(post, some(body), undefined, webhook);
+  };
+  var prim$17 = function (id) {
+    return _3($$delete, undefined, undefined, deleteWebhook(id));
+  };
+  var prim$18 = function (id) {
+    return _3(get, undefined, undefined, getWebhook(id));
+  };
   return {
           getOrganization: prim,
           resetOrganization: prim$1,
@@ -944,7 +963,10 @@ function init(options) {
           getActionBatch: prim$12,
           makeActionBatch: prim$13,
           getRevokeToken: prim$14,
-          revokeCredentials: prim$15
+          revokeCredentials: prim$15,
+          createWebhook: prim$16,
+          deleteWebhook: prim$17,
+          getWebhook: prim$18
         };
 }
 
