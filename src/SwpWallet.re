@@ -59,7 +59,7 @@ module Endpoints = {
     let tags = "/tags";
     let actions = "/actions";
     let revoke = "/revoke";
-    let webhook = "/webhook";
+    let webhooks = "/webhooks";
 
     let getAccount = id => {j|$accounts/$id|j};
     let deleteAccount = getAccount;
@@ -70,8 +70,8 @@ module Endpoints = {
     let getRevokeToken = {j|$organizations$revoke|j};
     let revokeCredentials = token => {j|$organizations$revoke/$token|j};
     let getActions = id => {j|$actions/$id|j};
-    let deleteWebhook = id => {j|$webhook/$id|j};
-    let getWebhook = id => {j|$webhook/$id|j};
+    let deleteWebhook = id => {j|$webhooks/$id|j};
+    let getWebhook = id => {j|$webhooks/$id|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -276,7 +276,7 @@ let init: Options.t => Endpoints.t =
       ~revokeCredentials=
         token => post(Endpoints.Routes.revokeCredentials(token)),
       ~deleteWebhook=id => delete(Endpoints.Routes.deleteWebhook(id)),
-      ~createWebhook=body => post(Endpoints.Routes.webhook, ~body),
+      ~createWebhook=body => post(Endpoints.Routes.webhooks, ~body),
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
     );
   };
