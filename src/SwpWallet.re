@@ -218,7 +218,7 @@ let init: Options.t => Endpoints.t =
 
     let partialSetAuthHeaders =
       Auth.setHeaders(
-~apiKey=options |> Options.apiKeyGet,
+        ~apiKey=options |> Options.apiKeyGet,
         ~secret=options |> Options.secretGet,
       );
 
@@ -226,14 +226,13 @@ let init: Options.t => Endpoints.t =
       request(
         ~host,
         ~headers,
-        ~setAuthHeaders=partialSetAuthHeaders,
         ~debug=?options |> Options.debugGet,
       );
 
-    let get = baseRequest(~method=Fetch.Get);
-    let post = baseRequest(~method=Fetch.Post);
-    let delete = baseRequest(~method=Fetch.Delete);
-    let put = baseRequest(~method=Fetch.Put);
+    let get = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Get);
+    let post = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Post);
+    let delete = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Delete);
+    let put = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Put);
 
     Endpoints.make(
       ~getOrganization=() => get(Endpoints.Routes.organizations),
