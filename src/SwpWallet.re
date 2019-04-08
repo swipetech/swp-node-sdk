@@ -104,19 +104,19 @@ module Endpoints = {
 };
 
 /* let mergeDicts = (dict1, dict2) => {
-     let newDict = Js.Dict.empty();
+        let newDict = Js.Dict.empty();
 
-     [|dict1, dict2|]
-     |> Js.Array.forEach(dict =>getRevokeToken
-          Js.Dict.keys(dict)
-          |> Js.Array.forEach(key =>
-               Js.Dict.set(newDict, key, Js.DictgetOrganization
-getOrganization.unsafeGet(dict, key))
-             )
-        );
+        [|dict1, dict2|]
+        |> Js.Array.forEach(dict =>getRevokeToken
+             Js.Dict.keys(dict)
+             |> Js.Array.forEach(key =>
+                  Js.Dict.set(newDict, key, Js.DictgetOrganization
+   getOrganization.unsafeGet(dict, key))
+                )
+           );
 
-     newDict;
-   }; */
+        newDict;
+      }; */
 
 module Account = {
   type balance;
@@ -130,7 +130,7 @@ module Account = {
     [@bs.optional] [@bs.as "starting_balances"]
     startingBalances: Js.Array.t(balance),
     [@bs.optional] [@bs.as "fields"]
-    fields: Js.Json.t
+    fields: Js.Json.t,
   };
 };
 
@@ -159,8 +159,6 @@ module Transfer = {
     amount: string,
   };
 };
-
-
 
 let createAccountAction = (acc: Js.Nullable.t(Account.t)) =>
   switch (Js.Nullable.toOption(acc)) {
@@ -223,16 +221,28 @@ let init: Options.t => Endpoints.t =
       );
 
     let baseRequest =
-      request(
-        ~host,
-        ~headers,
-        ~debug=?options |> Options.debugGet,
-      );
+      request(~host, ~headers, ~debug=?options |> Options.debugGet);
 
-    let get = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Get);
-    let post = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Post);
-    let delete = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Delete);
-    let put = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Put);
+    let get =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get),
+        ~method=Fetch.Get,
+      );
+    let post =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Post),
+        ~method=Fetch.Post,
+      );
+    let delete =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Delete),
+        ~method=Fetch.Delete,
+      );
+    let put =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Put),
+        ~method=Fetch.Put,
+      );
 
     Endpoints.make(
       ~getOrganization=() => get(Endpoints.Routes.organizations),
