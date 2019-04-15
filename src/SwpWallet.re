@@ -130,7 +130,9 @@ module Account = {
     [@bs.optional] [@bs.as "starting_balances"]
     startingBalances: Js.Array.t(balance),
     [@bs.optional] [@bs.as "fields"]
-    fields: Js.Json.t
+    fields: Js.Json.t, 
+    [@bs.optional] [@bs.as "alias"]
+    alias: string,
   };
 };
 
@@ -170,6 +172,7 @@ let createAccountAction = (acc: Js.Nullable.t(Account.t)) =>
       ~startingBalances=?Account.startingBalancesGet(a),
       ~fields=?Account.fieldsGet(a),
       ~type_=Enums.ActionTypes.createAccount,
+      ~alias=?Account.aliasGet(a),
       (),
     )
   | None => Account.t(~type_=Enums.ActionTypes.createAccount, ())
