@@ -44,6 +44,8 @@ module Endpoints = {
     let webhooks = "/webhooks";
 
     let getAccount = id => {j|$accounts/$id|j};
+    let getAccountByAlias = alias => {j|$accounts/alias/$alias|j};
+
     let deleteAccount = getAccount;
     let getTransfer = id => {j|$transfers/$id|j};
     let getAllTransfers = id => {j|$accounts/$id/transfers|j};
@@ -64,6 +66,7 @@ module Endpoints = {
     getOrganization: unit => Promise.t(response),
     resetOrganization: unit => Promise.t(response),
     getAccount: string => Promise.t(response),
+    getAccountByAlias: string => Promise.t(response),
     getAllAccounts: dictParams => Promise.t(response),
     createAccount: Nullable.t(Js.Json.t) => Promise.t(response),
     destroyAccount: string => Promise.t(response),
@@ -236,6 +239,7 @@ let init: Options.t => Endpoints.t =
       ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
+      ~getAccountByAlias=alias => get(Endpoints.Routes.getAccountByAlias(alias)),
       ~getAllAccounts=queryParams => get(Endpoints.Routes.accounts, ~queryParams=?Js.Nullable.toOption(queryParams)),
       ~createAccount=body => post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
       ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
