@@ -1,6 +1,7 @@
 let languages = Enums.Languages.enum;
 let actionTypes = Enums.ActionTypes.enum;
 let actionCodes = Enums.ActionCodes.enum;
+let memoTypes = Enums.MemoTypes.enum;
 
 let request = (~host, ~headers, ~method, ~setAuthHeaders, ~body=?, ~queryParams=?, ~debug=?, path) => {
   setAuthHeaders(~path, ~body?, headers);
@@ -147,6 +148,14 @@ module Transfer = {
   };
 };
 
+module Memo = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.as "type"]
+    type_: Js.String.t,
+    value: Js.String.t,
+  };
+};
 module TrailTransfer = {
   [@bs.deriving abstract]
   type t = {
@@ -159,6 +168,14 @@ module TrailTransfer = {
     amount: string,
   };
 };
+
+let memoHash = (value: Js.String.t) =>
+  Memo.t(~type_=Enums.MemoTypes.hash, ~value);
+
+let memoText = (value: Js.String.t) =>
+  Memo.t(~type_=Enums.MemoTypes.text, ~value);
+
+let sha256 = (value: Js.String.t) => Crypto.sha256(value) |> Util.toString;
 
 let createAccountAction = (acc: Js.Nullable.t(Account.t)) =>
   switch (Js.Nullable.toOption(acc)) {
@@ -229,11 +246,6 @@ let init: Options.t => Endpoints.t =
       Auth.setHeaders(~apiKey=options |> Options.apiKeyGet, ~secret=options |> Options.secretGet);
 
     let baseRequest = request(~host, ~headers, ~debug=?options |> Options.debugGet);
-
-    let get = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Get);
-    let post = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Post);
-    let delete = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Delete);
-    let put = baseRequest(~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get), ~method=Fetch.Put);
 
     Endpoints.make(
       ~getOrganization=() => get(Endpoints.Routes.organizations),

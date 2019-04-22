@@ -37,6 +37,21 @@ module ActionTypes = {
   let enum = t(~transfer, ~trailTransfer, ~createAccount, ~destroyAccount, ~createOrganization, ~issueAsset);
 };
 
+module MemoTypes = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.as "Text"]
+    text: string,
+    [@bs.as "Hash"]
+    hash: string,
+  };
+
+  let text = "TEXT";
+  let hash = "HASH";
+
+  let enum = t(~text, ~hash);
+};
+
 module ActionCodes = {
   [@bs.deriving abstract]
   type t = {
