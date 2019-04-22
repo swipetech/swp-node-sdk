@@ -3,10 +3,28 @@ let actionTypes = Enums.ActionTypes.enum;
 let actionCodes = Enums.ActionCodes.enum;
 let memoTypes = Enums.MemoTypes.enum;
 
-let request = (~host, ~headers, ~method, ~setAuthHeaders, ~body=?, ~queryParams=?, ~debug=?, path) => {
+let request =
+    (
+      ~host,
+      ~headers,
+      ~method,
+      ~setAuthHeaders,
+      ~body=?,
+      ~queryParams=?,
+      ~debug=?,
+      path,
+    ) => {
   setAuthHeaders(~path, ~body?, headers);
 
-  Service.request(~host, ~headers, ~method, ~body?, ~queryParams?, ~debug?, path);
+  Service.request(
+    ~host,
+    ~headers,
+    ~method,
+    ~body?,
+    ~queryParams?,
+    ~debug?,
+    path,
+  );
 };
 
 module Options = {
@@ -156,18 +174,19 @@ module Memo = {
     value: Js.String.t,
   };
 };
-module TrailTransfer = {
-  [@bs.deriving abstract]
-  type t = {
-    [@bs.optional] [@bs.as "type"]
-    type_: string,
-    from: string,
-    [@bs.as "to"]
-    to_: string,
-    asset: string,
-    amount: string,
-  };
-};
+
+//module TrailTransfer = {
+//  [@bs.deriving abstract]
+//  type t = {
+//    [@bs.optional] [@bs.as "type"]
+//    type_: string,
+//    from: string,
+//    [@bs.as "to"]
+//    to_: string,
+//    asset: string,
+//    amount: string,
+//  };
+//};
 
 let memoHash = (value: Js.String.t) =>
   Memo.t(~type_=Enums.MemoTypes.hash, ~value);
@@ -210,15 +229,15 @@ let transferAction = (transfer: Transfer.t) =>
     (),
   );
 
-let trailTransferAction = (transfer: TrailTransfer.t) =>
-  TrailTransfer.t(
-    ~from=TrailTransfer.fromGet(transfer),
-    ~to_=TrailTransfer.to_Get(transfer),
-    ~asset=TrailTransfer.assetGet(transfer),
-    ~amount=TrailTransfer.amountGet(transfer),
-    ~type_=Enums.ActionTypes.trailTransfer,
-    (),
-  );
+//let trailTransferAction = (transfer: TrailTransfer.t) =>
+//  TrailTransfer.t(
+//    ~from=TrailTransfer.fromGet(transfer),
+//    ~to_=TrailTransfer.to_Get(transfer),
+//    ~asset=TrailTransfer.assetGet(transfer),
+//    ~amount=TrailTransfer.amountGet(transfer),
+//    ~type_=Enums.ActionTypes.trailTransfer,
+//    (),
+//  );
 
 let init: Options.t => Endpoints.t =
   options => {
@@ -243,31 +262,77 @@ let init: Options.t => Endpoints.t =
     Js.Dict.set(headers, "Accept-Language", language);
 
     let partialSetAuthHeaders =
-      Auth.setHeaders(~apiKey=options |> Options.apiKeyGet, ~secret=options |> Options.secretGet);
+      Auth.setHeaders(
+        ~apiKey=options |> Options.apiKeyGet,
+        ~secret=options |> Options.secretGet,
+      );
 
-    let baseRequest = request(~host, ~headers, ~debug=?options |> Options.debugGet);
+    let baseRequest =
+      request(~host, ~headers, ~debug=?options |> Options.debugGet);
+
+    let get =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Get),
+        ~method=Fetch.Get,
+      );
+    let post =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Post),
+        ~method=Fetch.Post,
+      );
+    let delete =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Delete),
+        ~method=Fetch.Delete,
+      );
+    let put =
+      baseRequest(
+        ~setAuthHeaders=partialSetAuthHeaders(~method=Fetch.Put),
+        ~method=Fetch.Put,
+      );
 
     Endpoints.make(
       ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
-      ~getAccountByAlias=alias => get(Endpoints.Routes.getAccountByAlias(alias)),
-      ~getAllAccounts=queryParams => get(Endpoints.Routes.accounts, ~queryParams=?Js.Nullable.toOption(queryParams)),
-      ~createAccount=body => post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
+      ~getAccountByAlias=
+        alias => get(Endpoints.Routes.getAccountByAlias(alias)),
+      ~getAllAccounts=
+        queryParams =>
+          get(
+            Endpoints.Routes.accounts,
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
+      ~createAccount=
+        body =>
+          post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
       ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
-      ~getAllAssets=queryParams => get(Endpoints.Routes.assets, ~queryParams=?Js.Nullable.toOption(queryParams)),
+      ~getAllAssets=
+        queryParams =>
+          get(
+            Endpoints.Routes.assets,
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
       ~issueAsset=body => post(Endpoints.Routes.assets, ~body),
       ~getTransfer=id => get(Endpoints.Routes.getTransfer(id)),
       ~getAllTransfers=
         (id, queryParams) =>
-          get(Endpoints.Routes.getAllTransfers(id), ~queryParams=?Js.Nullable.toOption(queryParams)),
+          get(
+            Endpoints.Routes.getAllTransfers(id),
+            ~queryParams=?Js.Nullable.toOption(queryParams),
+          ),
       ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
       ~updateTags=
-        (id, tags) => put(Endpoints.Routes.updateTags(id), ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags))),
+        (id, tags) =>
+          put(
+            Endpoints.Routes.updateTags(id),
+            ~body=JsonUtil.asJson(EncapsulatedTags.make(~tags)),
+          ),
       ~getActionBatch=id => get(Endpoints.Routes.getActions(id)),
       ~makeActionBatch=body => post(Endpoints.Routes.actions, ~body),
       ~getRevokeToken=() => get(Endpoints.Routes.getRevokeToken),
-      ~revokeCredentials=token => post(Endpoints.Routes.revokeCredentials(token)),
+      ~revokeCredentials=
+        token => post(Endpoints.Routes.revokeCredentials(token)),
       ~deleteWebhook=id => delete(Endpoints.Routes.deleteWebhook(id)),
       ~createWebhook=body => post(Endpoints.Routes.webhooks, ~body),
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
