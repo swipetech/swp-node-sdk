@@ -75,7 +75,7 @@ module Endpoints = {
     let getActions = id => {j|$actions/$id|j};
     let deleteWebhook = id => {j|$webhooks/$id|j};
     let getWebhook = id => {j|$webhooks/$id|j};
-    let getUserPSPInfo = instantID => {j|/dns/$instantID|j};
+    let getUserPSPInfo = instantID => {j|/psp/instant-id/$instantID|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
