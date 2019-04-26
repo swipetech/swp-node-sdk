@@ -868,6 +868,10 @@ function getWebhook(id) {
   return "" + (String(webhooks) + ("/" + (String(id) + "")));
 }
 
+function getUserPSPInfo(instantID) {
+  return "dns/" + (String(instantID) + "");
+}
+
 var Account = /* module */[];
 
 var Asset = /* module */[];
@@ -1085,6 +1089,9 @@ function init(options) {
   var prim$20 = function (id) {
     return _3(get, undefined, undefined, getWebhook(id));
   };
+  var prim$21 = function (instantID) {
+    return _3(get, undefined, undefined, getUserPSPInfo(instantID));
+  };
   return {
           checkSignature: prim,
           getOrganization: prim$1,
@@ -1106,7 +1113,8 @@ function init(options) {
           revokeCredentials: prim$17,
           createWebhook: prim$18,
           deleteWebhook: prim$19,
-          getWebhook: prim$20
+          getWebhook: prim$20,
+          getUserPSPInfo: prim$21
         };
 }
 

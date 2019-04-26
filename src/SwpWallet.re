@@ -75,6 +75,7 @@ module Endpoints = {
     let getActions = id => {j|$actions/$id|j};
     let deleteWebhook = id => {j|$webhooks/$id|j};
     let getWebhook = id => {j|$webhooks/$id|j};
+    let getUserPSPInfo = instantID => {j|dns/$instantID|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -103,6 +104,7 @@ module Endpoints = {
     createWebhook: Json.t => Promise.t(response),
     deleteWebhook: string => Promise.t(response),
     getWebhook: string => Promise.t(response),
+    getUserPSPInfo: string => Promise.t(response),
   };
 
   let make = t;
@@ -341,5 +343,7 @@ let init: Options.t => Endpoints.t =
       ~deleteWebhook=id => delete(Endpoints.Routes.deleteWebhook(id)),
       ~createWebhook=body => post(Endpoints.Routes.webhooks, ~body),
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
+      ~getUserPSPInfo=
+        instantID => get(Endpoints.Routes.getUserPSPInfo(instantID)),
     );
   };
