@@ -869,7 +869,7 @@ function getWebhook(id) {
 }
 
 function getUserPSPInfo(instantID) {
-  return "dns/" + (String(instantID) + "");
+  return "/dns/" + (String(instantID) + "");
 }
 
 var Account = /* module */[];
