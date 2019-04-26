@@ -82,6 +82,7 @@ module Endpoints = {
 
   [@bs.deriving abstract]
   type t = {
+    checkSignature: (string, Auth.SignatureParams.t) => bool,
     getOrganization: unit => Promise.t(response),
     resetOrganization: unit => Promise.t(response),
     getAccount: string => Promise.t(response),
@@ -292,6 +293,10 @@ let init: Options.t => Endpoints.t =
       );
 
     Endpoints.make(
+      ~checkSignature=
+        (signature, signatureParams) =>
+          signature
+          == Auth.sign(~secret=options |> Options.secretGet, ~signatureParams),
       ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
