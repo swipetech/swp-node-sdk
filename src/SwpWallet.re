@@ -57,6 +57,7 @@ module Endpoints = {
     let accounts = "/accounts";
     let assets = "/assets";
     let transfers = "/transfers";
+    let trailTransfer = "/trail-transfers";
     let tags = "/tags";
     let actions = "/actions";
     let revoke = "/revoke";
@@ -96,6 +97,7 @@ module Endpoints = {
     getTransfer: string => Promise.t(response),
     getAllTransfers: (string, dictParams) => Promise.t(response),
     makeTransfers: Json.t => Promise.t(response),
+    makeTrailTransfer: Json.t => Promise.t(response),
     updateTags: (string, Array.t(string)) => Promise.t(response),
     getActionBatch: string => Promise.t(response),
     makeActionBatch: Json.t => Promise.t(response),
@@ -329,6 +331,7 @@ let init: Options.t => Endpoints.t =
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
       ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
+      ~makeTrailTransfer=body => post(Endpoints.Routes.trailTransfer, ~body),
       ~updateTags=
         (id, tags) =>
           put(

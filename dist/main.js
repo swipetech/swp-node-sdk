@@ -869,7 +869,7 @@ function getWebhook(id) {
 }
 
 function getUserPSPInfo(instantID) {
-  return "/dns/" + (String(instantID) + "");
+  return "/psp/instant-id/" + (String(instantID) + "");
 }
 
 var Account = /* module */[];
@@ -1063,33 +1063,36 @@ function init(options) {
   var prim$12 = function (body) {
     return _3(post, some(body), undefined, transfers);
   };
-  var prim$13 = function (id, tags) {
+  var prim$13 = function (body) {
+    return _3(post, some(body), undefined, "/trail-transfers");
+  };
+  var prim$14 = function (id, tags) {
     return _3(put, {
                 tags: tags
               }, undefined, updateTags(id));
   };
-  var prim$14 = function (id) {
+  var prim$15 = function (id) {
     return _3(get, undefined, undefined, getActions(id));
   };
-  var prim$15 = function (body) {
+  var prim$16 = function (body) {
     return _3(post, some(body), undefined, actions);
   };
-  var prim$16 = function (param) {
+  var prim$17 = function (param) {
     return _3(get, undefined, undefined, getRevokeToken);
   };
-  var prim$17 = function (token) {
+  var prim$18 = function (token) {
     return _3(post, undefined, undefined, revokeCredentials(token));
   };
-  var prim$18 = function (body) {
+  var prim$19 = function (body) {
     return _3(post, some(body), undefined, webhooks);
   };
-  var prim$19 = function (id) {
+  var prim$20 = function (id) {
     return _3($$delete, undefined, undefined, deleteWebhook(id));
   };
-  var prim$20 = function (id) {
+  var prim$21 = function (id) {
     return _3(get, undefined, undefined, getWebhook(id));
   };
-  var prim$21 = function (instantID) {
+  var prim$22 = function (instantID) {
     return _3(get, undefined, undefined, getUserPSPInfo(instantID));
   };
   return {
@@ -1106,15 +1109,16 @@ function init(options) {
           getTransfer: prim$10,
           getAllTransfers: prim$11,
           makeTransfers: prim$12,
-          updateTags: prim$13,
-          getActionBatch: prim$14,
-          makeActionBatch: prim$15,
-          getRevokeToken: prim$16,
-          revokeCredentials: prim$17,
-          createWebhook: prim$18,
-          deleteWebhook: prim$19,
-          getWebhook: prim$20,
-          getUserPSPInfo: prim$21
+          makeTrailTransfer: prim$13,
+          updateTags: prim$14,
+          getActionBatch: prim$15,
+          makeActionBatch: prim$16,
+          getRevokeToken: prim$17,
+          revokeCredentials: prim$18,
+          createWebhook: prim$19,
+          deleteWebhook: prim$20,
+          getWebhook: prim$21,
+          getUserPSPInfo: prim$22
         };
 }
 
