@@ -731,6 +731,8 @@ var Languages = /* module */[/* enum */$$enum];
 
 var transfer = "TRANSFER";
 
+var trailTransfer = "TRAIL_TRANSFER";
+
 var createAccount = "CREATE_ACC";
 
 var destroyAccount = "DESTROY_ACC";
@@ -741,6 +743,7 @@ var createOrganization = "CREATE_ORG";
 
 var $$enum$1 = {
   Transfer: transfer,
+  TrailTransfer: trailTransfer,
   CreateAccount: createAccount,
   DestroyAccount: destroyAccount,
   CreateOrganization: createOrganization,
@@ -749,6 +752,7 @@ var $$enum$1 = {
 
 var ActionTypes = /* module */[
   /* transfer */transfer,
+  /* trailTransfer */trailTransfer,
   /* createAccount */createAccount,
   /* destroyAccount */destroyAccount,
   /* issueAsset */issueAsset,
@@ -785,7 +789,7 @@ var ActionCodes = /* module */[/* enum */$$enum$3];
 
 var languages = Languages[/* enum */0];
 
-var actionTypes = ActionTypes[/* enum */5];
+var actionTypes = ActionTypes[/* enum */6];
 
 var actionCodes = ActionCodes[/* enum */0];
 
@@ -855,6 +859,8 @@ var Transfer = /* module */[];
 
 var Memo = /* module */[];
 
+var TrailTransfer = /* module */[];
+
 function memoHash(value) {
   return {
           type: MemoTypes[/* hash */1],
@@ -876,11 +882,11 @@ function sha256(value) {
 function createAccountAction(acc) {
   if (acc == null) {
     return {
-            type: ActionTypes[/* createAccount */1]
+            type: ActionTypes[/* createAccount */2]
           };
   } else {
     var tmp = {
-      type: ActionTypes[/* createAccount */1]
+      type: ActionTypes[/* createAccount */2]
     };
     var tmp$1 = undefined_to_opt(acc.tags);
     if (tmp$1 !== undefined) {
@@ -904,7 +910,7 @@ function createAccountAction(acc) {
 
 function issueAssetAction(asset) {
   var tmp = {
-    type: ActionTypes[/* issueAsset */3],
+    type: ActionTypes[/* issueAsset */4],
     code: asset.code
   };
   var tmp$1 = undefined_to_opt(asset.limit);
@@ -921,6 +927,16 @@ function issueAssetAction(asset) {
 function transferAction(transfer) {
   return {
           type: ActionTypes[/* transfer */0],
+          from: transfer.from,
+          to: transfer.to,
+          asset: transfer.asset,
+          amount: transfer.amount
+        };
+}
+
+function trailTransferAction(transfer) {
+  return {
+          type: ActionTypes[/* trailTransfer */1],
           from: transfer.from,
           to: transfer.to,
           asset: transfer.asset,
@@ -1081,6 +1097,7 @@ exports.Endpoints = Endpoints;
 exports.Account = Account;
 exports.Asset = Asset;
 exports.Transfer = Transfer;
+exports.TrailTransfer = TrailTransfer;
 exports.Memo = Memo;
 exports.languages = languages;
 exports.actionTypes = actionTypes;
@@ -1092,4 +1109,5 @@ exports.sha256 = sha256;
 exports.createAccountAction = createAccountAction;
 exports.issueAssetAction = issueAssetAction;
 exports.transferAction = transferAction;
+exports.trailTransferAction = trailTransferAction;
 exports.init = init;

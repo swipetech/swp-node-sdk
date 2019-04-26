@@ -175,18 +175,18 @@ module Memo = {
   };
 };
 
-//module TrailTransfer = {
-//  [@bs.deriving abstract]
-//  type t = {
-//    [@bs.optional] [@bs.as "type"]
-//    type_: string,
-//    from: string,
-//    [@bs.as "to"]
-//    to_: string,
-//    asset: string,
-//    amount: string,
-//  };
-//};
+module TrailTransfer = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional] [@bs.as "type"]
+    type_: string,
+    from: string,
+    [@bs.as "to"]
+    to_: string,
+    asset: string,
+    amount: string,
+  };
+};
 
 let memoHash = (value: Js.String.t) =>
   Memo.t(~type_=Enums.MemoTypes.hash, ~value);
@@ -229,15 +229,15 @@ let transferAction = (transfer: Transfer.t) =>
     (),
   );
 
-//let trailTransferAction = (transfer: TrailTransfer.t) =>
-//  TrailTransfer.t(
-//    ~from=TrailTransfer.fromGet(transfer),
-//    ~to_=TrailTransfer.to_Get(transfer),
-//    ~asset=TrailTransfer.assetGet(transfer),
-//    ~amount=TrailTransfer.amountGet(transfer),
-//    ~type_=Enums.ActionTypes.trailTransfer,
-//    (),
-//  );
+let trailTransferAction = (transfer: TrailTransfer.t) =>
+  TrailTransfer.t(
+    ~from=TrailTransfer.fromGet(transfer),
+    ~to_=TrailTransfer.to_Get(transfer),
+    ~asset=TrailTransfer.assetGet(transfer),
+    ~amount=TrailTransfer.amountGet(transfer),
+    ~type_=Enums.ActionTypes.trailTransfer,
+    (),
+  );
 
 let init: Options.t => Endpoints.t =
   options => {

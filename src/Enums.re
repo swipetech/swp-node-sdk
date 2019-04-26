@@ -15,8 +15,8 @@ module ActionTypes = {
   type t = {
     [@bs.as "Transfer"]
     transfer: string,
-    //    [@bs.as "TrailTransfer"]
-    //    trailTransfer: string,
+    [@bs.as "TrailTransfer"]
+    trailTransfer: string,
     [@bs.as "CreateAccount"]
     createAccount: string,
     [@bs.as "DestroyAccount"]
@@ -28,16 +28,16 @@ module ActionTypes = {
   };
 
   let transfer = "TRANSFER";
-  //  let trailTransfer = "TRAIL_TRANSFER";
+  let trailTransfer = "TRAIL_TRANSFER";
   let createAccount = "CREATE_ACC";
   let destroyAccount = "DESTROY_ACC";
   let issueAsset = "ISSUE_ASSET";
   let createOrganization = "CREATE_ORG";
 
-  //  let enum = t(~transfer, ~trailTransfer, ~createAccount, ~destroyAccount, ~createOrganization, ~issueAsset);
   let enum =
     t(
       ~transfer,
+      ~trailTransfer,
       ~createAccount,
       ~destroyAccount,
       ~createOrganization,
