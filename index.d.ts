@@ -1,35 +1,17 @@
-declare module "@swp/wallet-sdk" {
-  export type ActionType =
-    "PAYMENT" |
-    "CREATE_ACC" |
-    "DESTROY_ACC" |
-    "CREATE_ORG" |
-    "ISSUE_ASSET"
-
-  export type ActionCode =
-  "action_ok" |
-  "action_success" |
-  "action_underfunded" |
-  "action_not_processed"
-
-  export interface Options {
-    apiKey: string
-    secret: string
-    sandbox: boolean
-    debug: boolean
+declare module '@swp/swipe-sdk' {
+  export interface SuccessResponse<T> {
+    data?: T
+    pagination?: Pagination
+    error: Error
   }
 
-  export interface PaymentOperation {
-    from: string
-    to: string
-    asset: string
-    amount: number
-    action_code: ActionCode
+  export interface Pagination {
+    cursor: string
   }
 
-  export interface Payment {
-    id: string
-    transfers: PaymentOperation[]
+  export interface Data<T> {
+    receipt: Receipt
+    value: T
   }
 
   export interface Receipt {
@@ -38,60 +20,83 @@ declare module "@swp/wallet-sdk" {
     type: ActionType
   }
 
-  export interface Balance {
-    balance: number
-    asset_code: string
-    asset_id: string
-  }
-
-  export interface Account {
-    id: string
-    balances: Balance[]
-  }
-
-  export interface Asset {
-    id: string
-    code: string
-    limit: number
-  }
-
-  export interface PaymentOp {
-    from: string
-    to: string
-    amount: string
-    asset: string
+  export enum ActionType {
+    Transfer = "transfer",
+    CreateAccount = "create_account",
+    CreateOrganization = "create_organization",
+    IssueAsset = "issue_asset",
+    DestroyAccount = "destroy_account"
   }
 
   export interface Organization extends Account {
     name: string
-    api_key: string
-    secret: string
   }
 
-  export interface WithReceipt {
-    receipt: Receipt
+  export interface Account {
+    id?: string
+    type?: string
+    balances: Balance[]
+    tags?: string[]
+    fields: { [key: string]: string }
   }
 
-  export interface AccountReceipt extends WithReceipt {
-    account: Account
+  export interface NewAccount {
+    type?: string
+    starting_balances?: StartingBalance[]
+    tags?: string[]
+    fields: { [key: string]: string }
   }
 
-  export interface AssetReceipt extends WithReceipt {
-    asset: Asset
+  export interface StartingBalance {
+    balance: string
+    asset_id: string
   }
 
-  export interface OrganizationReceipt extends WithReceipt {
-    organization: Organization
-  }
-
-  export interface PaymentReceipt extends WithReceipt {
-    payment: Payment
-  }
-
-  export interface SubError {
+  export interface Asset {
+    id?: string
     code: string
-    msg: string
-    field: string
+    limit: string
+    tags: string[]
+    type?: string
+  }
+
+  export interface TransferBatch {
+    id?: string
+    actions: Transfer[]
+    memo?: MemoValue
+  }
+
+  export interface MemoValue {
+    type: "TEXT" | "HASH"
+    value: string
+  }
+
+  export interface Transfer {
+    id?: string
+    from: string
+    to: string
+    asset: string
+    amount: string
+    op_code?: ActionCode
+    type?: string
+  }
+
+  export enum ActionCode {
+    Ok = "action_ok",
+    Success = "action_success",
+    Underfunded = "action_underfunded",
+    NotProcessed = "action_not_processed",
+  }
+
+  export interface Balance {
+    balance: string
+    asset_code: string
+    asset_id: string
+  }
+
+  export interface Tags {
+    id?: string
+    tags: string[]
   }
 
   export interface Error {
@@ -100,37 +105,60 @@ declare module "@swp/wallet-sdk" {
     sub_errors: SubError[]
   }
 
-  export interface Endpoints {
-    createAccount: () => Promise<AccountReceipt>
-    getAccount: (id: string) => Promise<AccountReceipt>
-    getAllAccounts: () => Promise<AccountReceipt[]>
-    getAllAssets: () => Promise<AssetReceipt[]>
-    getOrganization: () => Promise<OrganizationReceipt>
-    makePayment: (payments: Array<PaymentOp>) => Promise<PaymentReceipt>
-    getPayment: (id: string) => Promise<PaymentReceipt>
-    // monitorPaymentsToAccount: (id: string, cb: (payment: PaymentReceipt) => void) => EventSource
-    // monitorPaymentsToOrg: (cb: (payment: PaymentReceipt) => void) => EventSource
-  }
-  
-  export const languages: {
-    PT_BR: string
-    EN_US: string
+  export interface SubError {
+    code: string
+    msg: string
+    field: string
+    index: number
   }
 
-  export const actionTypes: {
-    Payment: "payment",
-    CreateAccount: "create_account",
-    CreateOrganization: "create_organization",
-    IssueAsset: "issue_asset",
-    ChangeTrust: "change_trust",
+  export interface ActionBatch {
+    id?: string
+    actions: Array<NewAccount | Asset | Transfer>
+    memo?: MemoValue
   }
 
-  export const actionCodes: {
-    Ok: "action_ok"
-    Success: "action_success"
-    Underfunded: "action_underfunded"
-    NotProcessed: "action_not_processed"
+  export interface ResponseToken {
+    token: string
   }
 
-  export const init: (options: Options) => Endpoints
+  export interface PaginationOptions {
+    limit: string
+    starting_after: string
+  }
+
+  export interface Filters {
+    tag: string
+  }
+
+  export interface SwipeEndpoints {
+    getOrganization: () => Promise<SuccessResponse<Data<Organization>>>
+    getAccount: (id: string) => Promise<SuccessResponse<Data<Account>>>
+    getAllAccounts: (ops?: PaginationOptions & Filters) => Promise<SuccessResponse<Array<Data<Account>>>>
+    getAllTransfers: (accountId: string, paginationOps?: PaginationOptions) => Promise<SuccessResponse<Array<Data<Transfer>>>>
+    getTransfer: (id: string) => Promise<SuccessResponse<Data<TransferBatch>>>
+    getAsset: (id: string) => Promise<SuccessResponse<Data<Asset>>>
+    getAllAssets: (ops?: PaginationOptions & Filters) => Promise<SuccessResponse<Array<Data<Asset>>>>
+
+    createAccount: (acc?: NewAccount) => Promise<SuccessResponse<Data<Account>>>
+    issueAsset: (asset: Asset) => Promise<SuccessResponse<Data<Asset>>>
+    makeTransfers: (transferBatch: TransferBatch) => Promise<SuccessResponse<Data<TransferBatch>>>
+    destroyAccount: (id: string) => Promise<SuccessResponse<Data<Account>>>
+    makeActionBatch: (batch: ActionBatch) => Promise<SuccessResponse<Data<ActionBatch>>>
+    updateTags: (tags: Tags) => Promise<SuccessResponse<Data<Tags>>>
+
+    resetOrganization: () => Promise<undefined>
+    getToken: () => Promise<SuccessResponse<Data<ResponseToken>>>
+    revokeCredentials: () => Promise<undefined>
+  }
+
+  export interface Options {
+    apiKey: string
+    secret: string
+    debug?: boolean
+    sandbox?: boolean
+    customHost?: string
+  }
+
+  export function init(options: Options): SwipeEndpoints
 }
