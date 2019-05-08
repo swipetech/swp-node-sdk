@@ -57,6 +57,7 @@ module Endpoints = {
     let accounts = "/accounts";
     let assets = "/assets";
     let transfers = "/transfers";
+    let trailTransfer = "/trail-transfers";
     let tags = "/tags";
     let actions = "/actions";
     let revoke = "/revoke";
@@ -75,6 +76,8 @@ module Endpoints = {
     let getActions = id => {j|$actions/$id|j};
     let deleteWebhook = id => {j|$webhooks/$id|j};
     let getWebhook = id => {j|$webhooks/$id|j};
+    let getUserPSPInfo = instantID => {j|/psp/instant-id/$instantID|j};
+    let getTrailTransferByReceiptId = id => {j|rail-transfers/receipt/$id|j}
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -82,6 +85,7 @@ module Endpoints = {
 
   [@bs.deriving abstract]
   type t = {
+    checkSignature: (string, Auth.SignatureParams.t) => bool,
     getOrganization: unit => Promise.t(response),
     resetOrganization: unit => Promise.t(response),
     getAccount: string => Promise.t(response),
@@ -94,6 +98,7 @@ module Endpoints = {
     getTransfer: string => Promise.t(response),
     getAllTransfers: (string, dictParams) => Promise.t(response),
     makeTransfers: Json.t => Promise.t(response),
+    makeTrailTransfer: Json.t => Promise.t(response),
     updateTags: (string, Array.t(string)) => Promise.t(response),
     getActionBatch: string => Promise.t(response),
     makeActionBatch: Json.t => Promise.t(response),
@@ -102,6 +107,8 @@ module Endpoints = {
     createWebhook: Json.t => Promise.t(response),
     deleteWebhook: string => Promise.t(response),
     getWebhook: string => Promise.t(response),
+    getUserPSPInfo: string => Promise.t(response),
+    getTrailTransferByReceiptId: string => Promise.t(response),
   };
 
   let make = t;
@@ -175,18 +182,18 @@ module Memo = {
   };
 };
 
-/* //module TrailTransfer = {
-   //  [@bs.deriving abstract]
-   //  type t = {
-   //    [@bs.optional] [@bs.as "type"]
-   //    type_: string,
-   //    from: string,
-   //    [@bs.as "to"]
-   //    to_: string,
-   //    asset: string,
-   //    amount: string,
-   //  };
-   //}; */
+module TrailTransfer = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional] [@bs.as "type"]
+    type_: string,
+    from: string,
+    [@bs.as "to"]
+    to_: string,
+    asset: string,
+    amount: string,
+  };
+};
 
 let memoHash = (value: Js.String.t) =>
   Memo.t(~type_=Enums.MemoTypes.hash, ~value);
@@ -229,15 +236,15 @@ let transferAction = (transfer: Transfer.t) =>
     (),
   );
 
-/* //let trailTransferAction = (transfer: TrailTransfer.t) =>
-   //  TrailTransfer.t(
-   //    ~from=TrailTransfer.fromGet(transfer),
-   //    ~to_=TrailTransfer.to_Get(transfer),
-   //    ~asset=TrailTransfer.assetGet(transfer),
-   //    ~amount=TrailTransfer.amountGet(transfer),
-   //    ~type_=Enums.ActionTypes.trailTransfer,
-   //    (),
-   //  ); */
+let trailTransferAction = (transfer: TrailTransfer.t) =>
+  TrailTransfer.t(
+    ~from=TrailTransfer.fromGet(transfer),
+    ~to_=TrailTransfer.to_Get(transfer),
+    ~asset=TrailTransfer.assetGet(transfer),
+    ~amount=TrailTransfer.amountGet(transfer),
+    ~type_=Enums.ActionTypes.trailTransfer,
+    (),
+  );
 
 let init: Options.t => Endpoints.t =
   options => {
@@ -292,6 +299,10 @@ let init: Options.t => Endpoints.t =
       );
 
     Endpoints.make(
+      ~checkSignature=
+        (signature, signatureParams) =>
+          signature
+          == Auth.sign(~secret=options |> Options.secretGet, ~signatureParams),
       ~getOrganization=() => get(Endpoints.Routes.organizations),
       ~resetOrganization=() => post(Endpoints.Routes.resetOrganization),
       ~getAccount=id => get(Endpoints.Routes.getAccount(id)),
@@ -307,6 +318,7 @@ let init: Options.t => Endpoints.t =
         body =>
           post(Endpoints.Routes.accounts, ~body=?Js.Nullable.toOption(body)),
       ~destroyAccount=id => delete(Endpoints.Routes.deleteAccount(id)),
+      swp.createWebhook({url: 't1.com', actionType: 'TRANSFER'}).deleteAccount(id)),
       ~getAllAssets=
         queryParams =>
           get(
@@ -322,6 +334,7 @@ let init: Options.t => Endpoints.t =
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
       ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
+      ~makeTrailTransfer=body => post(Endpoints.Routes.trailTransfer, ~body),
       ~updateTags=
         (id, tags) =>
           put(
@@ -336,5 +349,9 @@ let init: Options.t => Endpoints.t =
       ~deleteWebhook=id => delete(Endpoints.Routes.deleteWebhook(id)),
       ~createWebhook=body => post(Endpoints.Routes.webhooks, ~body),
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
+      ~getUserPSPInfo=
+        instantID => get(Endpoints.Routes.getUserPSPInfo(instantID)),
+      ~getTrailTransferByReceiptId=
+        id => get(Endpoints.Routes.getTrailTransferByReceiptId(id)),
     );
   };
