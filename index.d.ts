@@ -77,7 +77,7 @@ declare module '@swp/swipe-sdk' {
     to: string
     asset: string
     amount: string
-    op_code: ActionCode
+    op_code?: ActionCode
     type?: string
   }
 
