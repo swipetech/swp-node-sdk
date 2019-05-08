@@ -94,6 +94,12 @@ declare module '@swp/swipe-sdk' {
     asset_id: string
   }
 
+  export interface WebHook {
+    id: String,
+    url: String,
+    actionType: String
+  }
+
   export interface Tags {
     id?: string
     tags: string[]
@@ -131,6 +137,25 @@ declare module '@swp/swipe-sdk' {
     tag: string
   }
 
+  export interface PspInfo {
+    psp: Psp
+    user: User
+  }
+
+  export interface Psp {
+    name: string
+    phoneNumber: string
+    domain: string 
+  }
+
+  export interface User {
+    firstName: string
+    lastName: string
+    document: string
+    email: string
+    alias: string
+  }
+
   export interface SwipeEndpoints {
     getOrganization: () => Promise<SuccessResponse<Data<Organization>>>
     getAccount: (id: string) => Promise<SuccessResponse<Data<Account>>>
@@ -143,6 +168,12 @@ declare module '@swp/swipe-sdk' {
     createAccount: (acc?: NewAccount) => Promise<SuccessResponse<Data<Account>>>
     issueAsset: (asset: Asset) => Promise<SuccessResponse<Data<Asset>>>
     makeTransfers: (transferBatch: TransferBatch) => Promise<SuccessResponse<Data<TransferBatch>>>
+    
+    makeTrailTransfer: (transferBatch: TransferBatch) => Promise<SuccessResponse<Data<TransferBatch>>>
+    getUserPSPInfo: (instanteId: string) => Promise<SuccessResponse<Data<PspInfo>>>
+    createWebhook: (webHook: WebHook) => Promise<SuccessResponse<Data<WebHook>>>
+    deleteWebhook: (id: string) => Promise<undefined>
+
     destroyAccount: (id: string) => Promise<SuccessResponse<Data<Account>>>
     makeActionBatch: (batch: ActionBatch) => Promise<SuccessResponse<Data<ActionBatch>>>
     updateTags: (tags: Tags) => Promise<SuccessResponse<Data<Tags>>>
