@@ -77,7 +77,7 @@ module Endpoints = {
     let deleteWebhook = id => {j|$webhooks/$id|j};
     let getWebhook = id => {j|$webhooks/$id|j};
     let getUserPSPInfo = instantID => {j|/psp/instant-id/$instantID|j};
-    let getTrailTransferByReceiptId = id => {j|rail-transfers/receipt/$id|j}
+    let getTrailTransferById = id => {j|trail-transfers/$id|j}
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -108,7 +108,7 @@ module Endpoints = {
     deleteWebhook: string => Promise.t(response),
     getWebhook: string => Promise.t(response),
     getUserPSPInfo: string => Promise.t(response),
-    getTrailTransferByReceiptId: string => Promise.t(response),
+    getTrailTransferById: string => Promise.t(response),
   };
 
   let make = t;
@@ -350,7 +350,7 @@ let init: Options.t => Endpoints.t =
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
       ~getUserPSPInfo=
         instantID => get(Endpoints.Routes.getUserPSPInfo(instantID)),
-      ~getTrailTransferByReceiptId=
-        id => get(Endpoints.Routes.getTrailTransferByReceiptId(id)),
+      ~getTrailTransferById=
+        id => get(Endpoints.Routes.getTrailTransferById(id)),
     );
   };
