@@ -872,8 +872,8 @@ function getUserPSPInfo(instantID) {
   return "/psp/instant-id/" + (String(instantID) + "");
 }
 
-function getTrailTransferByReceiptId(id) {
-  return "rail-transfers/receipt/" + (String(id) + "");
+function getTrailTransferById(id) {
+  return "trail-transfers/" + (String(id) + "");
 }
 
 var Account = /* module */[];
@@ -1100,7 +1100,7 @@ function init(options) {
     return _3(get, undefined, undefined, getUserPSPInfo(instantID));
   };
   var prim$23 = function (id) {
-    return _3(get, undefined, undefined, getTrailTransferByReceiptId(id));
+    return _3(get, undefined, undefined, getTrailTransferById(id));
   };
   return {
           checkSignature: prim,
@@ -1126,7 +1126,7 @@ function init(options) {
           deleteWebhook: prim$20,
           getWebhook: prim$21,
           getUserPSPInfo: prim$22,
-          getTrailTransferByReceiptId: prim$23
+          getTrailTransferById: prim$23
         };
 }
 
