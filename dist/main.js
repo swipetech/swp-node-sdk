@@ -822,6 +822,8 @@ var assets = "/assets";
 
 var transfers = "/transfers";
 
+var trailTransfers = "/trail-transfers";
+
 var actions = "/actions";
 
 var revoke = "/revoke";
@@ -1068,7 +1070,7 @@ function init(options) {
     return _3(post, some(body), undefined, transfers);
   };
   var prim$13 = function (body) {
-    return _3(post, some(body), undefined, "/trail-transfers");
+    return _3(post, some(body), undefined, trailTransfers);
   };
   var prim$14 = function (id, tags) {
     return _3(put, {
@@ -1102,6 +1104,9 @@ function init(options) {
   var prim$23 = function (id) {
     return _3(get, undefined, undefined, getTrailTransferById(id));
   };
+  var prim$24 = function (params) {
+    return _3(get, undefined, (params == null) ? undefined : some(params), trailTransfers);
+  };
   return {
           checkSignature: prim,
           getOrganization: prim$1,
@@ -1126,7 +1131,8 @@ function init(options) {
           deleteWebhook: prim$20,
           getWebhook: prim$21,
           getUserPSPInfo: prim$22,
-          getTrailTransferById: prim$23
+          getTrailTransferById: prim$23,
+          getAllTrailTransfers: prim$24
         };
 }
 

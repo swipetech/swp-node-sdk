@@ -125,8 +125,7 @@ module Endpoints = {
     getWebhook: string => Promise.t(response),
     getUserPSPInfo: string => Promise.t(response),
     getTrailTransferById: string => Promise.t(response),
-    getAllTrailTransfers:
-      (TrailTransferFilter.t, Json.t) => Promise.t(response),
+    getAllTrailTransfers: dictParams => Promise.t(response),
   };
 
   let make = t;
@@ -368,13 +367,13 @@ let init: Options.t => Endpoints.t =
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
       ~getUserPSPInfo=
         instantID => get(Endpoints.Routes.getUserPSPInfo(instantID)),
-      ~getAllTrailTransfers=
-        (filterParams, pagination) =>
-          get(
-            Endpoints.Routes.trailTransfers,
-            ~queryParams=?Js.Nullable.toOption(Js.Obj.assign filterParams pagination),
-          ),
       ~getTrailTransferById=
         id => get(Endpoints.Routes.getTrailTransferById(id)),
+      ~getAllTrailTransfers=
+        params =>
+          get(
+            Endpoints.Routes.trailTransfers,
+            ~queryParams=?Js.Nullable.toOption(params),
+          ),
     );
   };
