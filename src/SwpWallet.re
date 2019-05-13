@@ -49,6 +49,22 @@ module EncapsulatedTags = {
   let make = t;
 };
 
+module TrailTransferFilter = {
+  [@bs.deriving abstract]
+  type t = {
+    [@bs.optional]
+    userFrom: string,
+    [@bs.optional]
+    domainFrom: string,
+    [@bs.optional]
+    userTo: string,
+    [@bs.optional]
+    domainTo: string,
+  };
+
+  let make = t;
+};
+
 module Endpoints = {
   open Js;
 
@@ -57,7 +73,7 @@ module Endpoints = {
     let accounts = "/accounts";
     let assets = "/assets";
     let transfers = "/transfers";
-    let trailTransfer = "/trail-transfers";
+    let trailTransfers = "/trail-transfers";
     let tags = "/tags";
     let actions = "/actions";
     let revoke = "/revoke";
@@ -77,7 +93,7 @@ module Endpoints = {
     let deleteWebhook = id => {j|$webhooks/$id|j};
     let getWebhook = id => {j|$webhooks/$id|j};
     let getUserPSPInfo = instantID => {j|/psp/instant-id/$instantID|j};
-    let getTrailTransferById = id => {j|trail-transfers/$id|j}
+    let getTrailTransferById = id => {j|trail-transfers/$id|j};
   };
 
   type response = Nullable.t(Service.Api.Response.t);
@@ -109,6 +125,8 @@ module Endpoints = {
     getWebhook: string => Promise.t(response),
     getUserPSPInfo: string => Promise.t(response),
     getTrailTransferById: string => Promise.t(response),
+    getAllTrailTransfers:
+      (TrailTransferFilter.t, Json.t) => Promise.t(response),
   };
 
   let make = t;
@@ -333,7 +351,7 @@ let init: Options.t => Endpoints.t =
             ~queryParams=?Js.Nullable.toOption(queryParams),
           ),
       ~makeTransfers=body => post(Endpoints.Routes.transfers, ~body),
-      ~makeTrailTransfer=body => post(Endpoints.Routes.trailTransfer, ~body),
+      ~makeTrailTransfer=body => post(Endpoints.Routes.trailTransfers, ~body),
       ~updateTags=
         (id, tags) =>
           put(
@@ -350,6 +368,12 @@ let init: Options.t => Endpoints.t =
       ~getWebhook=id => get(Endpoints.Routes.getWebhook(id)),
       ~getUserPSPInfo=
         instantID => get(Endpoints.Routes.getUserPSPInfo(instantID)),
+      ~getAllTrailTransfers=
+        (filterParams, pagination) =>
+          get(
+            Endpoints.Routes.trailTransfers,
+            ~queryParams=?Js.Nullable.toOption(Js.Obj.assign filterParams pagination),
+          ),
       ~getTrailTransferById=
         id => get(Endpoints.Routes.getTrailTransferById(id)),
     );
