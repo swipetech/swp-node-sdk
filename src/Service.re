@@ -150,6 +150,7 @@ let request =
       "Request",
       {
         "method": methodName(method),
+        "host": host,
         "path": path,
         "headers": headers,
         "body": strBody,
