@@ -161,10 +161,10 @@ declare module '@swp/swipe-sdk' {
     }
 
     export interface TrailTransferFilter {
-        userFrom?: string
-        domainFrom?: string
-        userTo?: string
-        domainTo?: string
+        user_from?: string
+        domain_from?: string
+        user_to?: string
+        domain_to?: string
     }
 
     export interface Psp {
