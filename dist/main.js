@@ -657,6 +657,7 @@ function request(host$$1, headers, method_, body, queryParams, $staropt$star, pa
     console.log("");
     log("Request", {
           method: methodName(method_),
+          host: host$$1,
           path: path,
           headers: headers,
           body: strBody,
