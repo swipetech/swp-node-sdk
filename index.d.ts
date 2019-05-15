@@ -147,8 +147,8 @@ declare module '@swp/swipe-sdk' {
     }
 
     export interface PaginationOptions {
-        limit: string
-        starting_after: string
+        limit?: string
+        starting_after?: string
     }
 
     export interface Filters {
