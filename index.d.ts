@@ -197,7 +197,7 @@ declare module '@swp/swipe-sdk' {
         makeTrailTransfer: (trailTransfer: NewTrailTransfer) => Promise<SuccessResponse<Data<TrailTransfer>>>
         getAllTrailTransfers: (params: TrailTransferFilter & PaginationOptions) => Promise<SuccessResponse<Array<Data<TrailTransfer>>>>
         getTrailTransferById: (id: string) => Promise<SuccessResponse<Data<TrailTransfer>>>
-        getUserPSPInfo: (instanteId: string) => Promise<SuccessResponse<Data<PspInfo>>>
+        getUserPSPInfo: (instantId: string) => Promise<SuccessResponse<Data<PspInfo>>>
         createWebhook: (webHook: WebHook) => Promise<SuccessResponse<Data<WebHook>>>
         deleteWebhook: (id: string) => Promise<undefined>
 
